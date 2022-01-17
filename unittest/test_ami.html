@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<body>
+    <button id='start'>Start</button>
+    <script>
+        var ws_conn_ = new WebSocket('ws://localhost:8888/api/ami');
+        ws_conn_.onmessage = function (ev) {
+            if (ev.data) {
+                var msg = JSON.parse(ev.data);
+                console.log(`data=${ev.data}`);
+                // if (!('status' in msg)) {
+                //     console.log(`ERROR 'no status is msg'`);
+                //     return;
+                // }
+                if (msg.status) {
+                    switch (msg.status) {
+                    case 'response':
+                        const { finish, text } = msg;
+                        console.log(`Ami text="${text}" finish=${finish}`);
+                        break;
+                    case 'rejected':
+                        console.log(`Ami rejected detail=${msg.detail}`);
+                        break;
+                    default:
+                        console.log(`status=${msg.status}`);
+                        break;
+                    }
+                }
+            }
+        };
+        ws_conn_.onopen = function () {
+            console.log('WS connection opened!');
+        };
+        document.getElementById('start').addEventListener('click', function (event) {
+            let audioStream_, audioProvider_,
+                audioContext_ = new AudioContext(),
+                audioProcessor_ = audioContext_.createScriptProcessor
+                                ? audioContext_.createScriptProcessor(0, 1, 1)
+                                : audioContext_.createJavaScriptNode(0, 1, 1);
+            audioProcessor_.onaudioprocess = function ({ inputBuffer }) {
+                let audioData = inputBuffer.getChannelData(0),
+                    pcmData = new Uint8Array(audioData.length * 2),
+                    audioDataIndex, pcmDataIndex = 0;
+                for (audioDataIndex = 0; audioDataIndex < audioData.length; audioDataIndex++) {
+                    // Convert decimals (0.0 to 1.0) to integers (-32768 to 32767)
+                    let pcm = audioData[audioDataIndex] * 32768 | 0;
+                    if (pcm > 32767) {
+                        pcm = 32767;
+                    } else if (pcm < -32768) {
+                        pcm = -32768;
+                    }
+                    // max 255
+                    pcmData[pcmDataIndex++] = pcm & 0xFF;
+                    // max 128
+                    pcmData[pcmDataIndex++] = (pcm >> 8) & 0xFF;
+                }
+                // waveData_.push(pcmData.buffer);
+                ws_conn_.send(JSON.stringify({
+                    data: pcmData.reduce(function (array, item) {
+                        array.push(item);
+                        return array;
+                    }, [])
+                }));
+            };
+            navigator.mediaDevices.getUserMedia(
+                {audio: true, video: false}
+            ).then(function (audioStream) {
+                // audioStream.stopTracks = function() {
+                //     var tracks = audioStream.getTracks();
+                //     for (var i = 0; i < tracks.length; i++) {
+                //         tracks[i].stop();
+                //     }
+                //     state_ = 0;
+                //     if (waveData_) {
+                //         var waveData = new DataView(waveData_[0]);
+                //         waveData.setUint8(0, 0x52); // 'R'
+                //         waveData.setUint8(1, 0x49); // 'I'
+                //         waveData.setUint8(2, 0x46); // 'F'
+                //         waveData.setUint8(3, 0x46); // 'F'
+                //         waveData.setUint32(4, waveDataBytes_ - 8, true);
+                //         waveData.setUint8(8, 0x57); // 'W'
+                //         waveData.setUint8(9, 0x41); // 'A'
+                //         waveData.setUint8(10, 0x56); // 'V'
+                //         waveData.setUint8(11, 0x45); // 'E'
+                //         waveData.setUint8(12, 0x66); // 'f'
+                //         waveData.setUint8(13, 0x6D); // 'm'
+                //         waveData.setUint8(14, 0x74); // 't'
+                //         waveData.setUint8(15, 0x20); // ' '
+                //         waveData.setUint32(16, 16, true);
+                //         waveData.setUint16(20, 1, true); // formatTag
+                //         waveData.setUint16(22, 1, true); // channels
+                //         waveData.setUint32(24, audioSamplesPerSec_, true); // samplesPerSec
+                //         waveData.setUint32(28, audioSamplesPerSec_ * 2 * 1, true); // bytesPseSec
+                //         waveData.setUint16(32, 2 * 1, true); // bytesPerSample
+                //         waveData.setUint16(34, 16, true); // bitsPerSample
+                //         waveData.setUint8(36, 0x64); // 'd'
+                //         waveData.setUint8(37, 0x61); // 'a'
+                //         waveData.setUint8(38, 0x74); // 't'
+                //         waveData.setUint8(39, 0x61); // 'a'
+                //         waveData.setUint32(40, waveDataBytes_ - 44, true);
+                //         waveFile_ = new Blob(waveData_, {type: "audio/wav"});
+                //         waveFile_.samplesPerSec = audioSamplesPerSec_;
+                //         waveFile_.samples = (waveDataBytes_ - 44) / (2 * 1);
+                //         waveData_ = null;
+                //         waveDataBytes_ = 0;
+                //     }
+                //     if (recorder_.pauseEnded) recorder_.pauseEnded(reason_, waveFile_);
+                // };
+                // if (state_ === 3) {
+                //     state_ = 4;
+                //     audioStream.stopTracks();
+                //     if (audioDecimatationFactor_ > 1) {
+                //         if (recorder_.TRACE) recorder_.TRACE("INFO: cancelled recording: " + audioContext_.sampleRate + "Hz -> " + audioSamplesPerSec_ + "Hz (" + audioProcessor_.bufferSize + " samples/buffer)");
+                //     } else {
+                //         if (recorder_.TRACE) recorder_.TRACE("INFO: cancelled recording: " + audioSamplesPerSec_ + "Hz (" + audioProcessor_.bufferSize + " samples/buffer)");
+                //     }
+                //     return;
+                // }
+                // state_ = 2;
+                audioStream_ = audioStream;
+                audioProvider_ = audioContext_.createMediaStreamSource(audioStream_);
+                audioProvider_.connect(audioProcessor_);
+                audioProcessor_.connect(audioContext_.destination);
+                // if (audioDecimatationFactor_ > 1) {
+                //     if (recorder_.TRACE) recorder_.TRACE("INFO: started recording: " + audioContext_.sampleRate + "Hz -> " + audioSamplesPerSec_ + "Hz (" + audioProcessor_.bufferSize + " samples/buffer)");
+                // } else {
+                //     if (recorder_.TRACE) recorder_.TRACE("INFO: started recording: " + audioSamplesPerSec_ + "Hz (" + audioProcessor_.bufferSize + " samples/buffer)");
+                // }
+                // startMaxRecordingTimeTimer_();
+                // if (recorder_.resumeEnded) recorder_.resumeEnded(audioSamplesPerSec_);
+            }).catch(function (error) {
+                // state_ = 0;
+                // if (recorder_.TRACE) recorder_.TRACE("ERROR: can't start recording (" + error.message + ")");
+                // reason_.code = 2;
+                // reason_.message = error.message;
+                // if (recorder_.pauseEnded) recorder_.pauseEnded(reason_, waveFile_);
+            });
+        });
+    </script>
+</body>
