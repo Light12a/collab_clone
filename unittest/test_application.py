@@ -23,7 +23,11 @@ class TestApplication(base_application.CollabosBaseApplication):
             ('/proxy', test_handlers.ProxyHandler),
             ('/api/get/(\d+)', test_handlers.TestGetAPIHandler),
             ('/api/post', test_handlers.TestPostAPIHandler),
-            ('/api/ami', test_handlers.AmiWSHandler)
+            ('/api/ami', test_handlers.AmiWSHandler),
+            ('/login', test_handlers.LoginHandler),
+            ('/logout', test_handlers.LogoutHandler),
+            ('/get_user', test_handlers.GetUserHandler)
+
         ]
 
     def _prepare_hrp_connection(self):

@@ -1,4 +1,4 @@
-import asyncio
+import asyncio, datetime
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.web import RequestHandler
 
@@ -50,3 +50,14 @@ class BaseHandler(RequestHandler):
 
     def _on_data_received(self, chunk):
         pass
+
+    def _check_valid_token(self, create_time, expiration):
+        weeks = expiration / (604800)
+        expired = datetime.datetime.strptime(create_time, '%Y-%m-%d %H:%M:%S') + datetime.timedelta(weeks=weeks)
+        now = datetime.datetime.utcnow().timestamp()
+        line = now - expired.timestamp()
+            
+        if line < 0:
+            return True
+        else:
+            return False

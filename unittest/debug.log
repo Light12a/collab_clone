@@ -1,0 +1,176 @@
+2022-02-07 17:47:08,395:ERROR:Uncaught exception POST /login (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/login', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1702, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 148, in post
+    check = self._check_format_json(request)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 236, in _check_format_json
+    logging.debug(inf.format(json['username']))
+AttributeError: 'NoneType' object has no attribute 'debug'
+2022-02-07 17:47:08,413:ERROR:500 POST /login (::1) 17.98ms
+2022-02-07 17:48:06,939:ERROR:Uncaught exception POST /login (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/login', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 234, in _check_format_json
+    token = json['token_id']
+KeyError: 'token_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1702, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 148, in post
+    check = self._check_format_json(request)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 239, in _check_format_json
+    logging.debug(err.format(json['username']))
+AttributeError: 'NoneType' object has no attribute 'debug'
+2022-02-07 17:48:06,939:ERROR:500 POST /login (::1) 1.00ms
+2022-02-07 17:50:55,776:ERROR:Uncaught exception POST /login (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/login', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 233, in _check_format_json
+    token = json['token_id']
+KeyError: 'token_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1702, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 147, in post
+    check = self._check_format_json(request)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 238, in _check_format_json
+    logging.exception(err.format(json['username']))
+AttributeError: 'NoneType' object has no attribute 'exception'
+2022-02-07 17:50:55,779:ERROR:500 POST /login (::1) 2.99ms
+2022-02-07 17:52:38,350:ERROR:Uncaught exception POST /login (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/login', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 233, in _check_format_json
+    token = json['token_id']
+KeyError: 'token_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1702, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 147, in post
+    check = self._check_format_json(request)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 238, in _check_format_json
+    logging.info(err.format(json['username']))
+AttributeError: 'NoneType' object has no attribute 'info'
+2022-02-07 17:52:38,352:ERROR:500 POST /login (::1) 2.99ms
+2022-02-07 17:54:28,067:ERROR:Uncaught exception POST /login (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/login', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 233, in _check_format_json
+    token = json['token_id']
+KeyError: 'token_id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1702, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 147, in post
+    check = self._check_format_json(request)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 238, in _check_format_json
+    log.info(err.format(json['username']))
+AttributeError: 'NoneType' object has no attribute 'info'
+2022-02-07 17:54:28,084:ERROR:500 POST /login (::1) 17.95ms
+2022-02-07 17:57:52,491:INFO:json request for new login of user1
+2022-02-07 17:57:52,701:INFO:{'token_id': '05b04191-26fa-45b7-8609-1e094b8950b2', 'user_id': 8, 'expiration_time': 604800, 'create_time': '2022-02-07 10:57:52'}
+2022-02-07 17:57:52,772:INFO:Login of user: user1 successfully
+2022-02-07 17:57:52,772:INFO:200 POST /login (::1) 281.78ms
+2022-02-07 17:58:22,041:INFO:json request for relogin of user: user1
+2022-02-07 17:58:22,041:INFO:Find out token_id is the same with token_id of user: user1 in json request
+2022-02-07 17:58:22,044:INFO:200 POST /login (::1) 2.99ms
+2022-02-07 17:58:27,070:INFO:json request for relogin of user: user1
+2022-02-07 17:58:27,070:ERROR:Username: user1 or tenant_id: 5 attached in json request is not existed in db
+Traceback (most recent call last):
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 248, in _check_token_valid
+    if result[0] == request['token_id']:
+TypeError: 'NoneType' object is not subscriptable
+2022-02-07 17:58:27,071:WARNING:406 POST /login (::1) 2.01ms
+2022-02-07 17:58:35,252:INFO:json request for relogin of user: user1
+2022-02-07 17:58:35,253:INFO:Find out token_id is the same with token_id of user: user1 in json request
+2022-02-07 17:58:35,253:INFO:200 POST /login (::1) 1.00ms
+2022-02-07 17:58:45,080:INFO:200 POST /logout (::1) 158.87ms
+2022-02-08 10:40:39,950:ERROR:Uncaught exception POST /api/get/deviceState (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/api/get/deviceState', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1702, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 319, in post
+    client = HTTPClient.fetch("https://google.com/")
+TypeError: fetch() missing 1 required positional argument: 'request'
+2022-02-08 10:40:39,969:ERROR:500 POST /api/get/deviceState (::1) 19.93ms
+2022-02-08 10:48:09,769:ERROR:Uncaught exception POST /api/get/deviceState (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/api/get/deviceState', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1702, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 319, in post
+    client = HTTPClient().fetch("https://google.com/")
+  File "D:\venv38\lib\site-packages\tornado\httpclient.py", line 109, in __init__
+    self._async_client = self._io_loop.run_sync(make_client)
+  File "D:\venv38\lib\site-packages\tornado\ioloop.py", line 524, in run_sync
+    self.start()
+  File "D:\venv38\lib\site-packages\tornado\platform\asyncio.py", line 199, in start
+    self.asyncio_loop.run_forever()
+  File "C:\Program Files\Python38\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Program Files\Python38\lib\asyncio\base_events.py", line 560, in run_forever
+    self._check_running()
+  File "C:\Program Files\Python38\lib\asyncio\base_events.py", line 554, in _check_running
+    raise RuntimeError(
+RuntimeError: Cannot run the event loop while another loop is running
+2022-02-08 10:48:09,800:ERROR:500 POST /api/get/deviceState (::1) 31.91ms
+2022-02-08 10:55:03,625:ERROR:Uncaught exception POST /api/get/deviceState (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/api/get/deviceState', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1702, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 320, in post
+    print(client.body)
+AttributeError: '_asyncio.Future' object has no attribute 'body'
+2022-02-08 10:55:03,628:ERROR:500 POST /api/get/deviceState (::1) 2.99ms
+2022-02-08 11:01:16,228:ERROR:Uncaught exception POST /api/get/deviceState (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/api/get/deviceState', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1704, in _execute
+    result = await result
+TypeError: object generator can't be used in 'await' expression
+2022-02-08 11:01:16,230:ERROR:500 POST /api/get/deviceState (::1) 1.99ms
+2022-02-08 11:02:14,655:ERROR:Uncaught exception POST /api/get/deviceState (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/api/get/deviceState', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1702, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 320, in post
+    print(client.body)
+AttributeError: '_asyncio.Future' object has no attribute 'body'
+2022-02-08 11:02:14,658:ERROR:500 POST /api/get/deviceState (::1) 3.02ms
+2022-02-08 11:04:17,210:INFO:200 POST /api/get/deviceState (::1) 5946.61ms
+2022-02-08 11:05:00,024:INFO:200 POST /api/get/deviceState (::1) 430.50ms
+2022-02-08 11:07:26,338:WARNING:SSL Error on 1172 ('13.113.23.145', 8088): [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1124)
+2022-02-08 11:07:26,338:ERROR:Uncaught exception POST /api/get/deviceState (::1)
+HTTPServerRequest(protocol='http', host='localhost:8888', method='POST', uri='/api/get/deviceState', version='HTTP/1.1', remote_ip='::1')
+Traceback (most recent call last):
+  File "D:\venv38\lib\site-packages\tornado\web.py", line 1704, in _execute
+    result = await result
+  File "D:\TMA project\collabos\unittest\test_handlers.py", line 320, in post
+    response = await client.fetch("https://13.113.23.145:8088/deviceStates")
+  File "D:\venv38\lib\site-packages\tornado\simple_httpclient.py", line 338, in run
+    stream = await self.tcp_client.connect(
+  File "D:\venv38\lib\site-packages\tornado\tcpclient.py", line 288, in connect
+    stream = await stream.start_tls(
+  File "D:\venv38\lib\site-packages\tornado\iostream.py", line 1391, in _do_ssl_handshake
+    self.socket.do_handshake()
+  File "C:\Program Files\Python38\lib\ssl.py", line 1309, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLError: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1124)
+2022-02-08 11:07:26,457:ERROR:500 POST /api/get/deviceState (::1) 310.29ms
