@@ -172,7 +172,7 @@ class LoginHandler(BaseHandler):
                     codes, token = self._create_token(credential)
                     self.write({
                         "code":codes, 
-                        "token_id": token['token_id']
+                        "token": token['token_id']
                         })
                     self.set_status(200)
                     inf = "Login of user: {} successfully"
@@ -219,7 +219,7 @@ class LoginHandler(BaseHandler):
             params['expiration_time'],params['create_time']
             ))
         logging.info({
-            "token_id": params['token_id'],
+            "token": params['token_id'],
             "user_id": params['user_id'],
             "expiration_time": params['expiration_time'],
             "create_time": params['create_time']
@@ -231,7 +231,7 @@ class LoginHandler(BaseHandler):
 
     def _check_format_json(self, json):
         try:
-            token = json['token_id']
+            token = json['token']
             inf = "json request for relogin of user: {}"
             logging.info(inf.format(json['username']))
         except KeyError:
@@ -245,7 +245,7 @@ class LoginHandler(BaseHandler):
         sql.execute(query_sql.SELECT_TOKEN_TO_CHECK_SAME.format(request['tenant_id'], request['username']))
         result = sql.fetchone()
         try:
-            if result[0] == request['token_id']:
+            if result[0] == request['token']:
                 inf = "Find out token_id is the same with token_id of user: {} in json request"
                 logging.info(inf.format(request['username']))
                 check = self._check_valid_token(result[2].strftime("%Y-%m-%d %H:%M:%S"), result[1])
@@ -274,6 +274,7 @@ class LoginHandler(BaseHandler):
             self.set_status(406)
             err = "Username: {} or tenant_id: {} attached in json request is not existed in db"
             logging.exception(err.format(request['username'], request['tenant_id']))
+        
 
 class LogoutHandler(BaseHandler): 
     def post(self):
