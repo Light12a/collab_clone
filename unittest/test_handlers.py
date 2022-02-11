@@ -141,6 +141,140 @@ class AmiWSHandler(WebSocketHandler, HrpListener.HrpListener):
             'text': sessionId
         })
 
+class LoginHandler(BaseHandler):
+    def post(self):
+        request = json.loads(bytes.decode(self.request.body))
+        
+        check = self._check_format_json(request)
+        if check: 
+            self._check_token_valid(request)
+        else:
+            credential = self._user_credential_read(tenant_id=request['tenant_id'], username= request['username'])
+            if not credential:
+                self.write({
+                    "code":403,
+                    "message":"username or tenant_id is wrong"
+                    })
+                self.set_status(403)
+                err = "{} or tenant_id: {} is wrong in json request for login at {}"
+                logging.debug(err.format(request['username'], request['tenant_id'], datetime.datetime.utcnow()))
+            else:
+                password_valid = self._validate_user_password(credential, password=request['password'])
+                if not password_valid:
+                    self.write({
+                        "code":400, 
+                        "message":"Password is wrong"
+                        })
+                    self.set_status(400)
+                    err = "Password of user: {} is wrong"
+                    logging.debug(err.format(request['username']))
+                else:
+                    codes, token = self._create_token(credential)
+                    self.write({
+                        "code":codes, 
+                        "token_id": token['token_id']
+                        })
+                    self.set_status(200)
+                    inf = "Login of user: {} successfully"
+                    logging.info(inf.format(request['username']))
+
+    def _user_credential_read(self, tenant_id, username): 
+        sql = self.application.conn.cursor()
+        sql.execute(query_sql.SELECT_USER.format(tenant_id, username))
+        result = sql.fetchone()
+        sql.close()
+        
+        if result is None:
+            return False
+        else:
+            return result[0]
+        
+    def _validate_user_password(self, user_id, password):
+        sql = self.application.conn.cursor()
+        sql.execute(query_sql.SELECT_PASSWORD.format(user_id))
+        result = sql.fetchone() 
+        sql.close()
+        
+        if result[0] == password:
+            return True 
+    
+    def _remove_expired_token(self, user_id):
+        sql = self.application.conn.cursor()
+        sql.execute(query_sql.REMOVE_EXPIRED_TOKEN.format(user_id))
+        self.application.conn.commit()
+        sql.close()
+
+    def _create_token(self, user_id):
+        params = dict(
+            token_id = str(uuid.uuid4()),
+            user_id = user_id,
+            expiration_time = constant_value.ONE_WEEK_TOKEN_IN_SECONDS,
+            create_time = str(datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
+        )
+        
+        sql = self.application.conn.cursor()
+        self._remove_expired_token(user_id=user_id)
+        sql.execute(query_sql.ACCESS_TOKEN_CREATE.format(
+            params['token_id'],params['user_id'],
+            params['expiration_time'],params['create_time']
+            ))
+        logging.info({
+            "token_id": params['token_id'],
+            "user_id": params['user_id'],
+            "expiration_time": params['expiration_time'],
+            "create_time": params['create_time']
+        })
+        self.application.conn.commit()
+        sql.close()
+
+        return 200, params
+
+    def _check_format_json(self, json):
+        try:
+            token = json['token_id']
+            inf = "json request for relogin of user: {}"
+            logging.info(inf.format(json['username']))
+        except KeyError:
+            err = "json request for new login of {}"
+            logging.info(err.format(json['username']))
+            return False
+        return True
+
+    def _check_token_valid(self, request):
+        sql = self.application.conn.cursor()
+        sql.execute(query_sql.SELECT_TOKEN_TO_CHECK_SAME.format(request['tenant_id'], request['username']))
+        result = sql.fetchone()
+        try:
+            if result[0] == request['token_id']:
+                inf = "Find out token_id is the same with token_id of user: {} in json request"
+                logging.info(inf.format(request['username']))
+                check = self._check_valid_token(result[2].strftime("%Y-%m-%d %H:%M:%S"), result[1])
+                if check:
+                    self.write({
+                        "code":200
+                        })
+                    self.set_status(200)
+                else:
+                    self.write({
+                        "code": 402,
+                        "message": "Token is expiried"
+                        })
+                    self.set_status(402)
+            else:
+                self.write({
+                    "code":405, 
+                    "message": "Token is wrong"
+                    })
+                self.set_status(405)
+        except TypeError:
+            self.write({
+                "code":406, 
+                "message":"username or tenant_id is not existed"
+                })
+            self.set_status(406)
+            err = "Username: {} or tenant_id: {} attached in json request is not existed in db"
+            logging.exception(err.format(request['username'], request['tenant_id']))
+
 class LogoutHandler(BaseHandler): 
     def post(self):
         request = json.loads(bytes.decode(self.request.body))
