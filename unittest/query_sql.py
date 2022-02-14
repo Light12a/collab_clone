@@ -10,4 +10,5 @@ SELECT_TOKEN_TO_CHECK_SAME = "select t.token_id, t.expiration_time, t.create_tim
 GET_USER_CONFIG = "select u.user_id, u.username, t.tenant_name, u.authority_id, u.user_state_id from backend.user as u join backend.tenant as t on u.tenant_id = t.tenant_id where u.username = '{}' and u.tenant_id = '{}';"
 GET_USER_BY_INDEX = "select user_id, username, extension_number from backend.user limit {}, {};"
 GET_USER = "select user_id, username, extension_number from backend.user where username regexp '{}' or extension_number regexp '{}' limit {}, {};"
+GET_USER_ALL = "select user_id, username, extension_number from backend.user where username regexp '{}' or extension_number regexp '{}';"
 FIND_TOKEN = "select expiration_time, create_time from backend.token where token_id ='{}';"

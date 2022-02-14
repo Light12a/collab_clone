@@ -1,4 +1,4 @@
-import asyncio, hashlib, datetime, uuid, query_sql, constant_value
+import asyncio, hashlib, datetime, uuid, query_sql, constant_value, MySQLdb
 from handlers.base_handlers import BaseHandler
 import HrpListener
 import json
@@ -314,22 +314,26 @@ class LogoutHandler(BaseHandler):
 
 class GetUserHandler(BaseHandler):
     def post(self):
-        request = json.loads(bytes.decode(self.request.body))
-        inf = "token: {}, search: {}, from: {}, to: {}"
-        logging.info(request['token'], request['search'], request['from'], request['to'])
+        try:
+            request = json.loads(bytes.decode(self.request.body))
+            if self._find_token(request):
+                user = self._get_user(request)
+                if user:
+                    self.write({
+                        "users": user
+                    })
+                    inf = "return some users info search by keyword: {} from:{} to:{}"
+                    logging.info(inf.format(request['search'], request['from'], request['to']))
+                else:
+                    self.write({"code":405, "message":"Search keyword not found"})
+        except ValueError:
+            err = "Json request is not correct"
+            logging.error(err)
+            self.write({"code":201, "message":"Bad request"})
+        
         #check token valid and then select user
         #block get state 
-        if self._find_token(request):
-            user = self._get_user(request)
-            if user:
-                self.write({
-                    "user": user
-                })
-                inf = "return some users info search by keyword: {} from:{} to:{}"
-                logging.info(inf.format(request['search'], request['from'], request['to']))
-            else:
-                self.write({"code":405, "message":"Search keyword not found"})
-                            
+                    
     def _find_token(self, request):
         sql = self.application.conn.cursor()
         sql.execute(query_sql.FIND_TOKEN.format(request['token']))
@@ -356,11 +360,17 @@ class GetUserHandler(BaseHandler):
     def _get_user(self, request):
         sql = self.application.conn.cursor()
         if request['to'] == -1:
-            sql.execute(query_sql.GET_USER.format(request['search'], request['search'],request['from'], 10000000))
-            results = sql.fetchall()
+            try:
+                sql.execute(query_sql.GET_USER.format(request['search'], request['search'],request['from'], 10000000))
+                results = sql.fetchall()
+            except MySQLdb._exceptions.OperationalError and KeyError:
+                self.write({"code":201, "message": "Bad request"})
         else:
-            sql.execute(query_sql.GET_USER.format(request['search'], request['search'],request['from'], request['to']))
-            results = sql.fetchall()
+            try:
+                sql.execute(query_sql.GET_USER.format(request['search'], request['search'],request['from'], request['to']))
+                results = sql.fetchall()
+            except MySQLdb._exceptions.OperationalError and KeyError:
+                self.write({"code":201, "message": "Bad request"})
         sql.close()
         if results:
             user =[{

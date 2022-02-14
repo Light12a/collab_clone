@@ -61,3 +61,5 @@ class BaseHandler(RequestHandler):
             return True
         else:
             return False
+
+    
