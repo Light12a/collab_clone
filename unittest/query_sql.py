@@ -1,0 +1,13 @@
+SELECT_USER = "select distinct user_id from user where tenant_id='{}' and username='{}';"
+ACCESS_TOKEN_CREATE = "insert into token(token_id, user_id, expiration_time, create_time) values ('{}','{}','{}','{}');"
+INSERT_USER = "insert into user(tenant_id, username, user_password, password_policy_id, auto_in_time, email_address, group_id, device, authority_id, lock_state, user_state_id, regis_date, last_modified, extension_number, password_update_date) values ('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}');"
+SELECT_PASSWORD = "select user_password from user where user_id = {};"
+REMOVE_EXPIRED_TOKEN = "delete from token where user_id = {};"
+COUNT_USER_TOKEN = "select count(user_id) from token where user_id ={};"
+CLEAR_TOKEN = "delete from token where token_id = '{}';"
+CHECK_TOKEN_EXISTS_BEFORE_CLEAR = "select t.token_id, t.expiration_time, t.create_time from backend.token as t join backend.user as u on t.user_id=u.user_id where u.username='{}' and u.tenant_id={};"
+SELECT_TOKEN_TO_CHECK_SAME = "select t.token_id, t.expiration_time, t.create_time from backend.token as t join backend.user as u on t.user_id=u.user_id where u.tenant_id={} and u.username='{}';"
+GET_USER_CONFIG = "select u.user_id, u.username, t.tenant_name, u.authority_id, u.user_state_id, u.extension_number from backend.user as u join backend.tenant as t on u.tenant_id = t.tenant_id where u.username = '{}' and u.tenant_id = '{}';"
+GET_USER = "select user_id, username, extension_number, user_state_id from backend.user limit {}, {};"
+FIND_TOKEN = "select expiration_time, create_time from backend.token where token_id ='{}';"
+

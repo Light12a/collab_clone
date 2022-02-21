@@ -1,6 +1,7 @@
 from tornado.web import Application
 from utilities.ari_client import CollabosARIConnection
 from utilities.config import config
+import MySQLdb
 
 
 class CollabosBaseApplication(Application):
@@ -11,6 +12,14 @@ class CollabosBaseApplication(Application):
 
         settings.update(self._generate_required_settings())
         handlers += self._generate_required_handlers()
+
+        self.conn = MySQLdb.connect(
+            host = config['db']['host'],
+            user = config['db']['user'],
+            password = config['db']['password'],
+            database= config['db']['database'],
+            port = int(config['db']['port'])
+        )
 
         Application.__init__(self, handlers=handlers, **settings)
 
