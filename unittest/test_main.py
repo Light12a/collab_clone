@@ -8,6 +8,7 @@ from tornado.options import parse_command_line, define, options
 define('port', default=8888)
 define('num_chunks', default=40)
 
+
 async def client():
     async def body_producer(write):
         for i in range(options.num_chunks):
