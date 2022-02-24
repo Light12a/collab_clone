@@ -1,5 +1,5 @@
 import ari
-from utilities.config import config
+from utilites.config import config
 
 
 class CollabosARIConnection(object):
@@ -14,5 +14,6 @@ class CollabosARIConnection(object):
         return self._ari_connection
 
     def _init_ari_connection(self):
-        self._ari_connection = ari.connect(*[config['ari-client'][key] for key in (
+        self._ari_connection =
+            ari.connect(*[config['ari-client'][key] for key in (
                 'url', 'username', 'password')])
