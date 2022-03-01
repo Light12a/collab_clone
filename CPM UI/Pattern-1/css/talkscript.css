@@ -1,0 +1,199 @@
+
+.search-container{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+
+}
+
+.search-box{
+  border: 1px solid #CDCDCD;
+  border-radius: 0.25rem;
+  height:36px;
+  width: 400px;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+.search-box input{
+  width: 100%;
+  color: #000000;
+  margin-left: 0.5rem;
+}
+.search-box input::placeholder{
+  color: #BDBDBD;
+}
+
+/* table */
+.page-table{
+  padding: 0 2rem;
+  height: 62.5%;
+  overflow-y: scroll;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+}
+
+.page-table::-webkit-scrollbar { 
+  width: 0 !important;
+  display: none; 
+}
+
+.page-table .table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.page-table .table .table-header{
+  background:#F3F3F3;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.page-table .table tr{
+  width: 100%;
+}
+
+.page-table .table .table-header td:first-child{
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.page-table .table .table-header td:last-child{
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.page-table .table .table-header td{
+  border-bottom:none;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #F3F3F3;
+}
+
+.page-table .table td{
+  padding:0.5rem;
+  border-bottom: 1px solid #EEEEEE;
+}
+.page-table .table .table-header  img{
+  transform: translateY(1px);
+}
+.page-table .table .table-header > td:not(:first-child) img{
+  margin-left: 3px;
+}
+
+.td-bg{
+  background: var(--light-bg);
+}
+
+/* checkbox */
+.custom-checkbox{
+  display:flex;
+  align-items:center;
+  cursor: pointer;
+}
+
+.custom-checkbox input{
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+    cursor: pointer;
+}
+
+.checkmark{
+  margin-right: 10px;
+  height: 15px;
+  width: 15px;
+  border: 1px solid #CDCDCD;
+  border-radius: 0.25rem;
+  font-size: 0.5rem;
+  text-align: center;
+  line-height:15px;
+}
+
+.checkmark i{
+    transform: scale(0);
+    transition: transform 0.3s ease;
+}
+
+.custom-checkbox input:checked ~ .checkmark{
+  background-color: var(--green);
+  border: 1px solid var(--green);
+  color: #fff;
+  font-size: 0.5rem;
+}
+.custom-checkbox input:checked ~ .checkmark i{
+  transform: scale(1);
+}
+
+
+.color_page {
+  background: var(--green) !important;
+}
+
+/* paginator */
+.paginator{
+  padding:1rem 2rem;
+  height:10%;
+  position: absolute;
+  background:#fff;
+  right: 0;
+  width: 100%;
+  bottom: 0;
+  padding-bottom: 4.25rem;
+}
+
+.paginator div{
+  float: right;
+  display: flex;
+  align-items: center;
+}
+
+.paginator button{
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  margin-left: 0.5rem;
+  background:#fff;
+  border: 1px solid #CDCDCD;
+}
+
+.paginator span, select {
+  margin-right: 0.5rem;
+}
+
+.paginator span{
+  color: rgb(140,140,140)
+}
+
+.paginator .title{
+  color: #000000;
+}
+.paginator select {
+  width: 66px;
+  padding: 0 1rem;
+  border-radius: 4px;
+  height: 24px;
+  border: 1px solid #CDCDCD;
+  background: url('../images/Box-text.svg') right #fff;
+  -webkit-appearance: none;
+  background-repeat: no-repeat;
+  font-weight: 700;
+}
+
+.delete-item{
+  opacity: 0;
+}
+
+.delete-item.show{
+  display: flex;
+  align-items: center;
+  color: #D40000;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: 1;
+}
+

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Callflow</title>
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="./css/menu.css" />
+    <link rel="stylesheet" href="./css/callflow.css" />
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">   
+</head>
+
+<body>
+    <!-- header -->
+    <header class="header">
+        <div class="header-logo"><img src="./images/COLLABOS-PHONE_logo.svg" alt="logo" /></div>
+        <div class="header-options">
+            <div class="header-options-item">
+                <p>日本語 (Japanese)</p>
+                <img src="./images/chevron-down.svg" class="cursor" alt="">
+            </div>
+            <span>|</span>
+            <div class="header-options-item">
+                <p class="header-options-item-bold">Account name</p>
+                <div class="header-options-item-icon">
+                    <img src="./images/user.svg" class="cursor" alt="">
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-toggle">
+            <img class="menu-toggle" src="./images/chevrons-left.svg" />
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/dashboard.svg">
+                        <span class="link_name">Dashboard</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/voice.svg">
+                        <span class="link_name">Voice recognition real time</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/chat.svg">
+                        <span class="link_name">Internal chat</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/arrival.svg">
+                        <span class="link_name">Arrival and departure history</span>
+                    </a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/user profile.svg">
+                        <span class="link_name">User setting</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/telephone 1 (1).svg">
+                        <span class="link_name">Telephone</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link active">
+                    <a href="#">
+                        <img src="./images/la_tools.svg"">
+                        <span class=" link_name">Tool</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/akar-icons_arrow-right-left.svg">
+                        <span class="link_name">Telephone call data</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/sms.svg">
+                        <span class="link_name">SMS</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/management.svg">
+                        <span class="link_name">Management</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/softphone.svg">
+                        <span class="link_name">Softphone download</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/browser phone.svg">
+                        <span class="link_name">Browser phone start</span>
+                    </a>
+                </div>
+            </li>
+
+            </li>
+        </ul>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- page header -->
+        <div class="page-header">
+            <div class="page-header-content">
+                <img src="./images/telephone 1 (1).svg" />
+                <p>Telephone</p>
+            </div>
+            <div class="sub-menu">
+                <div class="link-name">
+                    <a href="#">Business</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">skill</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">skill allocation</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">caller notification number allocation</a>
+                </div>
+                <div class="link-name active">
+                    <a href="#">call flow</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page-content">
+            <div class="page-content-header">
+                <div class="header-link">
+                    <p>call flow</p>
+                    >
+                    <p>business 1</p>
+                </div>
+                <div class="button-group">
+                    <button class="btn-secondary">CANCEL</button>
+                    <button class="btn-primary">Preserve</button>
+                </div>
+            </div>
+            <div class="container">
+                <div class="chart">
+                    <img src="./images/chart.png"/>
+                </div>
+                <div class="selection hidden">
+                    <div class="icon-toggle" id="btnActive"><img src="./images/chevrons-left.svg"></div>
+                    <!-- <div class="title">Icon Selection </div> -->
+                    <div class="dropdown">
+                        <button class="dropdown-btn">
+                            <span>End of call flow</span>
+                            <i class="fas fa-sort-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/ant-design_user-outlined.svg"><span>End of call flow 1</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/ant-design_user-outlined.svg"><span>End of call flow 2</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/ant-design_user-outlined.svg"><span>End of call flow 3</span></a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropdown-btn">
+                            <span>Business hours</span>
+                            <i class="fas fa-sort-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/ant-design_user-outlined.svg"><span>Business hours 1</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/ant-design_user-outlined.svg"><span>Business hours 2</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/ant-design_user-outlined.svg"><span>Business hours 3</span></a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropdown-btn">
+                            <span>Distribution destination</span>
+                            <i class="fas fa-sort-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/ant-design_user-outlined.svg"><span>Extension</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/akar-icons_arrow-right-left (1).svg"><span>Skill</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/tap (2) 2.svg"><span>IVR</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/megaphone (1) 2.svg"><span>Announcement</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/phone-digital-communication-tool 2 (1).svg"><span>Disconnect</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/ph_users-three.svg"><span>Waiting call</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+    <script src="./js/menu.js"></script>
+    <script src="./js/callflow.js"></script>
+</body>
+
+</html>

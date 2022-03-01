@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Trigger</title>
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="./css/menu.css" />
+    <link rel="stylesheet" href="./css/trigger.css" />
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<body>
+     <!-- header -->
+     <header class="header">
+        <div class="header-logo"><img src="./images/COLLABOS-PHONE_logo.svg" alt="logo" /></div>
+        <div class="header-options">
+            <div class="header-options-item">
+                <p>言語選択:<b> 日本語</b></p>
+                <img src="./images/chevron-down.svg" class="cursor" alt="">
+            </div>
+            <span>|</span>
+            <div class="header-options-item">
+                <p class="header-options-item-bold">アカウント名</p>
+                <div class="header-options-item-icon">
+                    <img src="./images/user.svg" class="cursor" alt="">
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-toggle">
+            <img class="menu-toggle" src="./images/chevrons-left.svg" />
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/dashboard.svg">
+                        <span class="link_name">ダッシュボード</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/voice.svg">
+                        <span class="link_name">音声認識リアルタイム</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/chat.svg">
+                        <span class="link_name">内部チャット</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/arrival.svg">
+                        <span class="link_name">発着信履歴</span>
+                    </a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/user profile.svg">
+                        <span class="link_name">ユーザー設定</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/telephone 1 (1).svg">
+                        <span class="link_name">電話</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link active">
+                    <a href="#">
+                        <img src="./images/la_tools.svg"">
+                        <span class=" link_name">ツール</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/akar-icons_arrow-right-left.svg">
+                        <span class="link_name">通話データ</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/sms.svg">
+                        <span class="link_name">SMS</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/management.svg">
+                        <span class="link_name">管理</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/softphone.svg">
+                        <span class="link_name">ソフトフォンダウンロード</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/browser phone.svg">
+                        <span class="link_name">ブラウザフォン起動</span>
+                    </a>
+                </div>
+            </li>
+
+            </li>
+        </ul>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- page header -->
+        <div class="page-header">
+            <div class="page-header-content">
+                <img src="./images/la_tools.svg" />
+                <p>ツール</p>
+            </div>
+            <div class="sub-menu">
+                <div class="link-name">
+                    <a href="#">時間判定</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">アナウンス</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">トークスクリプト</a>
+                </div>
+                <div class="link-name active">
+                    <a href="#">トリガー</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">アドレス帳</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">音声認識管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="page-content-header">
+            <p>トリガー編集</p>
+            <div class="input-wrap">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="トリガーID" />
+                </div>
+                <div class="form-group trigger-name">
+                    <input type="text" class="form-control" placeholder="トリガー名" />
+                </div>
+            </div>
+        </div>
+        <div class="page-content">
+
+            <div class="item-wrapper">
+                <h3>実行条件</h3>
+                <div class="page-table">
+                    <div class="row-header">
+                        <p class="table-title">実行条件リスト</p>
+                        <button class="btn-primary" id="btnAdd1">追加</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr class="table-header">
+                                <td>
+                                    業務
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    スキル
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    アクション
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    コールステータス
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    条件
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    業務 101
+                                </td>
+                                <td>
+                                    スキル A
+                                </td>
+                                <td>
+                                    アクション 1
+                                </td>
+                                <td>
+                                    コールステータス 1
+                                </td>
+                                <td>
+                                    Or
+                                </td>
+                                <td>
+                                    <img class="cursor" src="./images/ci_trash-full (1).svg" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    業務 102
+                                </td>
+                                <td>
+                                    スキル B
+                                </td>
+                                <td>
+                                    アクション 2
+                                </td>
+                                <td>
+                                    コールステータス 2
+                                </td>
+                                <td>
+                                    Or
+                                </td>
+                                <td>
+                                    <img class="cursor" src="./images/ci_trash-full (1).svg" />
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <div class="item-wrapper">
+                <h3>実行内容</h3>
+        
+                <div class="page-table">
+                    <div class="row-header">
+                        <p class="table-title">実行内容 リスト</p>
+                        <button class="btn-primary" id="btnAdd2">追加</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr class="table-header">
+                                <td>
+                                    実施アクション
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    内容  
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    トークスクリプト
+                                </td>
+                                <td>
+                                    トークスクリプト A
+                                </td>
+                                <td>
+                                    <img class="cursor" src="./images/ci_trash-full (1).svg" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    URL連携
+                                </td>
+                                <td>
+                                    https://xxxxxxxxxxxxxxxxxxxx.com
+                                </td>
+                                <td>
+                                    <img class="cursor" src="./images/ci_trash-full (1).svg" />
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="page-footer">
+            <button type="button" class="btn-secondary">キャンセル</button>
+            <button type="button" class="btn-primary">追加</button>
+        </div>
+
+
+        <!-- modal -->
+        <div class="modal" id="modal1">
+            <div class="modal-dialog">
+                <div class="modal-title">実行条件を追加 </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">アクションを選択</option>
+                                <option value="1">アクション 1</option>
+                                <option value="2">アクション 2</option>
+                                <option value="3">アクション 3</option>
+                                <option value="4">アクション 4</option>
+                                <option value="5">アクション 5</option>
+                                <option value="6">アクション 6</option>
+                                <option value="7">アクション 7</option>
+                                <option value="8">アクション 8</option>
+                                <option value="9">アクション 9</option>
+                                <option value="10">アクション 10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">ビジネスを選択</option>
+                                <option value="1">ビジネスを 1</option>
+                                <option value="2">ビジネスを 2</option>
+                                <option value="3">ビジネスを 3</option>
+                                <option value="4">ビジネスを 4</option>
+                                <option value="5">ビジネスを 5</option>
+                                <option value="6">ビジネスを 6</option>
+                                <option value="7">ビジネスを 7</option>
+                                <option value="8">ビジネスを 8</option>
+                                <option value="9">ビジネスを 9</option>
+                                <option value="10">ビジネスを 10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">スキルを選択</option>
+                                <option value="1">スキルを 1</option>
+                                <option value="2">スキルを 2</option>
+                                <option value="3">スキルを 3</option>
+                                <option value="4">スキルを 4</option>
+                                <option value="5">スキルを 5</option>
+                                <option value="6">スキルを 6</option>
+                                <option value="7">スキルを 7</option>
+                                <option value="8">スキルを 8</option>
+                                <option value="9">スキルを 9</option>
+                                <option value="10">スキルを 10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">通話ステータスを選択</option>
+                                <option value="1">通話ステータス 1</option>
+                                <option value="2">通話ステータス 2</option>
+                                <option value="3">通話ステータス 3</option>
+                                <option value="4">通話ステータス 4</option>
+                                <option value="5">通話ステータス 5</option>
+                                <option value="6">通話ステータス 6</option>
+                                <option value="7">通話ステータス 7</option>
+                                <option value="8">通話ステータス 8</option>
+                                <option value="9">通話ステータス 9</option>
+                                <option value="10">通話ステータス 10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">条件を選択</option>
+                                <option value="1">条件 1</option>
+                                <option value="2">条件 2</option>
+                                <option value="3">条件 3</option>
+                                <option value="4">条件 4</option>
+                                <option value="5">条件 5</option>
+                                <option value="6">条件 6</option>
+                                <option value="7">条件 7</option>
+                                <option value="8">条件 8</option>
+                                <option value="9">条件 9</option>
+                                <option value="10">条件 10</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary btn-close">キャンセル</button>
+                    <button type="button" class="btn-primary">追加</button>
+                </div>
+            </div>
+        
+        </div>
+
+
+        <div class="modal" id="modal2">
+            <div class="modal-dialog">
+                <div class="modal-title">実行条件を追加 </div>
+                <div class="modal-body">
+                    <div class="form-content">
+                        <div class="form-group">
+                            <div class="select-control">
+                                <select>
+                                    <option value="0">アクションを選択</option>
+                                    <option value="1">アクション 1</option>
+                                    <option value="2">アクション 2</option>
+                                    <option value="3">アクション 3</option>
+                                    <option value="4">アクション 4</option>
+                                    <option value="5">アクション 5</option>
+                                    <option value="6">アクション 6</option>
+                                    <option value="7">アクション 7</option>
+                                    <option value="8">アクション 8</option>
+                                    <option value="9">アクション 9</option>
+                                    <option value="10">アクション 10</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="select-control">
+                                <select>
+                                    <option value="0">ビジネスを選択</option>
+                                    <option value="1">ビジネス 1</option>
+                                    <option value="2">ビジネス 2</option>
+                                    <option value="3">ビジネス 3</option>
+                                    <option value="4">ビジネス 4</option>
+                                    <option value="5">ビジネス 5</option>
+                                    <option value="6">ビジネス 6</option>
+                                    <option value="7">ビジネス 7</option>
+                                    <option value="8">ビジネス 8</option>
+                                    <option value="9">ビジネス 9</option>
+                                    <option value="10">ビジネス 10</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="select-control">
+                                <select>
+                                    <option value="0">オブジェクトトークスクリプトを選択</option>
+                                    <option value="1">オブジェクトトークスクリプト 1</option>
+                                    <option value="2">オブジェクトトークスクリプト 2</option>
+                                    <option value="3">オブジェクトトークスクリプト 3</option>
+                                    <option value="4">オブジェクトトークスクリプト 4</option>
+                                    <option value="5">オブジェクトトークスクリプト 5</option>
+                                    <option value="6">オブジェクトトークスクリプト 6</option>
+                                    <option value="7">オブジェクトトークスクリプト 7</option>
+                                    <option value="8">オブジェクトトークスクリプト 8</option>
+                                    <option value="9">オブジェクトトークスクリプト 9</option>
+                                    <option value="10">オブジェクトトークスクリプト 10</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="select-control">
+                                <select>
+                                    <option value="0">スキルを選択</option>
+                                    <option value="1">スキル 1</option>
+                                    <option value="2">スキル 2</option>
+                                    <option value="3">スキル 3</option>
+                                    <option value="4">スキル 4</option>
+                                    <option value="5">スキル 5</option>
+                                    <option value="6">スキル 6</option>
+                                    <option value="7">スキル 7</option>
+                                    <option value="8">スキル 8</option>
+                                    <option value="9">スキル 9</option>
+                                    <option value="10">スキル 10</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="リクエストヘッダー"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="リクエストボディ"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary btn-close">キャンセル</button>
+                    <button type="button" class="btn-primary">追加</button>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+    </div>
+
+    <script src="./js/menu.js"></script>
+    <script type="text/javascript" src="./js/trigger.js"></script>
+</body>
+
+</html>

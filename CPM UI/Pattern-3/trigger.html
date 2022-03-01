@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Trigger</title>
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="./css/menu.css" />
+    <link rel="stylesheet" href="./css/trigger.css" />
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<body>
+    <!-- header -->
+    <header class="header">
+        <div class="header-logo"><img src="./images/COLLABOS-PHONE_logo.svg" alt="logo" /></div>
+        <div class="header-options">
+            <div class="header-options-item">
+                <p>日本語 (Japanese)</p>
+                <img src="./images/chevron-down.svg" class="cursor" alt="">
+            </div>
+            <span>|</span>
+            <div class="header-options-item">
+                <p class="header-options-item-bold">Account name</p>
+                <div class="header-options-item-icon">
+                    <img src="./images/user.svg" class="cursor" alt="">
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-toggle">
+            <img class="menu-toggle" src="./images/chevrons-left.svg" />
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/dashboard.svg">
+                        <span class="link_name">Dashboard</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/voice.svg">
+                        <span class="link_name">Voice recognition real time</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/chat.svg">
+                        <span class="link_name">Internal chat</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/arrival.svg">
+                        <span class="link_name">Arrival and departure history</span>
+                    </a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/user profile.svg">
+                        <span class="link_name">User setting</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/telephone 1 (1).svg">
+                        <span class="link_name">Telephone</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link active">
+                    <a href="#">
+                        <img src="./images/la_tools.svg"">
+                        <span class=" link_name">Tool</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/akar-icons_arrow-right-left.svg">
+                        <span class="link_name">Telephone call data</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/sms.svg">
+                        <span class="link_name">SMS</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/management.svg">
+                        <span class="link_name">Management</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/softphone.svg">
+                        <span class="link_name">Softphone download</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/browser phone.svg">
+                        <span class="link_name">Browser phone start</span>
+                    </a>
+                </div>
+            </li>
+
+            </li>
+        </ul>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- page header -->
+        <div class="page-header">
+            <div class="page-header-content">
+                <img src="./images/la_tools.svg" />
+                <p>Tools</p>
+            </div>
+            <div class="sub-menu">
+                <div class="link-name">
+                    <a href="#">Judgment at time</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">Announcement</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">Talk script</a>
+                </div>
+                <div class="link-name active">
+                    <a href="#">Trigger</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">Address book</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">Voice recognition management</a>
+                </div>
+            </div>
+        </div>
+        <div class="page-content-header">
+            <p>trigger</p>
+            <div class="input-wrap">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Trigger ID" />
+                </div>
+                <div class="form-group trigger-name">
+                    <input type="text" class="form-control" placeholder="Trigger name " />
+                </div>
+            </div>
+        </div>
+        <div class="page-content">
+            <!-- <div class="page-content-header">
+                <p>trigger</p>
+                <div class="input-wrap">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Trigger ID" />
+                    </div>
+                    <div class="form-group trigger-name">
+                        <input type="text" class="form-control" placeholder="Trigger name " />
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="item-wrapper">
+                <h3>Execution condition</h3>
+                <div class="page-table">
+                    <div class="row-header">
+                        <p class="table-title">Execution condition List</p>
+                        <button class="btn-primary" id="btnAdd1">Add</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr class="table-header">
+                                <td>
+                                    Business
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    Skill
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    Action
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    Call Status
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    Condition
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Business 101
+                                </td>
+                                <td>
+                                    Skill A
+                                </td>
+                                <td>
+                                    Action 1
+                                </td>
+                                <td>
+                                    Call status 1
+                                </td>
+                                <td>
+                                    Or
+                                </td>
+                                <td>
+                                    <img class="cursor" src="./images/ci_trash-full (1).svg" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Business 102
+                                </td>
+                                <td>
+                                    Skill B
+                                </td>
+                                <td>
+                                    Action 2
+                                </td>
+                                <td>
+                                    Call status 2
+                                </td>
+                                <td>
+                                    Or
+                                </td>
+                                <td>
+                                    <img class="cursor" src="./images/ci_trash-full (1).svg" />
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <div class="item-wrapper">
+                <h3>Content of execution</h3>
+        
+                <div class="page-table">
+                    <div class="row-header">
+                        <p class="table-title">Execution condition List</p>
+                        <button class="btn-primary" id="btnAdd2">Add</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr class="table-header">
+                                <td>
+                                    Excution action
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                    Content
+                                    <img src="./images/arrow-2.svg">
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    トークスクリプト
+                                </td>
+                                <td>
+                                    トークスクリプト A
+                                </td>
+                                <td>
+                                    <img class="cursor" src="./images/ci_trash-full (1).svg" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    URL連携
+                                </td>
+                                <td>
+                                    https://xxxxxxxxxxxxxxxxxxxx.com
+                                </td>
+                                <td>
+                                    <img class="cursor" src="./images/ci_trash-full (1).svg" />
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="page-footer">
+            <button type="button" class="btn-secondary">CANCEL</button>
+            <button type="button" class="btn-primary">SAVE</button>
+        </div>
+
+
+        <!-- modal -->
+        <div class="modal" id="modal1">
+            <div class="modal-dialog">
+                <div class="modal-title">add execution condition </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">Select Action</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                                <option value="4">Option 4</option>
+                                <option value="5">Option 5</option>
+                                <option value="6">Option 6</option>
+                                <option value="7">Option 7</option>
+                                <option value="8">Option 8</option>
+                                <option value="9">Option 9</option>
+                                <option value="10">Option 10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">Select Business</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                                <option value="4">Option 4</option>
+                                <option value="5">Option 5</option>
+                                <option value="6">Option 6</option>
+                                <option value="7">Option 7</option>
+                                <option value="8">Option 8</option>
+                                <option value="9">Option 9</option>
+                                <option value="10">Option 10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">Select Skill</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                                <option value="4">Option 4</option>
+                                <option value="5">Option 5</option>
+                                <option value="6">Option 6</option>
+                                <option value="7">Option 7</option>
+                                <option value="8">Option 8</option>
+                                <option value="9">Option 9</option>
+                                <option value="10">Option 10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">Select Call Status</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                                <option value="4">Option 4</option>
+                                <option value="5">Option 5</option>
+                                <option value="6">Option 6</option>
+                                <option value="7">Option 7</option>
+                                <option value="8">Option 8</option>
+                                <option value="9">Option 9</option>
+                                <option value="10">Option 10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="select-control">
+                            <select>
+                                <option value="0">Select Condition</option>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                                <option value="4">Option 4</option>
+                                <option value="5">Option 5</option>
+                                <option value="6">Option 6</option>
+                                <option value="7">Option 7</option>
+                                <option value="8">Option 8</option>
+                                <option value="9">Option 9</option>
+                                <option value="10">Option 10</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary btn-close">CANCEL</button>
+                    <button type="button" class="btn-primary">SAVE</button>
+                </div>
+            </div>
+        
+        </div>
+
+
+        <div class="modal" id="modal2">
+            <div class="modal-dialog">
+                <div class="modal-title">add execution condition </div>
+                <div class="modal-body">
+                    <div class="form-content">
+                        <div class="form-group">
+                            <div class="select-control">
+                                <select>
+                                    <option value="0">Select Excution Action</option>
+                                    <option value="1">Option 1</option>
+                                    <option value="2">Option 2</option>
+                                    <option value="3">Option 3</option>
+                                    <option value="4">Option 4</option>
+                                    <option value="5">Option 5</option>
+                                    <option value="6">Option 6</option>
+                                    <option value="7">Option 7</option>
+                                    <option value="8">Option 8</option>
+                                    <option value="9">Option 9</option>
+                                    <option value="10">Option 10</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="select-control">
+                                <select>
+                                    <option value="0">Select Method</option>
+                                    <option value="1">Option 1</option>
+                                    <option value="2">Option 2</option>
+                                    <option value="3">Option 3</option>
+                                    <option value="4">Option 4</option>
+                                    <option value="5">Option 5</option>
+                                    <option value="6">Option 6</option>
+                                    <option value="7">Option 7</option>
+                                    <option value="8">Option 8</option>
+                                    <option value="9">Option 9</option>
+                                    <option value="10">Option 10</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="select-control">
+                                <select>
+                                    <option value="0">Select Object Talk Script</option>
+                                    <option value="1">Option 1</option>
+                                    <option value="2">Option 2</option>
+                                    <option value="3">Option 3</option>
+                                    <option value="4">Option 4</option>
+                                    <option value="5">Option 5</option>
+                                    <option value="6">Option 6</option>
+                                    <option value="7">Option 7</option>
+                                    <option value="8">Option 8</option>
+                                    <option value="9">Option 9</option>
+                                    <option value="10">Option 10</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="select-control">
+                                <select>
+                                    <option value="0">Select URL</option>
+                                    <option value="1">Option 1</option>
+                                    <option value="2">Option 2</option>
+                                    <option value="3">Option 3</option>
+                                    <option value="4">Option 4</option>
+                                    <option value="5">Option 5</option>
+                                    <option value="6">Option 6</option>
+                                    <option value="7">Option 7</option>
+                                    <option value="8">Option 8</option>
+                                    <option value="9">Option 9</option>
+                                    <option value="10">Option 10</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Request Header"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Request Body"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary btn-close">CANCEL</button>
+                    <button type="button" class="btn-primary">SAVE</button>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+    </div>
+
+    <script src="./js/menu.js"></script>
+    <script type="text/javascript" src="./js/trigger.js"></script>
+</body>
+
+</html>

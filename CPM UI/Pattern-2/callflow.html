@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Callflow</title>
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="./css/menu.css" />
+    <link rel="stylesheet" href="./css/callflow.css" />
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">   
+</head>
+
+<body>
+    <!-- header -->
+    <header class="header">
+        <div class="header-logo"><img src="./images/COLLABOS-PHONE_logo.svg" alt="logo" /></div>
+        <div class="header-options">
+            <div class="header-options-item">                
+                <div class="header-options-item-icon">
+                    <img src="./images/User.svg" alt="">
+                </div>
+                <p class="header-options-item-bold">Account name</p>
+            </div>
+            <span>|</span>
+            <div class="header-options-item">
+                <p>日本語 (Japanese)</p>
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.22823 1.98605e-07C9.09811 1.22557e-07 9.5532 1.03386 8.9657 1.67538L5.74201 5.19548C5.34587 5.62804 4.66424 5.62836 4.2677 5.19618L1.03786 1.67607C0.449456 1.03479 0.904366 8.38877e-07 1.7747 7.6279e-07L8.22823 1.98605e-07Z" fill="#555555"/>
+                </svg>
+            </div>
+        </div>
+    </header>
+    <!-- sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-toggle">
+            <div class="menu-toggle"><img id="img-toggle" src="./images/bar.svg" /></div>
+            <p>Collapse menu</p>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/dashboard.svg">
+                        <span class="link_name">Dashboard</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/microphone.svg"/>
+                        <span class="link_name">Voice recognition real time</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/chat.svg">
+                        <span class="link_name">Internal chat</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/arrival.svg">
+                        <span class="link_name">Arrival and departure history</span>
+                    </a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/user-setting.svg">
+                        <span class="link_name">User setting</span>
+                    </a>
+                    <img class="arrow" src="./images/arrow-menu.svg" alt="">
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">User setting 1</a></li>
+                    <li><a href="#">User setting 2</a></li>
+                    <li><a href="#">User setting 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/telephone.svg">
+                        <span class="link_name">Telephone</span>
+                    </a>
+                    <img class="arrow" src="./images/arrow-menu.svg" alt="">
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">Telephone 1</a></li>
+                    <li><a href="#">Telephone 2</a></li>
+                    <li><a href="#">Telephone 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/tool.svg">
+                        <span class="link_name">Tool</span>
+                    </a>
+                    <img class="arrow" src="./images/arrow-menu.svg" alt="">
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">Judgment at time</a></li>
+                    <li><a href="#">Announcement</a></li>
+                    <li><a href="#">Talk script</a></li>
+                    <li><a href="#">Trigger</a></li>
+                    <li><a href="#">Address book</a></li>
+                    <li><a href="#">Voice recognition management</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/data-transfer.svg">
+                        <span class="link_name">Telephone call data</span>
+                    </a>
+                    <img class="arrow" src="./images/arrow-menu.svg" alt="">
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">Telephone call data 1</a></li>
+                    <li><a href="#">Telephone call data 2</a></li>
+                    <li><a href="#">Telephone call data 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/sms.svg">
+                        <span class="link_name">SMS</span>
+                    </a>
+                    <img class="arrow" src="./images/arrow-menu.svg" alt="">
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">SMS 1</a></li>
+                    <li><a href="#">SMS 2</a></li>
+                    <li><a href="#">SMS 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/management.svg">
+                        <span class="link_name">Management</span>
+                    </a>
+                    <img class="arrow" src="./images/arrow-menu.svg" alt="">
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">Management 1</a></li>
+                    <li><a href="#">Management 2</a></li>
+                    <li><a href="#">Management 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/download.svg"/>
+                        <span class="link_name">Softphone download</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img class="menu-icon" src="./images/browser.svg">
+                        <span class="link_name">Browser phone start</span>
+                    </a>
+                </div>
+            </li>
+
+            </li>
+        </ul>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="page-header">
+            <p>Call flow</p>
+        </div>
+        
+        <div class="page-content">
+            <p class="title">Business A</p>
+            <div class="container">
+                <div class="chart">
+                    <img src="./images/chart.png"/>
+                </div>
+                <div class="selection">
+                    <div class="title">Icon Selection </div>
+                    <div class="dropdown">
+                        <button class="dropdown-btn">
+                            <span>End of call flow</span>
+                            <i class="fas fa-sort-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/User2.svg"><span>End of call flow 1</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/User2.svg"><span>End of call flow 2</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/User2.svg"><span>End of call flow 3</span></a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropdown-btn">
+                            <span>Business hours</span>
+                            <i class="fas fa-sort-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/User2.svg"><span>Business hours 1</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/User2.svg"><span>Business hours 2</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/User2.svg"><span>Business hours 3</span></a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropdown-btn">
+                            <span>Distribution destination</span>
+                            <i class="fas fa-sort-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/User2.svg"><span>Extension</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/data-transfer 3.svg"><span>Skill</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/tap.svg"><span>IVR</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/megaphone.svg"><span>Announcement</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/phone-digital-communication-tool.svg"><span>Disconnect</span></a>
+                            <a href="#" class="dropdown-item"><img class="icon" src="./images/group.svg"><span>Waiting call</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-footer">
+            <button class="btn-secondary">Cancel</button>
+            <button class="btn-primary">Save</button>
+        </div>
+        
+    </div>
+    <script src="./js/menu.js"></script>
+    <script src="./js/callflow.js"></script>
+</body>
+
+</html>

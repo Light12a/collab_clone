@@ -1,0 +1,106 @@
+*{
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 4px !important;
+}
+.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+  height: 40px !important;
+}
+.ant-select-single .ant-select-selector {
+  align-items: center;
+}
+
+.ant-select-focused .ant-select-selector{
+  border-color:#99CC00 !important;
+  box-shadow: none !important;
+}
+
+.ant-select-selector:hover{
+  border-color:#99CC00 !important;
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #F7FFE1 !important;
+}
+
+.ant-select-dropdown{
+  padding: 0 !important;
+  border-radius: 4px !important;
+  border: 1px solid #CDCDCD;
+}
+
+.ant-select-item{
+  padding: 12px !important;
+}
+
+.drag-header{
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #ECECEC;
+  align-items: center;
+}
+
+.drag-body{
+  padding: 16px;
+}
+
+.drag-footer{
+  border-top: #ECECEC 1px solid;
+  padding: 16px;
+}
+
+.ant-modal-content {
+  border-radius: 4px !important;
+}
+
+.ant-modal-footer {
+  text-align: center !important;
+  border-top: none !important;
+}
+
+.ant-btn-primary{
+  width: 240px ;
+  padding: 10px ;
+}
+.ant-modal-title{
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.ant-modal-content .form-group:not(:last-child){
+  margin-bottom: 16px;
+}
+
+.ant-modal-item{
+  padding: 12px;
+  border-top: 1px solid #ECECEC;
+  display: flex;
+  align-items: center;
+}
+
+.ant-modal-item input{
+  accent-color: #769d03;
+  margin-right: 1rem;
+}
+.reason-body{
+  margin-bottom: 2rem;
+}
+.ant-modal-item label{
+  font-style: 14px;
+}

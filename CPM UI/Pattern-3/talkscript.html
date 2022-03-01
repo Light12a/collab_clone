@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk script</title>
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="./css/menu.css" />
+    <link rel="stylesheet" href="./css/talkscript.css" />
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<body>
+    <!-- header -->
+    <header class="header">
+        <div class="header-logo"><img src="./images/COLLABOS-PHONE_logo.svg" alt="logo" /></div>
+        <div class="header-options">
+            <div class="header-options-item">
+                <p>日本語 (Japanese)</p>
+                <img src="./images/chevron-down.svg" class="cursor" alt="">
+            </div>
+            <span>|</span>
+            <div class="header-options-item">
+                <p class="header-options-item-bold">Account name</p>
+                <div class="header-options-item-icon">
+                    <img src="./images/user.svg" class="cursor" alt="">
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-toggle">
+            <img class="menu-toggle" src="./images/chevrons-left.svg" />
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/dashboard.svg">
+                        <span class="link_name">Dashboard</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/voice.svg">
+                        <span class="link_name">Voice recognition real time</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/chat.svg">
+                        <span class="link_name">Internal chat</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/arrival.svg">
+                        <span class="link_name">Arrival and departure history</span>
+                    </a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/user profile.svg">
+                        <span class="link_name">User setting</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/telephone 1 (1).svg">
+                        <span class="link_name">Telephone</span>
+                    </a>
+                </div>               
+            </li>
+            <li class="nav-item">
+                <div class="icon-link active">
+                    <a href="#">
+                        <img src="./images/la_tools.svg">
+                        <span class="link_name">Tool</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/akar-icons_arrow-right-left.svg">
+                        <span class="link_name">Telephone call data</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/sms.svg">
+                        <span class="link_name">SMS</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/management.svg">
+                        <span class="link_name">Management</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/softphone.svg">
+                        <span class="link_name">Softphone download</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/browser phone.svg">
+                        <span class="link_name">Browser phone start</span>
+                    </a>
+                </div>
+            </li>
+
+            </li>
+        </ul>
+    </div>
+    <!-- page content -->
+    <div class="content-wrapper">
+        <!-- page header -->
+        <div class="page-header">
+            <div class="page-header-content">
+                <img src="./images/la_tools.svg"/>
+                <p>Tools</p>
+            </div>
+            <div class="sub-menu">
+                <div class="link-name">
+                    <a href="#">Judgment at time</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">Announcement</a>
+                </div>
+                <div class="link-name active">
+                    <a href="#">Talk script</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">Trigger</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">Address book</a>
+                </div>
+                <div class="link-name">
+                    <a href="#">Voice recognition management</a>
+                </div>
+            </div>
+        </div>
+        <div class="page-main">
+            <div class="page-main-header">
+                <p>Talk script list</p>
+                <div class="search-container">
+                    <div class="search-box">
+                        <img src="./images/search.svg">
+                        <input type="text" placeholder="Search"/>
+                    </div>
+                    <div class="btn-group">
+                        <button class="delete-item"><img src="./images/trash-2.svg">Delete items</button>
+                        <button class="btn-primary">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div class="page-table" id="tbl">
+                <table class="table">
+                    <thead>
+                        <tr class="table-header">
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check-all" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/minus.svg">
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                ID <img src="./images/arrow-2.svg" />
+                            </td>
+                            <td>
+                                Talk script name  <img src="./images/arrow-2.svg" />
+                            </td>
+                            <td>
+                                Content of talk script  <img src="./images/arrow-2.svg" />
+                            </td>
+                            <td>
+                                Last updated  <img src="./images/arrow-2.svg" />
+                            </td>
+                            <td>
+                                Action <img src="./images/arrow-2.svg" />
+                            </td>
+                        </tr>
+                    </thead>
+    
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                3
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                4
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                5
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                6
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                7
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                8
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                9
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                10
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                11
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                12
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                13
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                14
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                15
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                16
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                17
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                18
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                19
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                20
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="check" />
+                                    <span class="checkmark">
+                                        <img class="check-icon" src="./images/Icon Artwork.svg"/>
+                                    </span>
+                                </label>
+                            </td>
+                            <td>
+                                21
+                            </td>
+                            <td>
+                                スクリプト01
+                            </td>
+                            <td>
+                                スクリプト スクリプト
+                            </td>
+                            <td>
+                                2019/12/01 05:26:13
+                            </td>
+                            <td>
+                                <img class="cursor" src="./images/akar-icons_eye-open.svg" />
+                                <img class="cursor" src="./images/ci_trash-full.svg" />
+                            </td>
+                        </tr>
+                    </tbody>
+    
+                </table>
+            </div>
+    
+            <div id="index_native" class="paginator"></div>
+        </div>
+    </div>
+    <script src="./js/menu.js"></script>
+    <script type="text/javascript" src="./js/talkscript.js"></script>
+
+</body>
+
+</html>

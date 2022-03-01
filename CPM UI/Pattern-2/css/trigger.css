@@ -1,0 +1,232 @@
+.page-content{
+  padding: 0 1.5rem;
+}
+.page-content .input-wrap{
+  background: #fff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding:1.5rem;
+}
+.title{
+  font-size: 20px;
+  text-transform: capitalize;
+  margin-bottom:1rem;
+}
+.page-content .input-wrap .form-content{
+  margin: 0;
+}
+
+.form-group .form-label{
+  margin-bottom: 0.25rem;
+  display: inline-block;
+}
+.form-group .form-control{
+  display:block;
+  background: #FFFFFF;
+  border: 1px solid #CDCDCD;
+  border-radius: 4px;
+  padding: 0.4rem 0.5rem;
+  width: 100%;
+  resize: none;
+  color: #000;
+}
+
+.item-wrapper{
+  margin-top: 2rem;
+  background: #fff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding:1.5rem;
+}
+
+.item-wrapper .container{
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+}
+
+
+.form-content{
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  gap:2rem;
+}
+.item-wrapper .form-content{
+  margin-bottom: 1.5rem;
+  background: #F6F6F6;
+  border-radius: 4px;
+  padding:1.5rem;
+}
+.form-content .form-group{
+  width: 100%;
+}
+.form-content .form-group textarea{
+  height:6rem;
+}
+
+.item-wrapper .page-form .form-button{
+  display: flex;
+  justify-content:flex-end;
+  margin-bottom: 1rem;
+}
+.item-wrapper .page-form .form-button button{
+  width: 140px;
+  height: 32px; 
+}
+
+
+.item-wrapper .page-table .table-title{
+  font-weight:700;
+  text-transform:capitalize;
+  margin-bottom:1rem;
+  font-size: 18px;
+}
+
+.page-table .table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.page-table .table .table-header{
+  background: rgb(225, 240,179);  
+  font-weight: 700;
+}
+.page-table .table .table-header img{
+  cursor: pointer;
+  transform: translateY(2px);
+  margin-left: 3px;
+}
+
+.page-table .table tr{
+  width: 100%;
+}
+
+
+
+.page-table .table td{
+  padding:0.4rem;
+  border-bottom: 1px solid #fff;
+}
+.page-table .table tbody tr:nth-child(even){
+  background-color:#FAFAFA
+}
+tr td:first-child { 
+  border-bottom-left-radius: 4px;  
+  border-top-left-radius: 4px;
+}
+tr td:last-child { 
+  border-bottom-right-radius: 4px; 
+  border-top-right-radius: 4px;
+}
+tbody tr td:last-child{
+  float: right;
+}
+/* custom select */
+.select-control {
+  position: relative;
+}
+
+.select-control select {
+  display: none;
+}
+
+.select-selected {
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+
+/*style the arrow inside the select element:*/
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 12px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  background: url('../images/Vector.svg') no-repeat center #fff;
+}
+
+.select-selected.select-arrow-active {
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+/*point the arrow upwards when the select box is open (active):*/
+.select-selected.select-arrow-active:after {
+  transform:rotate(180deg);
+}
+
+/*style the items (options), including the selected item:*/
+.select-selected {
+  color: #A2A2A2;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #CDCDCD;
+  cursor: pointer;
+  user-select: none;
+}
+
+/*style items (options):*/
+.select-items {
+  position: absolute;
+  background-color: #fff;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  max-height: 11rem;
+  border: 1px solid #BABABA;
+  border-radius: 4px; 
+  overflow-y: auto;
+}
+.select-items div{
+  padding: 0.4rem 0.5rem;
+}
+
+/*hide the items when the select box is closed:*/
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+  background-color: #EEEEEE;
+}
+
+.select-items::-webkit-scrollbar {
+  width: 10px;
+}
+
+.select-items::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.select-items::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.select-items::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.page-footer{
+  padding:2rem;
+  display:flex;
+  justify-content: center;
+}
+
+.page-footer button {
+  width: 180px;
+  height:40px;
+}
+.page-footer .btn-secondary {
+  color: #000000;
+  background: #D0D0D0;
+  border-color: #D0D0D0;
+}
+
+
+@media screen and (max-width:768px){
+  .form-content{
+    grid-template-columns: repeat(2,1fr);
+    gap:1rem;
+  }
+}

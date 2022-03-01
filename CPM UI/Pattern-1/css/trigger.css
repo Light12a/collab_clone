@@ -1,0 +1,213 @@
+.page-content{
+  padding: 2rem;
+}
+.page-content .input-wrap{
+  display: flex;
+  gap: 2.5rem;
+}
+.page-content .trigger-name{
+  width: 30rem;
+}
+.form-group .form-label{
+  margin-bottom: 0.25rem;
+  display: inline-block;
+}
+.form-group .form-control{
+  display:block;
+  background: #FFFFFF;
+  border: 1px solid #CDCDCD;
+  border-radius: 4px;
+  padding: 0.5rem;
+  width: 100%;
+  resize: none;
+  color: #8C8C8C;
+}
+
+.item-wrapper{
+  margin-top: 2rem;
+}
+
+.item-wrapper h3{
+  font-size:18px;
+  text-transform:uppercase;
+  margin-bottom: 1rem;
+}
+.item-wrapper .container{
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+}
+
+.item-wrapper .page-form{
+  padding: 1.5rem;
+  background-color: var(--light-bg);
+}
+
+.item-wrapper .page-form .form-content{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.item-wrapper .page-form .form-content .form-group{
+  width: 47%;
+  margin-bottom:1rem;
+}
+.item-wrapper .page-form .form-content .form-group textarea{
+  height:6rem;
+}
+
+.item-wrapper .page-form .form-button{
+  border-top: 1px solid #E8E8E8;
+  padding-top:1.5rem;
+  display: flex;
+  justify-content:flex-end;
+}
+
+.item-wrapper .page-table{
+  padding: 1.5rem;
+}
+
+.item-wrapper .page-table .table-title{
+  font-weight:700;
+  text-transform:uppercase;
+  margin-bottom:1rem;
+}
+
+.page-table .table{
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+.page-table .table .table-header{
+  background:#F3F3F3;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.page-table .table tr{
+  width: 100%;
+}
+
+.page-table .table .table-header td:first-child{
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.page-table .table .table-header td:last-child{
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.page-table .table .table-header td{
+  border-bottom:none;
+}
+
+.page-table .table td{
+  padding:0.5rem;
+  border-bottom: 1px solid #EEEEEE;
+}
+
+.page-table .table tr td:last-child{
+  text-align: right;
+  
+}
+.page-table .table .table-header  img{
+  transform: translateY(1px);
+  margin-left: 3px;
+}
+
+/* custom select */
+.select-control {
+  position: relative;
+}
+
+.select-control select {
+  display: none;
+}
+
+.select-selected {
+  background-color: #fff;
+}
+
+/*style the arrow inside the select element:*/
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 12px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  background: url('../images/Vector.svg') no-repeat center #fff;
+  transform: rotate(180deg);
+}
+
+.select-selected.select-arrow-active {
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+/*point the arrow upwards when the select box is open (active):*/
+.select-selected.select-arrow-active:after {
+  transform:none;
+}
+
+/*style the items (options), including the selected item:*/
+.select-selected {
+  color: var(--black);
+  padding: 0.5rem;
+  border: 1px solid #CDCDCD;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/*style items (options):*/
+.select-items {
+  position: absolute;
+  background-color: #fff;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  max-height: 11rem;
+  border: 1px solid #CDCDCD;
+  border-radius: 0 0 4px 4px; 
+  overflow-y: auto;
+}
+.select-items div{
+  padding: 0.5rem;
+}
+
+/*hide the items when the select box is closed:*/
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+  background-color: #EEEEEE;
+}
+
+.select-items::-webkit-scrollbar {
+  width: 10px;
+}
+
+.select-items::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.select-items::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.select-items::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.page-footer{
+  padding:2rem;
+  border-top: #CDCDCD 1px solid;
+  display:flex;
+  justify-content: flex-end;
+}

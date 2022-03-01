@@ -1,0 +1,125 @@
+.page-header{
+    padding: 0.75rem 1.5rem;
+}
+.page-content{
+    margin: 0 1.5rem;
+    padding: 1rem;
+    border-radius: 4px;
+    box-shadow: 0px 4px 20px #0000000d;
+    background:#fff;
+}
+.page-content .title{
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom:1rem;
+}
+
+.page-content .container{
+    display: flex;
+}
+
+.page-content .selection{
+    width: 300px;
+    background: #F0F0F0;;
+    padding: 1rem;
+    overflow-y: scroll;
+    border-radius: 0 4px 4px 0;
+}
+.page-content .selection::-webkit-scrollbar{
+    width: 0;
+    display: none;
+}
+
+.page-content .selection .title{
+    font-weight:700;
+    text-transform:uppercase;
+    font-size: 14px;
+}
+
+.page-content .chart{
+    width: 100%;
+    background-image: url("../images/bg.svg");
+    background-size: cover;
+    background-color: #fafafa;
+    border-radius: 4px 0 0 4px;
+}
+
+.page-content .chart img{
+    width: 100%;
+    height: 480px;
+    object-fit: contain;
+}
+
+/* dropdown */
+.dropdown{
+    margin-top:0.5rem;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+}
+.dropdown .dropdown-btn{
+    border-radius: 4px;
+    background: #fff;
+    width: 100%;
+    padding: 0.75rem;
+    display: flex;
+    justify-content:space-between;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    font-size: 14px;
+}
+.dropdown .dropdown-btn.active{
+    font-weight: 700;
+}
+.dropdown .dropdown-btn i{
+    color: var(--green);
+    transition: all 0.3s ease;
+}
+
+.dropdown .dropdown-content{
+    background: #fff;
+    height:0;
+    overflow: hidden;
+    padding: 0 0.75rem;
+    border-radius: 0 0 4px 4px;
+    transition: all 0.3s ease;
+}
+.dropdown .dropdown-content.active{
+    padding: 0.75rem;
+    border-top: 1px solid #EDEDED;
+    height:auto;
+    /* position: relative; */
+}
+
+.rotate{
+    transform:rotate(180deg)
+}
+
+.dropdown .dropdown-content .dropdown-item{
+    /* border: 1px solid var(--green); */
+    border-radius: 4px;
+    display: flex;
+    background: var(--green);
+    padding: 0.5rem 0.6rem;
+    gap:1rem;
+    color:#fff;
+    /* transition: all 0.4s ease; */
+}
+
+.dropdown .dropdown-content .dropdown-item:not(:last-child){
+    margin-bottom: 0.25rem;
+}
+
+.page-footer{
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+.page-footer .btn-secondary{
+    color: #000000;
+    background: #D0D0D0;
+    border-color: #D0D0D0;
+}
+.page-footer .btn-secondary, .page-footer .btn-primary{
+    width: 180px;
+    height:40px
+}

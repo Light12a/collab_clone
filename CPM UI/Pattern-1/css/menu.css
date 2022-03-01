@@ -1,0 +1,315 @@
+:root{
+    --main-color:#009944;
+    --green:#99CC00;
+    --pale-yellow: #FFFF99;
+    --sub-color:rgb(235,245,122);
+    --light-bg: rgba(153, 204, 0, 0.06);
+    --black: #222222;
+}
+*{
+    box-sizing: border-box;
+    border: 0;
+    margin: 0;
+    outline: none;
+    text-decoration: none;
+}
+
+body{
+    font-family: 'Noto Sans', sans-serif;
+    color: var(--black);
+    font-size: 14px;
+}
+input, textarea{
+  font-family: 'Noto Sans', sans-serif;
+}
+/* header */
+.header{
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding:0 2rem;
+    border-bottom: 1px solid #F2F2F2;
+    background:#fff
+}
+
+.header-logo{
+    width: 145.14px;
+    height: 32px;
+}
+
+.header-logo img{
+    width: 100%;
+}
+
+.header-options{
+    display: flex;
+    gap:2rem;
+    align-items: center;
+}
+
+.header-options span{
+    color: #CDCDCD;
+}
+
+.header-options-item{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-options-item-bold{
+    font-weight: 700;
+}
+
+.header-options-item-icon{
+    width: 32px;
+    height: 32px;
+    border-radius:50%;
+    background: #E7E7E7;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+/* sidebar */
+
+.sidebar{
+    position: fixed;
+    top: 56px;
+    left: 0;
+    height: 100%;
+    width: 225px;
+    background: var(--green);
+    z-index: 100;
+    transition: all 0.2s ease;
+  }
+
+  .sidebar-toggle{
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+  }
+
+  .sidebar-toggle .menu-toggle{
+    padding:1rem;
+    cursor: pointer;
+  }
+  .sidebar.close .sidebar-toggle{
+    justify-content: center;
+  }
+
+  .sidebar.close{
+    width: 52px;
+  }
+
+  .sidebar .nav-links{
+    height: 100%;
+    padding: 0;
+    padding-bottom: 6.3rem;
+    overflow: auto;
+  }
+  .sidebar.close .nav-links{
+    overflow: visible;
+  }
+
+  .sidebar.close .sidebar-toggle img{
+    transform: rotate(180deg);
+  }
+
+  .sidebar .nav-links::-webkit-scrollbar{
+    display: none;
+  }
+  .sidebar .nav-links li{
+    position: relative;
+    list-style: none;
+    transition: all 0.2s ease;
+  }
+  .sidebar .nav-links .nav-item:hover{
+    background: var(--pale-yellow);
+  }
+
+  .sidebar .nav-links .nav-item:hover i{
+    color: var(--green);
+  }
+  .sidebar .nav-links .nav-item i.rotate{
+    transform: rotate(180deg);
+    color: var(--green);
+  }
+
+  .sidebar .nav-links li .icon-link{
+    display: flex;
+    align-items: center;
+    height:50px;
+    padding:1rem;
+    cursor: pointer;
+  }
+  .sidebar .nav-links li .icon-link.active{
+    background-color: var(--pale-yellow);
+  }
+  .sidebar .nav-links li .icon-link.active .link_name{
+    font-weight: 700;
+  }
+  .sidebar.close .nav-links li .icon-link{
+    display: block
+  }
+
+  .sidebar .nav-links li i{
+    text-align: center;
+    color: var(--pale-yellow);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  
+  .sidebar.close .nav-links i{
+    display: none;
+  }
+  .sidebar .nav-links li a{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .sidebar .nav-links li a .link_name{
+    font-weight: 400;
+    color: #000000;
+    margin:0 1rem;
+    transition: all 0.2s ease;
+  }
+  .sidebar.close .nav-links li a .link_name{
+    display: none;
+    pointer-events: none;
+  }
+  .sidebar .nav-links li .sub-menu{
+    transition: all 0.2s ease;
+    height:0;
+    overflow: hidden;
+    padding: 0;
+  }
+  .sidebar .nav-links li .sub-menu.active {
+    padding: 0.5rem 0;
+    background: var(--sub-color);
+    height: auto;
+  
+  }
+  .sidebar.close .nav-links li .sub-menu{
+    height:auto;
+  }
+
+  .sidebar .nav-links li .sub-menu a{
+    color: #000000;
+    padding: 0.5rem 0.5rem 0.5rem 3rem;
+    transition: all 0.2s ease;
+  }
+
+  .sidebar.close .nav-links li .sub-menu a{
+    padding: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .sidebar .nav-links li .sub-menu a:hover{
+     /* background: var(--sub-color);  */
+     font-weight:700;
+  }
+  .sidebar.close .nav-links li .sub-menu{
+    position: absolute;
+    left: 100%;
+    top: -10px;
+    margin-top: 0;
+    padding: 10px 20px;
+    border-radius: 0 6px 6px 0;
+    opacity: 0;
+    display: block;
+    pointer-events: none;
+    transition: 0s;
+  }
+
+  .sidebar.close .nav-links .nav-item:hover .sub-menu{
+    top: 0;
+    opacity: 1;
+    pointer-events: auto;
+    background:var(--sub-color);
+    transition: all 0.2s ease;
+  }
+
+  .sidebar.close .nav-links li .sub-menu .link_name{
+    font-size: 18px;
+    opacity: 1;
+    display: block;
+  }
+
+  /* content-wrapper */
+  .content-wrapper{
+    position: relative;
+    height: calc(100vh - 56px);
+    top: 56px;
+    left: 225px;
+    width: calc(100% - 225px);
+    transition: all 0.2s ease;
+  }
+  .sidebar.close ~ .content-wrapper{
+    left: 52px;
+    width: calc(100% - 52px);
+  }
+
+  .page-header{
+    background: #FAFAFA;
+    width: 100%;
+    padding: 1rem 2rem;
+  }
+
+  .page-header .page-header-links {
+    margin-bottom: 10px;
+  }
+  .page-header .page-header-links .icon{
+    font-size:10px;
+    margin: 0 0.5rem;
+    color:#AAAAAA;
+  }
+
+  .page-header .page-header-content{
+      display: flex;
+      justify-content:space-between;
+  }
+
+  .page-header .page-header-content p{
+    font-size: 24px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.btn-primary{
+    padding:0.6rem;
+    width: 140px;
+    color:#fff;
+    background:var(--green);
+    font-weight:700;
+    cursor: pointer;
+    text-transform:uppercase;
+    border:1px solid var(--green);
+    border-radius: 0.25rem;
+    margin-left: 0.75rem;
+}
+
+.btn-secondary{
+    padding:0.6rem;
+    width: 140px;
+    color: var(--green);
+    background:#fff;
+    font-weight:700;
+    cursor: pointer;
+    text-transform:uppercase;
+    border-radius: 0.25rem;
+    border:1px solid var(--green);
+}
+
+.icon{
+  width:20px;
+  height:20px;
+  cursor: pointer;
+}

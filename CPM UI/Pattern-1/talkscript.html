@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk script</title>
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="./css/menu.css" />
+    <link rel="stylesheet" href="./css/talkscript.css" />
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<body>
+    <!-- header -->
+    <header class="header">
+        <div class="header-logo"><img src="./images/COLLABOS-PHONE_logo.svg" alt="logo" /></div>
+        <div class="header-options">
+            <div class="header-options-item">
+                <p>日本語 (Japanese)</p>
+                <img class="icon" src="./images/chevron-down.png" alt="">
+            </div>
+            <span>|</span>
+            <div class="header-options-item">
+                <p class="header-options-item-bold">Account name</p>
+                <div class="header-options-item-icon">
+                    <img class="icon" src="./images/User.svg" alt="">
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-toggle">
+            <img class="menu-toggle" src="./images/Group 927.svg" />
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/IconMenu-1.svg">
+                        <span class="link_name">Dashboard</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/Group.svg">
+                        <span class="link_name">Voice recognition real time</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/IconMenu-5.svg">
+                        <span class="link_name">Internal chat</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/IconMenu-3.svg">
+                        <span class="link_name">Arrival and departure history</span>
+                    </a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/IconMenu-4.svg">
+                        <span class="link_name">User setting</span>
+                    </a>
+                    <i class="fas fa-sort-down"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">User setting 1</a></li>
+                    <li><a href="#">User setting 2</a></li>
+                    <li><a href="#">User setting 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/Group (1).svg">
+                        <span class="link_name">Telephone</span>
+                    </a>
+                    <i class="fas fa-sort-down"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">Telephone 1</a></li>
+                    <li><a href="#">Telephone 2</a></li>
+                    <li><a href="#">Telephone 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/tool.svg">
+                        <span class="link_name">Tool</span>
+                    </a>
+                    <i class="fas fa-sort-down"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">Judgment at time</a></li>
+                    <li><a href="#">Announcement</a></li>
+                    <li><a href="#">Talk script</a></li>
+                    <li><a href="#">Trigger</a></li>
+                    <li><a href="#">Address book</a></li>
+                    <li><a href="#">Voice recognition management</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/data-transfer 2.svg">
+                        <span class="link_name">Telephone call data</span>
+                    </a>
+                    <i class="fas fa-sort-down"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">Telephone call data 1</a></li>
+                    <li><a href="#">Telephone call data 2</a></li>
+                    <li><a href="#">Telephone call data 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/Frame 919.svg">
+                        <span class="link_name">SMS</span>
+                    </a>
+                    <i class="fas fa-sort-down"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">SMS 1</a></li>
+                    <li><a href="#">SMS 2</a></li>
+                    <li><a href="#">SMS 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/gear 1.svg">
+                        <span class="link_name">Management</span>
+                    </a>
+                    <i class="fas fa-sort-down"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="#">Management 1</a></li>
+                    <li><a href="#">Management 2</a></li>
+                    <li><a href="#">Management 3</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/download-to-storage-drive 1.svg">
+                        <span class="link_name">Softphone download</span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="icon-link">
+                    <a href="#">
+                        <img src="./images/Group 938.svg">
+                        <span class="link_name">Browser phone start</span>
+                    </a>
+                </div>
+            </li>
+
+            </li>
+        </ul>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="page-header">
+            <div class="page-header-links">
+                <span>Tool</span>
+                <i class="fas fa-chevron-right icon"></i>
+                <span>Talk Script List</span>
+            </div>
+            <div class="page-header-content">
+                <p>Talk script list</p>
+                <button class="btn-primary">Add</button>
+            </div>
+        </div>
+        <div class="search-container">
+            <div class="delete-item">
+                <img class="icon" src="images/trash-2.svg" />
+                Delete Items
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search" />
+            </div>
+        </div>
+        <div class="page-table" id="tbl">
+            <table class="table">
+                <thead>
+                    <tr class="table-header">
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check-all" />
+                                <span class="checkmark">
+                                    <i class="fas fa-minus"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            ID <img src="./images/arrow2.svg"/>
+                        </td>
+                        <td>
+                            Talk script name<img src="./images/arrow2.svg"/>
+                        </td>
+                        <td>
+                            Content of talk script<img src="./images/arrow2.svg"/>
+                        </td>
+                        <td>
+                            Last updated<img src="./images/arrow2.svg"/>
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            2
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            3
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            4
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            5
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            6
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            7
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            8
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            9
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            10
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            11
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            12
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            13
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            14
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            15
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            16
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            17
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            18
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            19
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            20
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="check" />
+                                <span class="checkmark">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </label>
+                        </td>
+                        <td>
+                            21
+                        </td>
+                        <td>
+                            スクリプト01
+                        </td>
+                        <td>
+                            スクリプト スクリプト
+                        </td>
+                        <td>
+                            2019/12/01 05:26:13
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>       
+
+        <div id="index_native" class="paginator"></div>
+    </div>
+    <script src="./js/menu.js"></script>
+    <script type="text/javascript" src="./js/talkscript.js"></script>
+
+</body>
+
+</html>

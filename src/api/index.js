@@ -1,0 +1,62 @@
+import axiosAPIServerIntance from "./axiosAPIServerIntance";
+
+async function handleRequest(method, link, body) {
+    try {
+        let data = await axiosAPIServerIntance[method](link, body)
+        return data
+    } catch (error) {
+        // handle error request
+        return Promise.reject(error)
+    }
+}
+
+
+export const callAPI = async ({ method, path, body, }) => {
+    try {
+        let data = axiosAPIServerIntance[method ? method : 'post'](path, body)
+        return data
+    } catch (error) {
+        // handle error request
+        return Promise.reject(error)
+    }
+}
+
+export const getUserConfigAPI = async (token) => {
+    return handleRequest('post', '/get_user_config', { token })
+}
+
+export const loginAPI = async (body) => {
+    return handleRequest('post', '/login', body)
+}
+
+export const reLoginAPI = async (body) => {
+    return handleRequest('post', '/login', body)
+}
+
+export const setLoginLoadStateAPI = async (body) => {
+    return handleRequest('post', '/login', body)
+}
+
+export const getUsersAPI = async (body) => {
+    return handleRequest('post', '/get_users', body)
+}
+
+export const logoutAPI = async (body) => {
+    return handleRequest('post', '/logout', body)
+}
+
+export const getSkillGroupAPI = async (body) => {
+    return handleRequest('post', '/get_skill_groups', body)
+}
+
+export const getUserStateAPI = async (token) => {
+    return axiosAPIServerIntance.post('/get_user_state', { token })
+}
+
+export const applyStateAPI = async (body) => {
+    return axiosAPIServerIntance.post('/apply_state', body)
+}
+
+export const getAwayReasonsAPI = async (token) => {
+    return axiosAPIServerIntance.post('/get_away_reasons', { token })
+}

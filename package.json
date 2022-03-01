@@ -1,0 +1,89 @@
+{
+  "author": "tma",
+  "name": "collabos",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "./electron/index.js",
+  "homepage": "./",
+  "dependencies": {
+    "@craco/craco": "^6.4.3",
+    "@reduxjs/toolkit": "^1.5.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "antd": "^4.17.3",
+    "axios": "^0.24.0",
+    "craco-less": "^1.20.0",
+    "i18next": "^21.6.3",
+    "i18next-browser-languagedetector": "^6.1.2",
+    "i18next-http-backend": "^1.3.1",
+    "jssip": "^3.8.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-draggable": "^4.4.4",
+    "react-i18next": "^11.15.1",
+    "react-redux": "^7.2.3",
+    "react-scripts": "4.0.3",
+    "styled-components": "^5.3.3"
+  },
+  "scripts": {
+    "start": "craco start ",
+    "start:https": "set \"HTTPS=true\" && craco start ",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject",
+    "//start-react-dev-app": "start react in mod dev and app",
+    "start-react-dev-app": "set \"BROWSER=none\" && set \"REACT_APP_PLATFORM=app\" && yarn start",
+    "//start-electron-dev": "start electron in dev mod",
+    "start-electron-dev": "set \"NODE_ENV=development\"  && electron .",
+    "//start-app": "run to start app in dev mode",
+    "start-app": "run-p start-react-dev-app start-electron-dev",
+    "/build-react-prod-app": "build react in app mod",
+    "build-react-prod-app": "set \"REACT_APP_PLATFORM=app\" && yarn build",
+    "//copy-electron-to-build": "copy electron folder to build folder",
+    "copy-electron-to-build": "(robocopy electron build\\electron )^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0",
+    "//dist": "build app when finish setup",
+    "dist": "set \"NODE_ENV=production\" && electron-builder build -w -c.extraMetadata.main=build/electron/index.js",
+    "//build:win": "run to build window app",
+    "build:win": "run-s build-react-prod-app copy-electron-to-build dist",
+    "pack": "electron-builder --dir"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^16.0.7",
+    "electron-builder": "^22.10.5",
+    "npm-run-all": "^4.1.5"
+  },
+  "build": {
+    "appId": "com.electron.myapp",
+    "productName": "Collabos",
+    "directories": {
+      "buildResources": "public"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "protocols": {
+      "name": "collabos",
+      "schemes": [
+        "collabos"
+      ]
+    }
+  }
+}

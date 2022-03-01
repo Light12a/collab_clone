@@ -1,0 +1,204 @@
+.search-container{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+
+}
+
+.search-box{
+  border: 1px solid #CDCDCD;
+  border-radius: 0.25rem;
+  height:36px;
+  width: 400px;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+.search-box input{
+  width: 100%;
+  color: #BDBDBD;
+  margin-left: 0.5rem;
+}
+
+.page-main{
+  margin: 0 1.5rem;
+  padding: 1.5rem;
+  background: #fff;
+  box-shadow: 0px 4px 20px rgb(0 0 0 / 5%);
+  border-radius: 4px;
+  height:78vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-main p{
+ font-size: 20px;
+ font-weight: 700;
+}
+
+/* table */
+.page-table{
+  height:60vh;
+  padding-bottom:3rem;
+  overflow-y:auto;
+}
+.page-table::-webkit-scrollbar{
+  display:none;
+}
+
+.page-table .table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.page-table .table .table-header{
+  background: rgb(225, 240,179);  
+  font-weight: 700;
+}
+.page-table .table .table-header img{
+  cursor: pointer;
+}
+
+.page-table .table tr{
+  width: 100%;
+}
+tr td:first-child { border-bottom-left-radius: 4px;  border-top-left-radius: 4px;}
+tr td:last-child { border-bottom-right-radius: 4px; border-top-right-radius: 4px;}
+
+
+.page-table .table .table-header td{
+  border-bottom:none;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgb(225, 240,179);
+}
+
+.page-table .table td{
+  padding:0.4rem;
+  border-bottom: 1px solid #fff;
+}
+.page-table .table tbody tr:nth-child(even){
+  background-color:#FAFAFA
+}
+.td-bg{
+  background: var(--light-bg) !important;
+}
+
+/* checkbox */
+.custom-checkbox{
+  display:flex;
+  align-items:center;
+  cursor: pointer;
+}
+
+.custom-checkbox input{
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+    cursor: pointer;
+}
+
+.checkmark{
+  margin-right: 10px;
+  height: 15px;
+  width: 15px;
+  border: 1px solid #CDCDCD;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkmark .check-icon{
+    transform: scale(0);
+    transition: transform 0.3s ease;
+}
+
+.custom-checkbox input:checked ~ .all{
+  background-color: #fff!important;
+}
+.custom-checkbox input:checked ~ .checkmark{
+  background-color: var(--green);
+  border: 1px solid var(--green);
+
+}
+.custom-checkbox input:checked ~ .checkmark .check-icon{
+  transform: scale(1);
+}
+
+
+.color_page {
+  background: var(--green) !important;
+  font-weight: 700;
+}
+
+/* paginator */
+.paginator{
+  position: absolute;
+  background:#fff;
+  right: 0;
+  width: 100%;
+  bottom: 0;
+  padding: 1rem 1.5rem 1.5rem;
+  border-radius: 4px;
+}
+
+.paginator div{
+  float: right;
+  display: flex;
+  align-items: center;
+}
+
+.paginator button{
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  margin-left: 0.5rem;
+  background:#fff;
+  border: 1px solid #CDCDCD;
+}
+
+.paginator span, select {
+  margin-right: 0.5rem;
+}
+
+.paginator span{
+  color: rgb(140,140,140)
+}
+
+.paginator .title{
+  color: #000000;
+}
+.paginator select {
+  width: 66px;
+  padding: 0 1rem;
+  border-radius: 4px;
+  height: 24px;
+  border: 1px solid #CDCDCD;
+  background: url('../images/Vector.svg') right #fff;
+  background-position-x: 80%;
+  -webkit-appearance: none;
+  background-repeat: no-repeat;
+  font-weight: 700;
+}
+@media screen and (max-width: 830px) {
+  .search-box {
+    width: auto;
+  }
+}
+
+@media screen and (max-width: 620px) {
+  .search-container {
+    flex-direction: column;
+    gap:1rem;
+  }
+  .page-table {
+    height: 50vh;
+  }
+}
+
+
