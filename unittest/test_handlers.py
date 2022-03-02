@@ -201,7 +201,6 @@ class ApplyStateHandler(BaseHandler):
             if ("token" and "username" and "state" and "sub_state") in request:
                 check, params = self._check_token_exists(request["token"])
                 if check and params[0] == request["token"]:
-                    print(request["token"])
                     if self._check_valid_token(params[3].strftime("%Y-%m-%d %H:%M:%S"), params[2]):
                         if self._check_username_correct(request["username"]):
                             if request["state"] not in [100, 101, 102, 103, 104]:
@@ -222,8 +221,6 @@ class ApplyStateHandler(BaseHandler):
                             else:
                                 self._apply_state(request["state"], request["sub_state"], request["token"])
                                 params = self._get_user_after_state(request["token"])
-                                print("test None")
-                                print(params[4])
                                 self.write({
                                     "code": 200,
                                     "username": params[0], 
@@ -281,9 +278,6 @@ class ApplyStateHandler(BaseHandler):
             sql.execute(query_sql.GET_USER_AFTER_APPLY_STATE.format(token))
             result = sql.fetchone()
             return result
-        #self.write({"code":201, "message": "Bad request", "detail": "resource not found"})
-    
-        #self.write({"code":201, "message": "Bad request", "detail": "resource not found"})
 
 
 class GetUserStateHandler(BaseHandler):
@@ -295,8 +289,6 @@ class GetUserStateHandler(BaseHandler):
                 if check and params[0] == request["token"]:
                     if self._check_valid_token(params[3].strftime("%Y-%m-%d %H:%M:%S"), params[2]):
                         if self._check_username_correct(request["username"]):
-                            print("test in")
-                            print(request["token"])
                             params = self._get_user_state(request["token"])
                             print("test in")
                             print(params)
@@ -356,4 +348,102 @@ class GetUserStateHandler(BaseHandler):
                 return False
             else:
                 return True 
+class GetCorresponseMemoListHandler(BaseHandler):
+    def post(self):
+        try:
+            request = json.loads(bytes.decode(self.request.body))
+            if ("token") in request:
+                check, params = self._check_token_exists(request["token"])
+                if check and params[0] == request["token"]:
+                    
+                            memo_list = self._get_correspondence_memo()
+                            print("get memo success")
+                            self.write({"code" : 200,
+                                        "memo": memo_list})
+                            self.set_status(200)
+                    
+                else:
+                    self.set_status(401)
+                    self.write({"code": 401, "errorMessage": "token is wrong"})
+            else:
+                raise ValueError
+            
+        except ValueError:
+            err  = "Json request is not correct"
+            logging.info(err)
+            self.write({"code":201, "errorMessage": "Bad request", "detail": "resource not found"})
+    def _get_correspondence_memo(self):
+        sql = self.application.conn.cursor()
+        sql.execute(query_sql.GET_CORRESPONDENCE_MEMO_LIST)
+        results = sql.fetchall()
+        sql.close()
+        if results:
+             memo =[{
+                "id": result[0],
+                "text": result[2]
+                } for result in results]
+                
+        else:
+            err = "Not found any correspondence memo"
+            logging.info(err)
+            return False
+        return memo 
+
+    def _check_token_exists(self, token_id):
+            sql = self.application.conn.cursor()
+            sql.execute(query_sql.CHECK_TOKEN_EXIST.format(token_id))
+            result = sql.fetchone()
+            if result is None:
+                return False, result
+            else:
+                return True, result
+
+class ApplyCorrespondenceMemoHandler(BaseHandler):
+    def post(self):
+        try:
+            request = json.loads(bytes.decode(self.request.body))
+            if ("token" and "memo_id" and "memo_note") in request:
+                check, params = self._check_token_exists(request["token"])
+                if check and params[0] == request["token"]:
+                    
+                        if request["memo_id"] <= self._check_memo_id()[0]:
+                            print("memo_id = ", self._check_memo_id()[0])
+                            self._apply_correspondence_memo(request["memo_note"], request["memo_id"])
+                            print("update memo_id success")
+                            self.write({"code" : 200})
+                        else:
+                            self.set_status(404)
+                            self.write({"code": 404, "errorMessage": "memo_id is not existed"})
+                    
+                else:
+                    self.set_status(401)
+                    self.write({"code": 401, "errorMessage": "token is wrong"})
+            else:
+                raise ValueError
+            
+        except ValueError:
+            err  = "Json request is not correct"
+            logging.info(err)
+            self.set_status(201)
+            self.write({"code":201, "errorMessage": "Bad request"})
+    def _apply_correspondence_memo(self, memo_note, memo_id):
+        sql = self.application.conn.cursor()
+        sql.execute(query_sql.APPLY_CORRESPONDENCE_MEMO.format(memo_note, memo_id))
+        self.application.conn.commit()
+        sql.close()
+    def _check_token_exists(self, token_id):
+            sql = self.application.conn.cursor()
+            sql.execute(query_sql.CHECK_TOKEN_EXIST.format(token_id))
+            result = sql.fetchone()
+            if result is None:
+                return False, result
+            else:
+                return True, result
+    def _check_memo_id(self):
+            sql = self.application.conn.cursor()
+            sql.execute(query_sql.CHECK_MEMO_ID_MAXIMUM)
+            self.application.conn.commit()
+            result = sql.fetchone()
+            return result
+
 
