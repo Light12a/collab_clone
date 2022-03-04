@@ -83,5 +83,6 @@
   "manual_correspondence_memo_input": "手動通信メモ入力",
   "logOutQuestion":"ログアウトしてよろしいですか？",
   "yes":"OK",
-  "no":"キャンセル"
+  "no":"キャンセル",
+  "sendLogs": "ログを送信する"
 }

@@ -84,5 +84,6 @@
     "manual_correspondence_memo_input": "Manual correspondence memo input",
     "logOutQuestion":"Are you sure you want to log out ?",
     "yes":"YES",
-    "no":"NO"
+    "no":"NO",
+    "sendLogs": "Send Logs"
 }

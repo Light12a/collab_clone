@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ProgressBar from "../../components/ProgressBar";
 import { useTranslation } from 'react-i18next';
-import { Input, Dropdown, Menu, Button, Select, Slider, InputNumber, Checkbox } from 'antd';
+import { Input, Dropdown, Menu, Button, Select, Slider, InputNumber, Checkbox, Form, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
 import Store from "../../redux/store";
 import styled from "styled-components";
@@ -13,6 +13,7 @@ import { version } from '../../../package.json'
 import { setCurentRoute } from '../../redux/reducers/route/route';
 import HomePage from '../homepage/HomePage';
 import arrowIcon from '../../asset/ic.svg'
+import { sendMail, clearLogs } from '../../service/sendMailService';
 
 const SettingScreen = () => {
   const [completed, setCompleted] = useState(20);
@@ -22,8 +23,9 @@ const SettingScreen = () => {
   const { Option } = Select;
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch()
-  
+
   const audioRef = useRef();
+  const [form] = Form.useForm();
 
   var ringBackAudio = new Audio();
   ringBackAudio.crossOrigin = "anonymous";
@@ -95,13 +97,59 @@ const SettingScreen = () => {
     //implement later
   };
 
+  const send = async (reciever) => {
+    await sendMail(reciever);
+  }
+
+  const onFinish = (values) => {
+    form.resetFields();
+    if (send(values.email)) {
+      Modal.success({
+        content: 'Send logs successfully!',
+      });
+    }
+    else {
+      Modal.error({
+        content: 'Send logs failed!',
+      });
+    }
+  }
+
+  const onFinishFailed = (values) => {
+    Modal.error({
+      content: 'Send logs failed!',
+    });
+  }
+
+  const clearLogFiles = () => {
+    Modal.confirm({
+      title: 'Clear logs',
+      content: 'Do you Want to delete log files?',
+      onOk() {
+        if (clearLogs()) {
+          Modal.success({
+            content: 'Clear logs successfully!',
+          });
+        }
+        else {
+          Modal.error({
+            content: 'Clear logs failed!',
+          });
+        }
+      },
+      onCancel() {
+        //
+      },
+    });
+  }
+
   return (
     <Wrapper>
       <HomePage />
       <div className='setting'>
         <div className='setting__header'>
           <span>{t('setting')}</span>
-          <img src={require('../../asset/Close.svg').default} onClick={()=> {dispatch(setCurentRoute("main"))}} alt="" />
+          <img src={require('../../asset/Close.svg').default} onClick={() => { dispatch(setCurentRoute("main")) }} alt="" />
         </div>
         <div className='setting__body'>
           <div className='form-group'>
@@ -162,6 +210,36 @@ const SettingScreen = () => {
           <Checkbox>{t("settingCheckboxDes")}</Checkbox>
           <h1>{t("waitingCallAlert")}</h1>
           <Checkbox>{t("voiceAlert")}</Checkbox>
+          {(process.env.REACT_APP_PLATFORM === 'app') &&
+            <div>
+              <h1>{t("sendLogs")}</h1>
+              <Form
+                form={form}
+                name="basic"
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+              >
+                <Form.Item
+                  name="email"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input your email address!',
+                    },
+                    {
+                      pattern: new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
+                      message: 'Please input correct email address!',
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+                <Button htmlType="submit">Send</Button>
+                <Button onClick={e => clearLogFiles()}>Clear logs</Button>
+              </Form>
+              
+            </div>
+          }
           {/* <SettingJB /> */}
         </div>
       </div>

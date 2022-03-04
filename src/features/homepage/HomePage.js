@@ -20,6 +20,8 @@ import pauseImg from '../../asset/pause.svg'
 import copyImg from '../../asset/copy.svg'
 import playImg from '../../asset/play.svg'
 
+const log = require('electron-log');
+
 const HomePage = () => {
     const ua = useSip()
     const dispatch = useDispatch();
@@ -48,7 +50,7 @@ const HomePage = () => {
             // iceTransportPolicy: 'relay',
         }
     };
-    console.log(callStatus)
+    log.info("HomePage.js callStatus: " + JSON.stringify(callStatus));
 
     useEffect(() => {
         switch (activeCall.state) {

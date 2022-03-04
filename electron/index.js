@@ -1,6 +1,8 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, Menu, Tray, ipcMain } = require('electron')
 const path = require('path')
+const log = require('electron-log');
+
 app.commandLine.appendSwitch('ignore-certificate-errors');
 app.setLoginItemSettings({
   openAtLogin: true,
@@ -67,6 +69,7 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     }
   })
+  log.info("electron/index.js Starting app...")
   // console.log(mainWindow.webContents.getURL())
   // and load the index.html of the app.
   // mainWindow.loadFile(path.join(__dirname, 'build/index.html'))
