@@ -1,10 +1,10 @@
 .drag {
     background-color: white;
     position: absolute;
-    top: 10%;
+    top: 50%;
     box-shadow: 0px 6px 60px rgba(0, 0, 0, 0.16);
     border-radius: 4px;
-    transform: translate(0px, 0px);
+    max-height: 95vh;
 }
 .waiting-list{
     width: 569px;
@@ -13,11 +13,11 @@
 
 .agent-list{
     width: 840px;
-    left: 20%;
+    left: 50%;
     /* min-width: 800px; */
 }
 .keypad{
-    left: 20%;
+    left: 50%;
     width: 840px;
 }
 

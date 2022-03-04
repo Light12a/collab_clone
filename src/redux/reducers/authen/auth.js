@@ -67,7 +67,7 @@ export const getAwayReasons = createAsyncThunk('auth/getAwayReasons', async (bod
         let { data } = await getAwayReasonsAPI(body)
         return data
     } catch (error) {
-        console.log(error)
+        console.dir(error)
     }
 })
 export const refreshToken = createAsyncThunk('auth/refreshToken', async (oldToken) => {

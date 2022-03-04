@@ -100,7 +100,7 @@ const Wrapper = styled.div`
   .incoming{
     flex: 1;
     margin: 20px 0;
-    margin-right: 20px;
+    margin-left: 20px;
     background-color: #fff;
     border-radius: 4px;
     border: 1px solid #ECECEC;

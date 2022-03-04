@@ -27,9 +27,9 @@ function App() {
   const { isAgentListOpen } = useSelector(state => state.agentListStatus)
   const { isKeypadOpen } = useSelector(state => state.keypadStatus)
   // const { isFullScreen } = useSelector(state => state.isFullScreen)
-  const [newWindowNode, setNewWindowNode] = useState(null)
+  const [newWaitingWindow, setNewWaitingWindow] = useState(null)
 
-  const nwRef = useCallback(node => setNewWindowNode(node), [])
+  const nwaitingRef = useCallback(node => setNewWaitingWindow(node), [])
   const dispatch = useDispatch()
   console.log('app')
 
@@ -39,7 +39,7 @@ function App() {
       var options = {
         audio: true
       };
-      try{
+      try {
 
         navigator.getUserMedia(options, () => {
           console.log("Get permission for microphone and peaker success")
@@ -47,7 +47,7 @@ function App() {
           console.log("Get permission for microphone and peaker fail")
         })
       }
-      catch (e){
+      catch (e) {
         console.log("Error: " + e)
       }
     }
@@ -100,16 +100,19 @@ function App() {
     }
   }, [isHaveToken, token, isLoading, isAuth, dispatch])
 
+
+  
   useEffect(() => {
     if (isAuth && isHaveToken)
       dispatch(getUserConfig(token))
-      
+
   }, [isAuth, isHaveToken, dispatch, token])
 
   if (!isHaveToken && !isSettingToken) {
     console.log('!have token')
     return <Signin />
   }
+
   if ((isHaveToken && isLoading) || isSettingToken) return 'loading..'
   return (
 
@@ -119,48 +122,40 @@ function App() {
           <MainApp />
           {isWaitingListOpen && (
             process.env.REACT_APP_PLATFORM ?
-              <NewWindow onClose={() => {
-                dispatch(setIsWaitingListOpen(false))
-                dispatch(setIsFullScreen(true))
+              <StyleSheetManager target={newWaitingWindow}>
+                <NewWindow onClose={() => {
+                  dispatch(setIsWaitingListOpen(false))
+                  dispatch(setIsFullScreen(true))
                 }} name='waitinglist'>
-                <WaitingList />
-              </NewWindow>
+                  <WaitingList ref={nwaitingRef} />
+                </NewWindow>
+              </StyleSheetManager>
               :
-              <Draggable onDrag={()=>{
+              <Draggable onDrag={() => {
                 dispatch(setIsFullScreen(false))
                 dispatch(setIsFullScreen(true))
-                }}>
+              }}>
                 <div className='drag formWaitingList'>
                   <WaitingList />
                 </div>
               </Draggable>)
           }
           {
-            isAgentListOpen && 
-            <Draggable>
+            isAgentListOpen &&
+            <Draggable positionOffset={{ x: '-50%', y: '-50%' }}>
               <div className='drag agent-list'>
                 <AgentList />
               </div>
             </Draggable>
           }
-          {isKeypadOpen && (
-            process.env.REACT_APP_PLATFORM ?
-              <StyleSheetManager target={newWindowNode}>
-                <NewWindow
-                  onClose={() => dispatch(setIsKeypadOpen(false))}
-                  name='keypad'
-                >
-                  <Keypad ref={nwRef} />
-                </NewWindow>
-              </StyleSheetManager>
-              :
-              <Draggable>
-                <div className='drag keypad'>
-                  <Keypad />
-                </div>
-              </Draggable>)
+          {isKeypadOpen &&
+              <Draggable positionOffset={{ x: '-50%', y: '-50%' }}>
+              <div className='drag keypad'>
+                <Keypad />
+              </div>
+            </Draggable>
           }
-          
+
         </SipProvider>
         : null}
 

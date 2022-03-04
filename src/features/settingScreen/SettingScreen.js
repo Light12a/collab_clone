@@ -254,10 +254,13 @@ const Wrapper = styled.div`
     .setting{
       flex: 1;
       margin: 20px 0;
-      margin-right: 20px;
+      margin-left: 20px;
       background-color: #fff;
       border-radius: 4px;
       border: 1px solid #ECECEC;
+      width: 50%;
+      overflow: hidden;
+
 
       &__header{
         border-bottom: 1px solid #EEEEEE;
@@ -302,8 +305,8 @@ const Wrapper = styled.div`
 
     .setting-voice{
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap:1rem
+      grid-template-columns: 49% 49%;
+      gap:2%;
 
     }
 

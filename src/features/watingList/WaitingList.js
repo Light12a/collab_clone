@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import sortDown from '../../asset/sortDown.svg';
-import sortUp from '../../asset/sortUp.svg';
+import sortDown from '../../asset/sortDown.png';
+import sortUp from '../../asset/sortUp.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsWaitingListOpen } from '../../redux/reducers/waitingList/waitingListStatus';
 import { useTranslation } from 'react-i18next';
@@ -8,9 +8,9 @@ import { callStatsContraint } from '../../redux/reducers/call/currentCall';
 import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/call/currentCall';
 import styled from 'styled-components';
 import { Select, Radio } from "antd";
-import arrowIcon from '../../asset/ic.svg'
+import arrowIcon from '../../asset/arrow_green.png'
 
-const WaitingList = (props) => {
+const WaitingList = React.forwardRef((props, ref) => {
     const dispatch = useDispatch()
     const { t, i18n } = useTranslation();
 
@@ -233,7 +233,7 @@ const WaitingList = (props) => {
     }
 
     return (
-        <Wrapper>
+        <Wrapper ref={ref}>
             <div className='waiting-list__header drag-header'>
                 <span>{t('waitingList')}</span>
                 <img src={require('../../asset/Close.svg').default} alt="" onClick={e => { dispatch(setIsWaitingListOpen(false)) }} />
@@ -289,7 +289,7 @@ const WaitingList = (props) => {
                                     <td>{calls.waitingTime}</td>
                                 </tr>
                             ))
-                        } 
+                        }
                     </tbody>
                 </table>
                 <div className="pagination-wrap">
@@ -316,7 +316,7 @@ const WaitingList = (props) => {
         </Wrapper>
 
     );
-};
+});
 
 const Wrapper = styled.div`
     .waiting-list__header{

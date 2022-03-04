@@ -52,6 +52,7 @@ const Wrapper = styled.div`
         display:flex;
         justify-content:space-between;
         width: calc(100% - 100px);
+        padding-right: 20px;
     }
 `
 

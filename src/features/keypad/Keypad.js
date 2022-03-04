@@ -10,12 +10,14 @@ import useSip from '../../hooks/useSip';
 import { setIsKeypadOpen, setKeypadInput, resetKeypad } from '../../redux/reducers/keypad/keypadStatus';
 
 import deleteIcon from '../../asset/delete.svg'
+import { message } from 'antd';
 const defaulKeypad = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#',]
 
 
-const Keypad = React.forwardRef((props, ref) => {
+const Keypad = (props) => {
     const ua = useSip()
     const [callNumber, setCallNumber] = useState('')
+    const { userConfig } = useSelector(state => state.auth)
     const dispatch = useDispatch()
 
     const call = () => {
@@ -33,7 +35,10 @@ const Keypad = React.forwardRef((props, ref) => {
                 urls: ["stun:stun.l.google.com:19302"]
             }],
             // iceTransportPolicy: 'relay',
-        }
+        },
+        // fromUserName:'sasuketamin',
+        fromDisplayName: userConfig.config.displayname,
+        // extraHeaders: ['uchihahaha','ninjadapda']
     };
 
     const data = [
@@ -100,42 +105,51 @@ const Keypad = React.forwardRef((props, ref) => {
     }
 
     const handleCall = () => {
-        call();
-        dispatch(setIsKeypadOpen(false))
+        if (callNumber) {
+            call();
+            setTimeout(() => {
+                dispatch(setIsKeypadOpen(false))
+            }, [500])
+        }
+        return
     }
 
+    const handleCopy = () => {
+        navigator.clipboard.writeText(callNumber)
+        message.success('coppy success')
+    }
 
     return (
-        <Wrapper ref={ref}>
+        <Wrapper>
             <div className='call-number'>
                 <div className='call-number__close'>
                     <img src={closeIcon} onClick={e => { dispatch(setIsKeypadOpen(false)) }} />
                 </div>
                 {/* <h1 className={callNumber === '' ? 'white-blur' : 'white'} onChange={e => { onKeypadValueChange(e.target.value) }} >{callNumber === '' ? 'Phone number' : callNumber}</h1> */}
                 <div className='phone-number-main'>
-                    <input placeholder='Phone number' onChange={e => { onKeypadValueChange(e.target.value) }} value={callNumber} />
+                    <input placeholder='Phone number' onChange={e => { onKeypadValueChange(e.target.value) }} value={callNumber} onKeyPress={e => e.preventDefault()} />
                     {
-                        callNumber && <button><img src={imgCopy} /></button>
+                        callNumber && <button onClick={handleCopy}><img src={imgCopy} /></button>
                     }
                 </div>
 
                 {
                     callNumber &&
                     <div className='filter-wrap'>
-                    <div className='phone-number-filter'>
-                        {
-                            data.map((item) => (
-                                <div className='filter-item'>
-                                    <span>{item.name}</span>
-                                    <span>{item.phone}</span>
-                                    <div className='filter-state'>
-                                        <span className='statusOnHoding'>{item.state}</span>
+                        <div className='phone-number-filter'>
+                            {
+                                data.map((item) => (
+                                    <div className='filter-item'>
+                                        <span>{item.name}</span>
+                                        <span>{item.phone}</span>
+                                        <div className='filter-state'>
+                                            <span className='statusOnHoding'>{item.state}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            ))
-                        }
+                                ))
+                            }
+                        </div>
                     </div>
-                </div>
                 }
 
 
@@ -154,7 +168,7 @@ const Keypad = React.forwardRef((props, ref) => {
 
         </Wrapper>
     );
-});
+};
 
 const KeyNumber = ({ number, content, setCallNumber, ...rest }) => {
     const handleAddCallNumber = () => {
@@ -283,7 +297,7 @@ const Wrapper = styled.div`
         .filter-wrap{
             background: #FBFBFB;
             overflow-y: scroll;
-            height: 171px;
+            height: 15vh;
 
             &::-webkit-scrollbar{
                 width: 6px;
@@ -326,7 +340,7 @@ const Wrapper = styled.div`
     .key__number {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: repeat(5,1fr);
+        /* grid-template-rows: repeat(5,1fr); */
         gap:16px;
         margin: 3rem auto 5rem;
         max-width: 400px;

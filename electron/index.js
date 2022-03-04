@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu, Tray, ipcMain } = require('electron')
+const { app, BrowserWindow, Menu, Tray, ipcMain, dialog } = require('electron')
 const path = require('path')
 const log = require('electron-log');
 
@@ -27,7 +27,7 @@ const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.quit()
 } else {
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
+  app.on('second-instance', (event, commandLine, workingDirectory, argv) => {
     // Someone tried to run a second instance, we should focus our window.
     // Protocol handler for win32
     // argv: An array of the second instance’s (command line / deep linked) arguments
@@ -74,7 +74,7 @@ function createWindow() {
   // and load the index.html of the app.
   // mainWindow.loadFile(path.join(__dirname, 'build/index.html'))
   console.log(process.env.NODE_ENV)
-  const loadURL = isDev ? 'https://localhost:3000' : path.join(__dirname, '../index.html')
+  const loadURL = isDev ? 'http://localhost:3000' : path.join(__dirname, '../index.html')
   console.log(loadURL)
   mainWindow.loadURL(loadURL)
 
@@ -195,9 +195,8 @@ app.whenReady().then(() => {
   ]
 
   let trayMenu = Menu.buildFromTemplate(trayMenuTemplate)
-  tray.setToolTip('This is my application.')
+  tray.setToolTip('collabos soft phone')
   tray.setContextMenu(trayMenu)
-  tray.setImage(path.join(__dirname, '../src/asset/delete.png'))
   tray.on('click', () => {
     mainWindow.show()
   })
@@ -213,7 +212,7 @@ app.whenReady().then(() => {
 
   function handleChangeStatus(t) {
     // TODO send status to renderer process
-    
+
     console.log(t)
 
     // TODO change system tray icon

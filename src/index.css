@@ -94,6 +94,10 @@ code {
   align-items: center;
 }
 
+.ant-modal-title{
+  font-weight: 700;
+}
+
 .ant-modal-item input{
   accent-color: #769d03;
   margin-right: 1rem;
@@ -103,4 +107,25 @@ code {
 }
 .ant-modal-item label{
   font-style: 14px;
+}
+
+.modal-logout .ant-modal-footer{
+  display: flex;
+  padding:16px 24px;
+  gap:16px;
+}
+
+.modal-logout .ant-modal-footer button{
+  flex: 1;
+  padding: 10px;
+  height: auto;
+  font-weight: 700;
+  border-radius:8px;
+}
+.modal-logout .ant-modal-footer .ant-btn{
+  color: #99CC00;
+  border: 1.4px solid #99CC00;
+}
+.modal-logout .ant-modal-footer .ant-btn-primary{
+  color: #fff !important;
 }

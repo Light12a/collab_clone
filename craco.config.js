@@ -3,8 +3,7 @@ const path = require("path");
 module.exports = {
     webpack: {
         configure: {
-            // target: 'electron-renderer',
-            target: 'web'
+            target: process.env.REACT_APP_PLATFORM === 'app' ? 'electron-renderer' : 'web'
         }
     },
     plugins: [

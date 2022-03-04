@@ -35,7 +35,8 @@ const HomePage = () => {
     const { t } = useTranslation();
     const [callStatus, setCallStatus] = useState({
         color: '',
-        text: ''
+        text: '',
+        time: null
     });
 
     var callOptions = {
@@ -43,12 +44,10 @@ const HomePage = () => {
             audio: true, // only audio calls
             video: false
         },
-        pcConfig: {
-            iceServers: [{
-                urls: ["stun:stun.l.google.com:19302"]
-            }],
-            // iceTransportPolicy: 'relay',
-        }
+        // pcConfig: {
+        //     iceServers: [{
+        //         urls: ["stun:stun.l.google.com:19302"]
+        //     }],
     };
     log.info("HomePage.js callStatus: " + JSON.stringify(callStatus));
 
@@ -57,19 +56,21 @@ const HomePage = () => {
             case callStatsContraint.ANSWER:
                 setCallStatus({
                     color: 'blue',
-                    text: 'In call'
+                    text: 'In call',
                 })
                 break
             case callStatsContraint.HOLD:
                 setCallStatus({
                     color: 'yellow',
-                    text: 'On hold'
+                    text: 'On hold',
+                    time: 0,
                 })
                 break
             case callStatsContraint.UN_HOLD:
                 setCallStatus({
                     color: 'blue',
-                    text: 'In call'
+                    text: 'In call',
+                    time: 0,
                 })
                 break
             case callStatsContraint.END:
@@ -87,7 +88,8 @@ const HomePage = () => {
             case callStatsContraint.INCALL:
                 setCallStatus({
                     color: 'blue',
-                    text: 'In call'
+                    text: 'In call',
+                    time: 0
                 })
                 break
             case callStatsContraint.CALL:
@@ -100,6 +102,19 @@ const HomePage = () => {
                 return
         }
     }, [activeCall]);
+
+    useEffect(() => {
+        let intervalTimeID
+        if (activeCall.state === callStatsContraint.INCALL || activeCall.state === callStatsContraint.HOLD) {
+            intervalTimeID = setInterval(() => {
+                setCallStatus(cs => ({ ...cs, time: cs.time + 1 }))
+            }, 1000)
+        }
+        return () => {
+            if (activeCall.state === callStatsContraint.INCALL || activeCall.state === callStatsContraint.HOLD)
+                clearInterval(intervalTimeID)
+        }
+    }, [activeCall.state])
 
     const endCall = () => {
         dispatch(changeCurrentCallState(callStatsContraint.HANG_UP))
@@ -134,7 +149,7 @@ const HomePage = () => {
             }, 5000);
 
             // alert(location[1].split("=")[1])
-            if (currentState == 'connected') {
+            if (currentState === 'connected') {
 
                 // console.log('Timeout clear!');
                 dispatch(changeCurrentCallState(callStatsContraint.CALL))
@@ -146,6 +161,7 @@ const HomePage = () => {
             // console.log(currentState + ";;;;hien thi")
         }
     }, [currentState])
+
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text)
@@ -167,8 +183,6 @@ const HomePage = () => {
 
                 </div>
                 <div className={`homepage__monitor ${currentRoute !== 'main' ? 'half' : ''}`} style={{ backgroundImage: `url(${bgImage})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }}>
-                    <Badge color={callStatus.color} dot text={callStatus.text} />
-                    <span style={{ fontSize: '36px' }}>{(activeCall.displayName && activeCall.displayName.length) > 0 ? activeCall.displayName : ''} {/*<span style={{ fontSize: '16px' }}>Copy</span>*/}</span>
 
                     {/* UI Coaching active */}
 
@@ -218,15 +232,26 @@ const HomePage = () => {
                             </div>
                         </div>
                     </div> */}
-                    <div>
 
-                    </div>
                     {hasCurrentCall &&
                         <> <div className='homepage__monitor__info'>
-                            <Badge color={callStatus.color} dot text={callStatus.text} style={{ color: 'white' }} />
-                            <span className='display__name'>{(activeCall.displayName && activeCall.displayName.length) > 0 ? activeCall.displayName : ''} {/*<span style={{ fontSize: '16px' }}>Copy</span>*/}</span>
+                            <div>
+                                <Badge color={callStatus.color} dot text={callStatus.text} style={{ color: 'white' }} />
+                                {(callStatus.time !== null && callStatus.time !== undefined) &&
+                                    <>
+                                        {' - '}
+                                        <span>{Math.floor(callStatus.time / 60) >= 10
+                                            ? Math.floor(callStatus.time / 60)
+                                            : `0${Math.floor(callStatus.time / 60)}`
+                                        }:{callStatus.time % 60 >= 10
+                                            ? callStatus.time % 60
+                                            : `0${callStatus.time % 60}`}</span>
+                                    </>
+                                }
 
-                            <span className='display__name'>{'UNKNOW'}</span>
+                            </div>
+                            <span className='display__name'>{(activeCall.displayName && activeCall.displayName.length) > 0 ? activeCall.displayName : 'UNKNOW'} {/*<span style={{ fontSize: '16px' }}>Copy</span>*/}</span>
+
                             <div className='extension__number'>
                                 <span>123-123-113</span>
                                 <div className='copy__btn' onClick={() => copyToClipboard('123')}>
@@ -320,8 +345,10 @@ const Wrapper = styled.div`
     width:50%;
     font-size: 14px;
     padding: 20px;
+    padding-right: 0;
     height: calc(100vh - 52px);
     flex: 1;
+    min-width: 450px;
     
 
     .homepage{
@@ -353,6 +380,7 @@ const Wrapper = styled.div`
                     border-radius: 8px;
                     font-weight: 700;
                     color: #FFFFFF;
+                    white-space: nowrap;
                     cursor: pointer;
 
                     img{
@@ -431,7 +459,7 @@ const Wrapper = styled.div`
             display: flex;
             justify-content: center;
             align-items: center;
-            gap:1rem;
+            gap:12px;
         }
     }
 
@@ -455,6 +483,7 @@ const Wrapper = styled.div`
         padding: 10px;
         width: 160px;
         cursor: pointer;
+        white-space: nowrap;
 
         &:active{
             background-color: #bae145;

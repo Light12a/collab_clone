@@ -1,4 +1,5 @@
 import axiosAPIServerIntance from "./axiosAPIServerIntance";
+import { message } from 'antd'
 
 async function handleRequest(method, link, body) {
     try {
@@ -6,6 +7,10 @@ async function handleRequest(method, link, body) {
         return data
     } catch (error) {
         // handle error request
+        console.dir(error)
+        if (error.response?.status === 500) {
+            message.error('request API fail')
+        }
         return Promise.reject(error)
     }
 }
@@ -50,13 +55,13 @@ export const getSkillGroupAPI = async (body) => {
 }
 
 export const getUserStateAPI = async (token) => {
-    return axiosAPIServerIntance.post('/get_user_state', { token })
+    return handleRequest('post', '/get_user_state', { token })
 }
 
 export const applyStateAPI = async (body) => {
-    return axiosAPIServerIntance.post('/apply_state', body)
+    return handleRequest('post', '/apply_state', body)
 }
 
 export const getAwayReasonsAPI = async (token) => {
-    return axiosAPIServerIntance.post('/get_away_reasons', { token })
+    return handleRequest('post', '/get_away_reasons', { token })
 }

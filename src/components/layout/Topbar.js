@@ -3,10 +3,13 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import logo from '../../asset/logo-clb.svg';
-import wifi from '../../asset/wifi.svg';
+// import wifi from '../../asset/wifi.svg';
+import disconnected from '../../asset/disconnected.svg';
+import connected from '../../asset/connected.svg';
+import connecting from '../../asset/connecting.svg';
 import arrow from '../../asset/arrow.svg';
 import logoutImg from "../../asset/logout.svg"
-import { applyState, getAwayReasons } from '../../redux/reducers/authen/auth'
+import { applyState, getAwayReasons, getUserState } from '../../redux/reducers/authen/auth'
 import { Badge, Modal, Select } from 'antd';
 
 const Topbar = ({ t }) => {
@@ -37,6 +40,7 @@ const Topbar = ({ t }) => {
     }
 
     useEffect(() => {
+        dispatch(getUserState(token)).then(() => {console.log(userState)})
         dispatch(getAwayReasons(token))
     }, [])
 
@@ -71,15 +75,15 @@ const Topbar = ({ t }) => {
     const states = {
         connecting: {
             text: strConnecting,
-            filter: 'brightness(0) saturate(100%) invert(39%) sepia(86%) saturate(1768%) hue-rotate(193deg) brightness(101%) contrast(105%)'
+            img: connecting,
         },
         connected: {
             text: strConnected,
-            filter: 'none'
+            img: connected
         },
         disconnected: {
             text: strDisconnected,
-            filter: 'brightness(0) saturate(100%) invert(9%) sepia(100%) saturate(7494%) hue-rotate(7deg) brightness(87%) contrast(110%)'
+            img: disconnected,
         },
     }
     const { currentState } = useSelector(state => state.connectStatus)
@@ -121,7 +125,7 @@ const Topbar = ({ t }) => {
                 <img src={logo} className="topbar__group__logo" />
                 <span>|</span>
                 <div className='topbar__group__state'>
-                    <img src={wifi} alt='' style={{ filter: states[currentState].filter }} />
+                    <img src={states[currentState].img} alt='' />
                     <span>{t('server')} {states[currentState].text}</span>
                 </div>
 
@@ -157,24 +161,24 @@ const Topbar = ({ t }) => {
             <Modal title="away reason" onCancel={() => setIsModalVisible(false)} visible={isModalVisible} onOk={handleAway} cancelButtonProps={{ style: { display: 'none' } }} okButtonProps={{ style: { borderRadius: "8px" } }}>
                 <h3>Choose one reason:</h3>
                 <div className='reason-body'>
-                    {
+                    {/* {
                         awayReasons.away_reasons?.map((item) => (
                             <div className='ant-modal-item' >
                                 <input type="radio" name='rdReason' id={item.id} onClick={() => setReasonID(item.id)}/>
                                 <label for={item.id}>{item.text}</label>
                             </div>
                         ))
-                    }
+                    } */}
                 </div>
             </Modal>
             <Modal
                 visible={logOutModalVisible}
-                closable={false}
                 title={t('logout')}
                 onOk={handleLogout}
                 onCancel={() => setLogOutModalVisible(false)}
-                okText={t('yes')}
-                cancelText={t('no')}
+                okText={t('OK')}
+                cancelText={t('Cancel')}
+                className="modal-logout"
             >
                 {t('logOutQuestion')}
             </Modal>

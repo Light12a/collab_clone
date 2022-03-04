@@ -33,11 +33,11 @@ const Signin = () => {
     //     console.log('electron' + param)
     // }, [])
 
-    useEffect(()=> {
-        if(!isRemember) {
+    useEffect(() => {
+        if (!isRemember) {
             localStorage.removeItem('userRemember')
         }
-    },[isRemember])
+    }, [isRemember])
 
     useEffect(() => {
         if (location[1]) {
@@ -50,11 +50,12 @@ const Signin = () => {
     const dispatch = useDispatch()
 
     const clearLoginError = () => {
-        setLoginError('')
+        if (loginError)
+            setLoginError('')
     }
 
     const onFinish = async (e) => {
-
+        clearLoginError()
         console.log(e)
         // message.success('Submit success!');
         try {
@@ -94,7 +95,7 @@ const Signin = () => {
             </div>
             <div className='signin'>
                 <div className='title'>
-                    <h1>LOGIN</h1>
+                    <h4>LOGIN</h4>
                 </div>
                 <div className='content'>
                     <Form
@@ -122,6 +123,7 @@ const Signin = () => {
                                 placeholder={t('enter_ID')}
                                 defaultValue={!localStorage.getItem('userRemember') ? "" : JSON.parse(localStorage.getItem('userRemember')).companyId}
                                 onFocus={clearLoginError}
+                                onChange={clearLoginError}
                             />
                         </Form.Item>
                         <Form.Item
@@ -137,6 +139,7 @@ const Signin = () => {
                                 placeholder={t('holder_enter_user_ID')}
                                 defaultValue={!localStorage.getItem('userRemember') ? "" : JSON.parse(localStorage.getItem('userRemember')).userName}
                                 onFocus={clearLoginError}
+                                onChange={clearLoginError}
                             />
                         </Form.Item>
                         <Form.Item
@@ -150,8 +153,9 @@ const Signin = () => {
                         >
                             <Input.Password
                                 placeholder={t('holder_enter_password')}
-                                onFocus={clearLoginError}
                                 visibilityToggle={false}
+                                onFocus={clearLoginError}
+                                onChange={clearLoginError}
                             />
                         </Form.Item>
                         <div className='error__area'>

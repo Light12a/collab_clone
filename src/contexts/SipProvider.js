@@ -135,6 +135,7 @@ const SipProvider = ({ children }) => {
             clearTimeout(registerTimeOutID)
             clearInterval(regiserIntervalId)
             if (ua) {
+                console.log('stoppppp')
                 ua.stop()
             }
         }
@@ -326,7 +327,7 @@ const SipProvider = ({ children }) => {
                     console.log('incoming: ', session)
                     var callInfo = {
                         ssId: session.id,
-                        skillName: session._request.from._uri._user,
+                        skillName: session._request.from._display_name,
                         calls: [
                             {
                                 sipAddress: session._request.from._uri._scheme + ":" + session._request.from._uri._user + "@" + session._request.from._uri._host,
@@ -439,6 +440,7 @@ const SipProvider = ({ children }) => {
             case callStatsContraint.UN_HOLD:
                 if (holdStatus.local) {
                     session.unhold();
+                    dispatch(changeCurrentCallState(callStatsContraint.INCALL))
                 }
                 break
             case callStatsContraint.END:
