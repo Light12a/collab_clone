@@ -2,18 +2,15 @@ import asyncio, hashlib, datetime, uuid, query_sql, constant_value, MySQLdb
 from handlers.base_handlers import BaseHandler
 import HrpListener
 import json
-import logging
 from tornado import gen
 from tornado.ioloop import IOLoop
 from tornado.queues import Queue
 from tornado.web import stream_request_body
 from tornado.httpclient import HTTPClient, HTTPRequest, AsyncHTTPClient
 from tornado.websocket import WebSocketHandler
+import util_log
 
-logging.basicConfig(
-    format="%(asctime)s:%(levelname)s:%(message)s",
-    level=logging.DEBUG,
-    filename="debug.log")
+log = util_log.get(__name__)
 
 class TestGetAPIHandler(BaseHandler):
     def get_current_user(self):
@@ -157,7 +154,7 @@ class LoginHandler(BaseHandler):
                     })
                 self.set_status(403)
                 err = "{} or tenant_id: {} is wrong in json request for login at {}"
-                logging.debug(err.format(request['username'], request['tenant_id'], datetime.datetime.utcnow()))
+                log.debug(err.format(request['username'], request['tenant_id'], datetime.datetime.utcnow()))
             else:
                 password_valid = self._validate_user_password(credential, password=request['password'])
                 if not password_valid:
@@ -167,7 +164,7 @@ class LoginHandler(BaseHandler):
                         })
                     self.set_status(400)
                     err = "Password of user: {} is wrong"
-                    logging.debug(err.format(request['username']))
+                    log.debug(err.format(request['username']))
                 else:
                     codes, token = self._create_token(credential)
                     self.write({
@@ -176,7 +173,7 @@ class LoginHandler(BaseHandler):
                         })
                     self.set_status(200)
                     inf = "Login of user: {} successfully"
-                    logging.info(inf.format(request['username']))
+                    log.info(inf.format(request['username']))
 
     def _user_credential_read(self, tenant_id, username): 
         sql = self.application.conn.cursor()
@@ -218,7 +215,7 @@ class LoginHandler(BaseHandler):
             params['token_id'],params['user_id'],
             params['expiration_time'],params['create_time']
             ))
-        logging.info({
+        log.info({
             "token": params['token_id'],
             "user_id": params['user_id'],
             "expiration_time": params['expiration_time'],
@@ -233,10 +230,10 @@ class LoginHandler(BaseHandler):
         try:
             token = json['token']
             inf = "json request for relogin of user: {}"
-            logging.info(inf.format(json['username']))
+            log.info(inf.format(json['username']))
         except KeyError:
             err = "json request for new login of {}"
-            logging.info(err.format(json['username']))
+            log.info(err.format(json['username']))
             return False
         return True
 
@@ -247,7 +244,7 @@ class LoginHandler(BaseHandler):
         try:
             if result[0] == request['token']:
                 inf = "Find out token_id is the same with token_id of user: {} in json request"
-                logging.info(inf.format(request['username']))
+                log.info(inf.format(request['username']))
                 check = self._check_valid_token(result[2].strftime("%Y-%m-%d %H:%M:%S"), result[1])
                 if check:
                     self.write({
@@ -273,7 +270,7 @@ class LoginHandler(BaseHandler):
                 })
             self.set_status(406)
             err = "Username: {} or tenant_id: {} attached in json request is not existed in db"
-            logging.exception(err.format(request['username'], request['tenant_id']))
+            log.exception(err.format(request['username'], request['tenant_id']))
         
 
 class LogoutHandler(BaseHandler): 
@@ -294,7 +291,7 @@ class LogoutHandler(BaseHandler):
                 })
             self.set_status(401)
             err = "Token of user: {} is wrong"
-            logging.debug(err.format(request['username']))
+            log.debug(err.format(request['username']))
 
     def _clear_token(self, token):
         sql = self.application.conn.cursor()
@@ -323,12 +320,12 @@ class GetUserHandler(BaseHandler):
                         "users": user
                     })
                     inf = "return some users info search by keyword: {} from:{} to:{}"
-                    logging.info(inf.format(request['search'], request['from'], request['to']))
+                    log.info(inf.format(request['search'], request['from'], request['to']))
                 else:
                     self.write({"code":405, "message":"Search keyword not found"})
         except ValueError:
             err = "Json request is not correct"
-            logging.error(err)
+            log.error(err)
             self.write({"code":201, "message":"Bad request"})
         
         #check token valid and then select user
@@ -340,14 +337,14 @@ class GetUserHandler(BaseHandler):
         result = sql.fetchone()
         if result:
             inf = "token existed"
-            logging.info(inf)
+            log.info(inf)
             if self._check_valid_token(result[1].strftime("%Y-%m-%d %H:%M:%S"), result[0]):
                 inf = "Token is in of date"
-                logging.info(inf)
+                log.info(inf)
                 return True
             else:
                 err = "Token is out of date"
-                logging.error(err)
+                log.error(err)
                 self.write({
                         "code": 402,
                         "message": "Token is expiried"
@@ -381,7 +378,7 @@ class GetUserHandler(BaseHandler):
                 } for result in results]
         else:
             err = "Not found search keyword: {}"
-            logging.error(err.format(request['search']))
+            log.error(err.format(request['search']))
             return False
         return user
 

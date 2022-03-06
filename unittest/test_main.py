@@ -4,6 +4,7 @@ from tornado.escape import utf8
 from tornado.httpclient import AsyncHTTPClient
 from tornado.ioloop import IOLoop
 from tornado.options import parse_command_line, define, options
+import util_log
 
 define('port', default=8888)
 define('num_chunks', default=40)
@@ -21,6 +22,7 @@ async def client():
 
 
 def main():
+    util_log.init_logging()
     parse_command_line()
     app = TestApplication()
     app.listen(options.port)
