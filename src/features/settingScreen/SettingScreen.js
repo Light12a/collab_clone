@@ -20,8 +20,11 @@ const SettingScreen = () => {
   const [devices, setDevices] = useState([])
   const [deviceActive, setDeviceActive] = useState([]);
   const [volume, setVolume] = useState(10);
+
   const { Option } = Select;
   const { t, i18n } = useTranslation();
+  const [valueLanguage, setValueLanguage] = useState(t('english'))
+
   const dispatch = useDispatch()
 
   const audioRef = useRef();
@@ -53,6 +56,7 @@ const SettingScreen = () => {
 
   const handleClick = (lang) => {
     i18n.changeLanguage(lang)
+    setValueLanguage(lang)
   }
 
   const handleSelectDevice = (value) => {
@@ -80,13 +84,6 @@ const SettingScreen = () => {
     } catch (e) {
       console.log("Error: " + e)
     }
-  }
-
-  //stream audio from mic to headphone
-  const gotStream = (stream) => {
-    ringBackAudio.srcObject = stream;
-    ringBackAudio.play();
-    console.log("Accessed the Microphone");
   }
 
   const handleError = (err) => {
@@ -154,22 +151,13 @@ const SettingScreen = () => {
         <div className='setting__body'>
           <div className='form-group'>
             <p>{t("language")}</p>
-            <Select style={{ width: '100%' }} onSelect={(e) => handleClick(e)} defaultValue="en" suffixIcon={<img src={arrowIcon} />}>
+            <Select style={{ width: '100%' }} value={valueLanguage} onSelect={(e) => handleClick(e)} defaultValue="en" suffixIcon={<img src={arrowIcon} />}>
               <Option value="en">{t("english")}</Option>
               <Option value="jp">{t("japan")}</Option>
             </Select>
           </div>
           <h1>{t("voiceSetting")}</h1>
           <div className='setting-voice'>
-            {/* <div className="App">
-          <ProgressBar bgcolor={"#6a1b9a"} completed={completed} />
-          <Input
-            type='number'
-            value={completed}
-            onChange={onChangeVolumn}
-          />
-        </div> */}
-
             <div className='form-group'>
               <p>{t("inputDevice")}</p>
               <Select style={{ width: '100%' }} defaultValue="Choose input device" onSelect={handleSelectMic} suffixIcon={<img src={arrowIcon} />}>
