@@ -15,9 +15,7 @@ export const appString = {
 
     incoming_call: 'Incoming call',
     calling: 'Calling...',
-    during_call: 'During call',
     on_hold: 'On Hold',
-    end_call: 'End call',
 
     communication_situation: 'Communication situation: ',
     log_out: 'LogOut',

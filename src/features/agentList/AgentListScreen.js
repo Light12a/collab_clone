@@ -10,11 +10,12 @@ import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/cal
 import { appColor } from '../../value/color';
 import { Select } from 'antd';
 import arrowIcon from '../../asset/ic.svg'
-import searchIcon from '../../asset/search.svg'
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import dialpad from '../../asset/dialpad.svg'
 import { setIsKeypadOpen } from '../../redux/reducers/keypad/keypadStatus';
+import SearchBar from '../../components/SearchBar'
 import call from '../../asset/call.svg'
+
 const AgentListScreen = (props) => {
     const { Option } = Select;
     const dispatch = useDispatch()
@@ -23,16 +24,103 @@ const AgentListScreen = (props) => {
     //get user infomation
     // const { isWaitingListOpen } = useSelector(state => state.waitingListStatus)
     const { agentList } = useSelector(state => state.AgentList)
-    const ListAgent = agentList.agentList.users;
+    let ListAgent = agentList.agentList.users;
+    let filterListAgent = [];
+    let [listAgentForShow, setListAgentForShow] = useState([])
 
-    console.log("My Agent List: " + JSON.stringify(ListAgent))
+    // console.log("My Agent List: " + JSON.stringify(listAgentForShow))
 
+
+    useEffect(() => {
+        setListAgentForShow(ListAgent)
+    }, [])
+
+
+    const onSearch = (e) => {
+        ListAgent.map((el) => {
+            if (el.username.toLowerCase().includes(e.target.value) ||
+            el.ext_number.toLowerCase().includes(e.target.value) ) {
+                filterListAgent.push(el)
+                return el;
+            } else {
+
+                return ''
+            }
+        })
+        setListAgentForShow(filterListAgent)
+        e.target.value ? 
+        ListAgent = [] 
+        : ListAgent = agentList.agentList.users
+        
+    }
+
+    useEffect(() => {
+        // setListAgentForShow(ListAgent)
+
+    }, [ListAgent])
+    // get state
     const status = ListAgent.state
-    console.log("My status: " + status)
-    // t("onHoding")
 
     const onSort = (sortTimeDes, sortCallNumberDes, sortNameDes) => {
 
+    }
+
+    const RenderUserItem = () => {
+        console.log("My listAgentForShow: " + listAgentForShow)
+        return (
+
+            listAgentForShow && listAgentForShow !== null ?
+                listAgentForShow.map((item) =>
+                (
+                    <tr className='itemAgent'>
+                        <td className='containercbStatus'>
+                            <Checkbox className='checkboxStatus' />
+                        </td>
+                        <td>
+                            {
+                                RenderItemStatus(item.state)
+                            }
+                        </td>
+                        <td>
+                            {item.username}
+                        </td>
+                        <td>
+                            {item.ext_number}
+                        </td>
+                        <td><img src={call} /></td>
+                    </tr>
+                )) 
+                :
+                
+                filterListAgent && filterListAgent !== null ?
+                filterListAgent.map((item) =>
+
+                    item && item !== null &&
+                        (
+                            <tr className='itemAgent'>
+                                <td className='containercbStatus'>
+                                    <Checkbox className='checkboxStatus' />
+                                </td>
+
+                                <td>
+                                    {
+                                        RenderItemStatus(item.state)
+                                    }
+                                </td>
+                                <td>
+                                    {item.username}
+                                </td>
+                                <td>
+                                    {item.ext_number}
+                                </td>
+                                <td><img src={call} /></td>
+                            </tr>
+                        )
+                )
+                : <>
+            không có users
+                </>
+        )
     }
 
     const RenderItemStatus = (item) => {
@@ -50,7 +138,7 @@ const AgentListScreen = (props) => {
             case 104:
                 return <span className='statusInACall'>{t('inACall')}</span>
             default:
-                return <span className='statusAcceptable'>{t('acceptable')}</span>
+                return null;
         }
 
         {/* {status === "on Hoding" ?
@@ -73,7 +161,6 @@ const AgentListScreen = (props) => {
                                         } */}
 
     }
-
     return (
         <>
             <div className="agent-list__header drag-header">
@@ -96,14 +183,8 @@ const AgentListScreen = (props) => {
                 <div className='container-bar'>
                     <div className='form-group'>
                         <span className='title'>{t('search')}</span>
-                        <div className='search'>
-                            <input placeholder={t('holderInputSearch')}></input>
-                            <img
-                                src={searchIcon}
-                                onClick={() => alert('hi')}
-                                className='iconSearch'
-                            />
-                        </div>
+                        <SearchBar data={listAgentForShow} t={t} onSearch={e => onSearch} />
+
                     </div>
                     <div className='form-group'>
                         <span className='title'>{t('skillGroup')}</span>
@@ -161,31 +242,12 @@ const AgentListScreen = (props) => {
 
                         </thead>
                         <tbody>
-
-                            {ListAgent &&
-                                ListAgent.map((item) =>
-                                (
-                                    <tr className='itemAgent'>
-                                        <td className='containercbStatus'>
-                                            <Checkbox className='checkboxStatus' />
-                                        </td>
-                                        <td>
-                                            {
-                                                RenderItemStatus(item.state)
-                                            }
-                                        </td>
-                                        <td>
-                                            {item.username}
-                                        </td>
-                                        <td>
-                                            {item.ext_number}
-                                        </td>
-                                        <td><img src={call} /></td>
-                                    </tr>
-                                ))}
+                            {RenderUserItem()}
                         </tbody>
-
                     </table>
+                    <div>
+
+                    </div>
                 </div>
             </div>
         </>
