@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import sortDown from '../../asset/sortDown.svg';
 import sortUp from '../../asset/sortUp.svg';
 import './AgentListScreen.css'
@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { callStatsContraint } from '../../redux/reducers/call/currentCall';
 import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/call/currentCall';
 import { appColor } from '../../value/color';
+import Pagination from '../../components/Pagination';
 import { Select } from 'antd';
 import arrowIcon from '../../asset/ic.svg'
 import Checkbox from 'antd/lib/checkbox/Checkbox';
@@ -26,20 +27,50 @@ const AgentListScreen = (props) => {
     const { agentList } = useSelector(state => state.AgentList)
     let ListAgent = agentList.agentList.users;
     let filterListAgent = [];
+
+    // pagination
+    let [totalItems, setTotalItem] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10
+    console.log("My currentPage agent list: " + currentPage)
+    //x list
+    let xListAgent = ListAgent;
+    xListAgent = xListAgent.concat(xListAgent, ListAgent)
+    xListAgent = xListAgent.concat(xListAgent, ListAgent)
+    
+
+    // get state
+    const status = ListAgent.state
+
     let [listAgentForShow, setListAgentForShow] = useState([])
 
-    // console.log("My Agent List: " + JSON.stringify(listAgentForShow))
+  
 
+    useEffect(()=>{
+        setListAgentForShow(xListAgent.splice(0, itemsPerPage))
 
-    useEffect(() => {
-        setListAgentForShow(ListAgent)
-    }, [])
-
+        for(let i = 1; i <= itemsPerPage; i++){
+            console.log("currentPage*i: " + currentPage*i)
+            listAgentForShow.splice(i, 1, xListAgent[currentPage*i - 1])
+        }
+    },[])
+    const onSort = (sortTimeDes, sortCallNumberDes, sortNameDes) => {
+        
+    }
+    const onPageChange = (page) =>{
+        console.log("in page: " + page)
+        setCurrentPage(page)
+        
+        if(page == 1){
+            // setListAgentForShow(xListAgent.slice(0, itemsPerPage))
+            console.log("in: ")
+        }
+    }
 
     const onSearch = (e) => {
         ListAgent.map((el) => {
             if (el.username.toLowerCase().includes(e.target.value) ||
-            el.ext_number.toLowerCase().includes(e.target.value) ) {
+                el.ext_number.toLowerCase().includes(e.target.value)) {
                 filterListAgent.push(el)
                 return el;
             } else {
@@ -48,30 +79,20 @@ const AgentListScreen = (props) => {
             }
         })
         setListAgentForShow(filterListAgent)
-        e.target.value ? 
-        ListAgent = [] 
-        : ListAgent = agentList.agentList.users
-        
-    }
-
-    useEffect(() => {
-        // setListAgentForShow(ListAgent)
-
-    }, [ListAgent])
-    // get state
-    const status = ListAgent.state
-
-    const onSort = (sortTimeDes, sortCallNumberDes, sortNameDes) => {
+        e.target.value ?
+            ListAgent = []
+            : ListAgent = agentList.agentList.users
 
     }
-
     const RenderUserItem = () => {
-        console.log("My listAgentForShow: " + listAgentForShow)
+        console.log("My listAgentForShow: " + JSON.stringify(listAgentForShow))
         return (
 
             listAgentForShow && listAgentForShow !== null ?
-                listAgentForShow.map((item) =>
-                (
+
+            listAgentForShow.map((item) => {
+                    return (
+                    item && item !== null &&
                     <tr className='itemAgent'>
                         <td className='containercbStatus'>
                             <Checkbox className='checkboxStatus' />
@@ -89,14 +110,14 @@ const AgentListScreen = (props) => {
                         </td>
                         <td><img src={call} /></td>
                     </tr>
-                )) 
+                    )
+                })
                 :
-                
-                filterListAgent && filterListAgent !== null ?
-                filterListAgent.map((item) =>
 
-                    item && item !== null &&
-                        (
+                filterListAgent && filterListAgent !== null ?
+                    filterListAgent.map((item) => {
+                        return (item && item !== null &&
+
                             <tr className='itemAgent'>
                                 <td className='containercbStatus'>
                                     <Checkbox className='checkboxStatus' />
@@ -116,16 +137,16 @@ const AgentListScreen = (props) => {
                                 <td><img src={call} /></td>
                             </tr>
                         )
-                )
-                : <>
-            không có users
-                </>
+                    }
+                    )
+                    : <>
+                        không có users
+                    </>
         )
     }
 
     const RenderItemStatus = (item) => {
 
-        console.log("My Status: " + item)
         switch (item) {
             case 100:
                 return <span className='statusAcceptable'>{t('acceptable')}</span>
@@ -245,6 +266,11 @@ const AgentListScreen = (props) => {
                             {RenderUserItem()}
                         </tbody>
                     </table>
+                    <Pagination
+                        total={xListAgent}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={(e) =>onPageChange(e)}
+                    />
                     <div>
 
                     </div>

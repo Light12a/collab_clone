@@ -132,7 +132,6 @@ function App() {
               </StyleSheetManager>
               :
               <Draggable onDrag={() => {
-                dispatch(setIsFullScreen(false))
                 dispatch(setIsFullScreen(true))
               }}>
                 <div className='drag formWaitingList'>
