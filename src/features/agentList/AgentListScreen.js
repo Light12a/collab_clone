@@ -61,7 +61,6 @@ const AgentListScreen = (props) => {
     }
     const onPageChange = (page) =>{
         setCurrentPage(page)
-
     }
 
     const onSearch = (e) => {
