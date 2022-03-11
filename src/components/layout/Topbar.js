@@ -133,6 +133,11 @@ const Topbar = ({ t }) => {
     }
 
     const handleAway = () =>{
+
+        if(!reasonID){
+            return
+        }
+
         dispatch(applyState({
             username: user.username,
             token: token,
