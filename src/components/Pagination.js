@@ -23,11 +23,8 @@ const Pagination = (props) => {
     }, [])
 
     const renderPageNumber = (page)=> {
-        console.log("My numberrenderPageNumber: " + page)
-        console.log("My totalPageNumberrenderPageNumber: " + totalPageNumber)
-
         setCurrentPage(page)
-        props.onPageChange(currentPage)
+        props.onPageChange(page)
         let maxPageNumber = 3;
         if (totalPageNumber < maxPageNumber) {
             maxPageNumber = totalPageNumber;

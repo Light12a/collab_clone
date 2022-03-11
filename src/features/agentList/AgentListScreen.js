@@ -32,7 +32,6 @@ const AgentListScreen = (props) => {
     let [totalItems, setTotalItem] = useState(0)
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10
-    console.log("My currentPage agent list: " + currentPage)
     //x list
     let xListAgent = ListAgent;
     xListAgent = xListAgent.concat(xListAgent, ListAgent)
@@ -47,24 +46,22 @@ const AgentListScreen = (props) => {
   
 
     useEffect(()=>{
-        setListAgentForShow(xListAgent.splice(0, itemsPerPage))
-
-        for(let i = 1; i <= itemsPerPage; i++){
-            console.log("currentPage*i: " + currentPage*i)
-            listAgentForShow.splice(i, 1, xListAgent[currentPage*i - 1])
+        let newList = [];
+        for(let i = 0; i < itemsPerPage; i++){
+            console.log((currentPage-1)*itemsPerPage + i )
+            newList.splice(i, 1, xListAgent[(currentPage-1)*itemsPerPage + i])
         }
-    },[])
+
+        setListAgentForShow(newList)
+
+    },[currentPage])
+
     const onSort = (sortTimeDes, sortCallNumberDes, sortNameDes) => {
         
     }
     const onPageChange = (page) =>{
-        console.log("in page: " + page)
         setCurrentPage(page)
-        
-        if(page == 1){
-            // setListAgentForShow(xListAgent.slice(0, itemsPerPage))
-            console.log("in: ")
-        }
+
     }
 
     const onSearch = (e) => {
@@ -85,11 +82,8 @@ const AgentListScreen = (props) => {
 
     }
     const RenderUserItem = () => {
-        console.log("My listAgentForShow: " + JSON.stringify(listAgentForShow))
         return (
-
             listAgentForShow && listAgentForShow !== null ?
-
             listAgentForShow.map((item) => {
                     return (
                     item && item !== null &&
@@ -113,8 +107,7 @@ const AgentListScreen = (props) => {
                     )
                 })
                 :
-
-                filterListAgent && filterListAgent !== null ?
+                filterListAgent && filterListAgent !== null &&
                     filterListAgent.map((item) => {
                         return (item && item !== null &&
 
@@ -139,9 +132,6 @@ const AgentListScreen = (props) => {
                         )
                     }
                     )
-                    : <>
-                        không có users
-                    </>
         )
     }
 
