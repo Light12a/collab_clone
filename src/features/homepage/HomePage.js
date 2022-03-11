@@ -20,6 +20,7 @@ import transferImg from '../../asset/transfer.svg'
 import pauseImg from '../../asset/pause.svg'
 import copyImg from '../../asset/copy.svg'
 import playImg from '../../asset/play.svg'
+import { getSkillGroups } from '../../redux/reducers/waitingList/waitingCallList';
 
 const log = require('electron-log');
 
@@ -39,6 +40,7 @@ const HomePage = () => {
         text: '',
         time: null
     });
+    const { token: { isHaveToken, token, isSettingToken }} = useSelector(state => state.auth)
 
     var callOptions = {
         mediaConstraints: {
@@ -51,6 +53,12 @@ const HomePage = () => {
         //     }],
     };
     log.info("HomePage.js callStatus: " + JSON.stringify(callStatus));
+
+    useEffect(() => {
+        if(isHaveToken){
+            dispatch(getSkillGroups(token))
+        }
+    }, []);
 
     useEffect(() => {
         switch (activeCall.state) {

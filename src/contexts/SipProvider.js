@@ -240,7 +240,8 @@ const SipProvider = ({ children }) => {
                 session.on("ended", function (e) {
                     // the call has ended
                     dispatch(changeCurrentCallState(callConstant.END))
-                    dispatch(removeACall(session.ssId))
+                    console.log("session ended: ", session);
+                    dispatch(removeACall(session.id))
                     dispatch(removeAtiveCall())
                     if (intervalLogJBId) {
                         clearInterval(intervalLogJBId)
@@ -251,7 +252,8 @@ const SipProvider = ({ children }) => {
                 session.on("failed", function (e) {
 
                     // unable to establish the call
-                    // dispatch(changeCurrentCallState(callConstant.END))
+                    console.log("session failed: ", session);
+                    dispatch(changeCurrentCallState(callConstant.END))
                     dispatch(removeAtiveCall())
                     dispatch(removeACall(session.id))
                     // console.log('call failed with cause: ' + e.message.reason_phrase);
@@ -326,18 +328,10 @@ const SipProvider = ({ children }) => {
                     console.log('incoming: ', session)
                     var callInfo = {
                         ssId: session.id,
-                        skillName: session._request.from._display_name,
-                        calls: [
-                            {
-                                sipAddress: session._request.from._uri._scheme + ":" + session._request.from._uri._user + "@" + session._request.from._uri._host,
-                                optional: 'optional',
-                                arrivedTime: new Date(),
-                                ssId: session.id
-                            }
-                        ],
-                        waitingTime: "00:00",
-                        waitingCall: 0,
-                        waitingTimeMilisecond: 0,
+                        group_id: Math.floor(Math.random() * (12 - 9 + 1) + 9),
+                        sipAddress: session._request.from._uri._scheme + ":" + session._request.from._uri._user + "@" + session._request.from._uri._host,
+                        arrivedTime: new Date().toString(),
+                        userName: session._request.from._uri._user,
                     };
                     dispatch(pushACall(callInfo))
 

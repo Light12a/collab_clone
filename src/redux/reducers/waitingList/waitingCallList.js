@@ -1,30 +1,34 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { getSkillGroupAPI } from '../../../api'
+
+export const getSkillGroups = createAsyncThunk('waiting/getSkillGroupAPI', async (token) => {
+    try {
+        let { data } = await getSkillGroupAPI(token)
+        return data.groups
+    } catch (error) {
+        return Promise.reject(error)
+    }
+
+})
 
 const waitingSlice = createSlice({
     name: 'waiting',
-    initialState: [],
+    initialState: {waitingList: [], skillGroupList: [], newestCall: {}, removedCall: null},
     reducers: {
         pushACall(state, action) {
-            // let has = false
-            // state.forEach(group => {
-            //     if (group.id === action.payload.groupId) {
-            //         has = true
-            //         group.sessionIds.push(action.payload.sessionId)
-            //     }
-            // })
-            // if (has === false) {
-            //     state.push({ name: action.payload.groupName, id: action.payload.groupId, sessionIds: [action.payload.sessionId] })
-            // }
-            state.push(action.payload)
+            state.waitingList.push(action.payload)
+            state.newestCall = action.payload;
         },
         removeACall(state, action) {
-            // state.forEach(group => {
-            //     group = group.sessionIds.filter(sessionId => {
-            //         console.log('compare ', sessionId, action.payload)
-            //         return sessionId !== action.payload
-            //     })
-            // })
-            return state.filter(item => item.ssId !== action.payload)
+            state.removedCall = action.payload;
+            if(state.waitingList){
+                state.waitingList = state.waitingList.filter(item => item.ssId !== action.payload)
+            }
+        }
+    },
+    extraReducers: {
+        [getSkillGroups.fulfilled]: (state, action) => {
+            state.skillGroupList = action.payload
         }
     }
 })

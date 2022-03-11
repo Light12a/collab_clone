@@ -53,8 +53,8 @@ export const logoutAPI = async (body) => {
     return handleRequest('post', '/logout', body)
 }
 
-export const getSkillGroupAPI = async (body) => {
-    return handleRequest('post', '/get_skill_groups', body)
+export const getSkillGroupAPI = async (token) => {
+    return handleRequest('post', '/get_skill_groups', {token})
 }
 
 export const getUserStateAPI = async (token) => {

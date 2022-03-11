@@ -83,5 +83,6 @@
     "sendLogs": "Send Logs",
     "away": "Away",
     "phoneNumber":"Phone number",
-    "offline":"offline"
+    "offline":"offline",
+    "toFirst" : "First"
 }
