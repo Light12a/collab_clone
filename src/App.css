@@ -2,6 +2,7 @@
     background-color: white;
     position: absolute;
     top: 50%;
+    left: 50%;
     box-shadow: 0px 6px 60px rgba(0, 0, 0, 0.16);
     border-radius: 4px;
     max-height: 95vh;
@@ -9,16 +10,13 @@
 }
 .waiting-list{
     width: 569px;
-    left: 30%;
 }
 
 .agent-list{
     width: 840px;
-    left: 50%;
     /* min-width: 800px; */
 }
 .keypad{
-    left: 50%;
     width: 840px;
 }
 
@@ -64,7 +62,6 @@
     background-color: white;
     width: 45vw;
     min-width: 470px;
-    height: 88.8vh;
     position: absolute;
     top: 8.8vh;
     right: 8vw;

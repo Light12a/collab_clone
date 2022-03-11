@@ -35,6 +35,7 @@ const AgentListScreen = (props) => {
     let xListAgent = ListAgent;
     xListAgent = xListAgent.concat(xListAgent, ListAgent)
     xListAgent = xListAgent.concat(xListAgent, ListAgent)
+   
     
 
     // get state

@@ -120,9 +120,8 @@ function App() {
                 </NewWindow>
               </StyleSheetManager>
               :
-              <Draggable onDrag={() => {
-              }}>
-                <div className='drag formWaitingList'>
+              <Draggable positionOffset={{ x: '-50%', y: '-50%' }}>
+                <div className='drag waiting-list'>
                   <WaitingList />
                 </div>
               </Draggable>)
