@@ -8,7 +8,7 @@ const Pagination = (props) => {
     const [pageNumber, setPageNumber] = useState([1,2,3]);
     let [currentPage, setCurrentPage] = useState(1)
 
-    const {total, itemsPerPage} = props
+    const {total, itemsPerPage, t} = props
     const totalPageNumber = Math.floor(total.length/itemsPerPage) + 1
     // totalPageNumber !== 1 ? setPageNumber([1,2,3]) : setPageNumber([1])
     // console.log("My PageNumber: " + pageNumber)
@@ -63,12 +63,18 @@ const Pagination = (props) => {
 
             <div className="pagination-wrap">
                 <div style={{ display: 'flex' }}>
+                <span
+                        style={currentPage === 1 ?
+                            { opacity: 0.3, marginRight: '5px', pointerEvents: 'none' }
+                            : { marginRight: '5px', cursor: 'pointer' }}
+                        onClick={e => { renderPageNumber(1) }}
+                    >{t('first')}</span>
                     <span
                         style={currentPage === 1 ?
                             { opacity: 0.3, marginRight: '5px', pointerEvents: 'none' }
                             : { marginRight: '5px', cursor: 'pointer' }}
                         onClick={e => { renderPageNumber(currentPage - 1) }}
-                    >前</span>
+                    > {t('previous')}</span>
 
 
                     {(currentPage > 2) &&
@@ -96,7 +102,12 @@ const Pagination = (props) => {
                         ? { opacity: 0.3, marginRight: '5px', pointerEvents: 'none' }
                         : { marginLeft: '5px', cursor: 'pointer' }}
                         onClick={e => { renderPageNumber(currentPage + 1) }}
-                    >次</span>
+                    >{t('next')}</span>
+                    <span style={currentPage >= totalPageNumber
+                        ? { opacity: 0.3, marginRight: '5px', pointerEvents: 'none' }
+                        : { marginLeft: '5px', cursor: 'pointer' }}
+                        onClick={e => { renderPageNumber(totalPageNumber) }}
+                    > {t('last')}</span>
                 </div>
             </div>
 

@@ -259,6 +259,7 @@ const AgentListScreen = (props) => {
                     <Pagination
                         total={xListAgent}
                         itemsPerPage={itemsPerPage}
+                        t={t}
                         onPageChange={(e) =>onPageChange(e)}
                     />
                     <div>

@@ -28,6 +28,9 @@
   "waitingTime": "待ち時間",
   "previous": "前",
   "next": "次",
+  "first":"先頭",
+  "last":"最後",
+  "version":"バージョン",
   "notificationNumber": "通知番号",
   "userStatus": "ユーザーステータス",
   "postProcess": "後処理",
@@ -77,5 +80,6 @@
   "logOutQuestion":"ログアウトしてよろしいですか？",
   "yes":"OK",
   "no":"キャンセル",
+
   "sendLogs": "ログを送信する"
 }

@@ -232,7 +232,7 @@ const SettingScreen = () => {
           {/* <SettingJB /> */}
 
         </div>
-        <div className='versionStyle'>Version: {version}</div>
+        <div className='versionStyle'>{t('version')}: {version}</div>
       </div>
     </Wrapper>
   )
