@@ -1,16 +1,33 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components'
 import HomePage from '../homepage/HomePage'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCurentRoute } from '../../redux/reducers/route/route';
 import { Modal, Select } from 'antd';
 import arrowIcon from '../../asset/ic.svg'
+import {getCorrespondence} from '../../redux/reducers/talkscript/correspondence'
 
 const IncomingMemo = () => {
   const { Option } = Select;
+  const [isVisible, setIsVisible] = useState(false)
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
+  const {activeCall} = useSelector(state => state.currentCall)
+  const { token: { token } } = useSelector(state => state.auth)
+
+  const {correspondenceMemo} = useSelector(state => state.correspondence)
+
+  useEffect(() => {
+    if(activeCall.state === "END") {
+      setIsVisible(true)
+    }
+  }, [activeCall.state])
+  
+  // useEffect(() => {
+  //   dispatch(getCorrespondence(token))
+  // },[])
+  
 
   const content = [
     {
@@ -81,11 +98,15 @@ const IncomingMemo = () => {
         </div>
       </Modal>
 
-      <Modal title={t("correspondence_Memo")} visible={false} cancelButtonProps={{style: {display:'none'}}} okButtonProps={{style:{borderRadius: "8px"}}}>
+      <Modal title={t("correspondence_Memo")} visible={isVisible} onCancel={() => setIsVisible(false)} cancelButtonProps={{style: {display:'none'}}} okButtonProps={{style:{borderRadius: "8px"}}}>
         <div className='form-group'>
           <span>{t("correspondence_Memo")}</span>
-          <Select style={{ width: '100%' }} defaultValue="Manual Registration" suffixIcon={<img src={arrowIcon} />}>
-              <Option value="Manual Registration">Select correspondence memo</Option>
+          <Select style={{ width: '100%' }} placeholder="Select correspondence memo" suffixIcon={<img src={arrowIcon} />}>
+              {
+                correspondenceMemo.memo.map((item)=>(
+                  <Option value={item.id}>{item.text}</Option>
+                ))
+              }
             </Select>
         </div>
       </Modal>
@@ -104,6 +125,7 @@ const Wrapper = styled.div`
     background-color: #fff;
     border-radius: 4px;
     border: 1px solid #ECECEC;
+    position: relative;
 
     &__header{
       border-bottom: 1px solid #EEEEEE;
@@ -127,6 +149,9 @@ const Wrapper = styled.div`
       background-color: #FCF3A7;
       border: 1px solid #EEEEEE;
       border-radius: 4px;
+      height: calc(100% - 95px);
+      overflow: hidden;
+      position: absolute;
 
       &__top{
         height: 15px;
@@ -135,6 +160,8 @@ const Wrapper = styled.div`
 
       &__content{
         padding: 15px;
+        height: 100%;
+        overflow: auto; 
 
         h3{
           font-weight: 700;

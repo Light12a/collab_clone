@@ -10,6 +10,7 @@ import waitingListStatus from './waitingList/waitingListStatus'
 import keypadStatus from './keypad/keypadStatus'
 import agentListStatus from './agentList/agentListStatus'
 import AgentList from './agentList/AgentList'
+import correspondence from './talkscript/correspondence'
 import homePageSlice from './homePage/homePageSlice'
 import { logoutAPI } from '../../api'
 
@@ -24,7 +25,8 @@ const appReducer = combineReducers({
     keypadStatus,
     agentListStatus,
     homePageSlice,
-    AgentList
+    AgentList,
+    correspondence
 })
 
 const rootReducer = (state, action) => {

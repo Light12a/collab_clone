@@ -1,19 +1,18 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import { Menu } from 'antd';
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import logo from '../../asset/logo-clb.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurentRoute } from '../../redux/reducers/route/route';
 import { setIsWaitingListOpen } from '../../redux/reducers/waitingList/waitingListStatus';
-import { setIsKeypadOpen } from '../../redux/reducers/keypad/keypadStatus';
-import { setAgentListOpen } from '../../redux/reducers/agentList/agentListStatus';
 import { setIsFullScreen } from '../../redux/reducers/homePage/homePageSlice';
+import imgBar from '../../asset/menu.svg'
+import imgArrow from '../../asset/arrow-2.svg'
+import './Sidebar.css'
 
-const rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
 
 function Sidebar({ t }) {
-
+    const menuRef = useRef()
+    const [imgMenu, setImgMenu] = useState(imgBar)
     const dispatch = useDispatch()
     const waitingCallList = useSelector(state => state.waiting);
     const waitingListStatus = useSelector(state => state.waitingListStatus)
@@ -26,30 +25,35 @@ function Sidebar({ t }) {
 
     }
 
-    console.log(currentRoute)
+    const activeSideBar = () =>{
+        menuRef.current.classList.toggle('side-bar-active')
+
+        if(menuRef.current.classList.contains('side-bar-active')){
+            setImgMenu(imgArrow)
+        }else{
+            setImgMenu(imgBar)
+        }
+        
+    }
 
     return (
-        <SideBar>
+        <div className='side-bar' ref={menuRef}>
+            <div className='menu-bar' onClick={activeSideBar}>
+                <img src={imgMenu}/>
+            </div>
             <Wrapper
                 mode="inline"
             >
                 <li onClick={e => {
                     dispatch(setIsWaitingListOpen(true));
                     dispatch(setIsFullScreen(false))
-                }} className={`${waitingCallList.length > 0 ? 'ant-menu-item blink_me' : 'ant-menu-item'} ${waitingListStatus.isWaitingListOpen ? 'active' : ''}`}>
+                }} className={`${waitingCallList.length > 0 ? 'ant-menu-item blink_me' : 'ant-menu-item'} ${waitingListStatus.isWaitingListOpen && 'active' }`}>
                     <div className='ant-menu-title-content'>
                         <img src={require('../../asset/phone.svg').default} />
                         <span>{t('waitingList')}</span>
                     </div>
 
                 </li>
-                {/* <li className='ant-menu-item'>
-                    <div className='ant-menu-title-content'>
-                        <img src={require('../../asset/phone.svg').default} />
-                        <span>{t('conferenceList')}</span>
-                    </div>
-
-                </li> */}
                 <li className={`ant-menu-item ${currentRoute === "incoming" ? 'active' : ''}`} onClick={() => { dispatch(setCurentRoute("incoming")) }}>
                     <div className='ant-menu-title-content'>
                         <img src={require('../../asset/talkscript.svg').default} />
@@ -64,19 +68,46 @@ function Sidebar({ t }) {
                     </div>
                 </li>
             </Wrapper>
-        </SideBar>
+        </div>
     );
 };
 
-const SideBar = styled.div`
-    width: 100px;
-    margin-top: 20px;
-    position: fixed;
-    right: 0;
-`
+// const SideBar = styled.div`
+//     width: 100px;
+//     margin-top: 20px;
+//     position: fixed;
+//     right: 0; 
+
+//     @media screen and (max-width: 768px) {
+//         width: 0;
+//     }
+
+//     .side-bar-active{
+//         width: 100%;
+//     }
+
+//     .menu-bar{
+//         position: absolute;
+//         background: #547100;
+//         right: 100%;
+//         top: 0;
+//         box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.06);
+//         border-radius: 4px 0px 0px 4px;
+//         padding: 9px 11px;
+//         cursor: pointer;
+//         display: none;
+        
+//         @media screen and (max-width: 768px) {
+//             display: initial;
+//         }
+//     }
+// `
 
 const Wrapper = styled(Menu)`
     border-radius: 4px 0 0 4px;
+
+     
+
     .blink_me {
         animation: blinker 1s linear infinite;
       }
@@ -115,7 +146,7 @@ const Wrapper = styled(Menu)`
         padding-top: 4px !important;
     }
 
-    .ant-menu-item.active .ant-menu-title-content, .ant-menu-item:hover .ant-menu-title-content{
+    .ant-menu-item.active .ant-menu-title-content{
         background: #F7FFE1;
 
         img{
@@ -125,13 +156,21 @@ const Wrapper = styled(Menu)`
         span{
             font-weight: 700;
         }
+
+    }
+    .ant-menu-item:hover .ant-menu-title-content{
+        background: #F7FFE1;
+    }
+
+    .ant-menu-item:nth-child(2) .ant-menu-title-content{
+        padding: 6px !important;
     }
 
     .ant-menu-item:hover{
         color: #000000  !important;
     }
 
-    .ant-menu-item.active .ant-menu-title-content::after, .ant-menu-item:hover .ant-menu-title-content::after{
+    .ant-menu-item.active .ant-menu-title-content::after{
         content: '';
         position: absolute;
         top: 6px;

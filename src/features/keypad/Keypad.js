@@ -11,6 +11,7 @@ import { setIsKeypadOpen, setKeypadInput, resetKeypad } from '../../redux/reduce
 
 import deleteIcon from '../../asset/delete.svg'
 import { message } from 'antd';
+import { t } from 'i18next';
 const defaulKeypad = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#',]
 
 
@@ -127,7 +128,7 @@ const Keypad = (props) => {
                 </div>
                 {/* <h1 className={callNumber === '' ? 'white-blur' : 'white'} onChange={e => { onKeypadValueChange(e.target.value) }} >{callNumber === '' ? 'Phone number' : callNumber}</h1> */}
                 <div className='phone-number-main'>
-                    <input placeholder='Phone number' onChange={e => { onKeypadValueChange(e.target.value) }} value={callNumber} onKeyPress={e => e.preventDefault()} />
+                    <input placeholder={t('phoneNumber')} onChange={e => { onKeypadValueChange(e.target.value) }} value={callNumber} onKeyPress={e => e.preventDefault()} />
                     {
                         callNumber && <button onClick={handleCopy}><img src={imgCopy} /></button>
                     }
@@ -297,7 +298,7 @@ const Wrapper = styled.div`
         .filter-wrap{
             background: #FBFBFB;
             overflow-y: scroll;
-            height: 15vh;
+            height: 18vh;
 
             &::-webkit-scrollbar{
                 width: 6px;

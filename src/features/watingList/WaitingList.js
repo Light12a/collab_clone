@@ -6,6 +6,7 @@ import { setIsWaitingListOpen } from '../../redux/reducers/waitingList/waitingLi
 import { useTranslation } from 'react-i18next';
 import { callStatsContraint } from '../../redux/reducers/call/currentCall';
 import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/call/currentCall';
+import CustomSelect from "./CustomSelect";
 import styled from 'styled-components';
 import { Select, Radio } from "antd";
 import arrowIcon from '../../asset/arrow_green.png'
@@ -231,6 +232,11 @@ const WaitingList = React.forwardRef((props, ref) => {
         border: '1px solid #CDCDCD',
         borderRadius: '4px'
     }
+    const skillGroup = [
+        { id: 1, name: "Skill group 1" },
+        { id: 2, name: "Skill group 2" },
+        { id: 3, name: "Skill group 3" },
+      ]
 
     return (
         <Wrapper ref={ref}>
@@ -240,11 +246,18 @@ const WaitingList = React.forwardRef((props, ref) => {
             </div>
             <div className='waiting-list__body drag-body'>
                 <p>{t('skillGroup')}</p>
-                <Select style={{ width: '300px' }} defaultValue={t('selectSkillGroup')} suffixIcon={<img src={arrowIcon} />}>
+                {/* <Select style={{ width: '300px' }} defaultValue={t('selectSkillGroup')} suffixIcon={<img src={arrowIcon} />}>
                     <Option value="skillGroup1">Skillgroup 1</Option>
                     <Option value="skillGroup2">Skillgroup 2</Option>
                     <Option value="skillGroup3">Skillgroup 3</Option>
-                </Select>
+                </Select> */}
+
+                <CustomSelect
+                    defaultText="Select skill group"
+                    optionsList={skillGroup}
+                />
+
+
                 <table className='drag-table'>
                     <thead>
                         <th></th>

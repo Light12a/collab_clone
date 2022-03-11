@@ -10,10 +10,11 @@ import connecting from '../../asset/connecting.svg';
 import arrow from '../../asset/arrow.svg';
 import logoutImg from "../../asset/logout.svg"
 import { applyState, getAwayReasons, getUserState } from '../../redux/reducers/authen/auth'
-import { Badge, Modal, Select } from 'antd';
+import {Modal} from 'antd';
 
 const Topbar = ({ t }) => {
     const dropdownActive = useRef()
+    const toggleRef = useRef()
 
     const { token: { token } } = useSelector(state => state.auth)
     const { user } = useSelector(state => state.auth)
@@ -32,42 +33,64 @@ const Topbar = ({ t }) => {
                 return { state: t('acceptable'), bg: "78,107,218" }
             case 102:
                 return { state: t('afterTreatment'), bg: "242, 201, 76" }
-            case 103:
-                return { state: "Away", bg: "235, 87, 87" }
+            case 100:
+                return { state: t('away'), bg: "235, 87, 87" }
             default:
-                return { state: t('acceptable'), bg: "78, 107, 218" }
+                return { state: t('offline'), bg: "235, 87, 87" }
         }
     }
 
     useEffect(() => {
-        dispatch(getUserState(token)).then(() => {console.log(userState)})
+        dispatch(getUserState(token))
         dispatch(getAwayReasons(token))
     }, [])
+    
+    useEffect(() => {
+        setReasonID(userState.sub_state)
+    },[userState])
+    
 
-    const { Option } = Select;
     const { userConfig } = useSelector(state => state.auth)
 
-    // const [userState, setUserState] = useState(null)
     const [logOutModalVisible, setLogOutModalVisible] = useState(false)
 
 
     const userStates = [
         {
             code: 101,
-            state: "Acceptable",
+            state: t('acceptable'),
             bg: "78,107,218"
         },
         {
             code: 102,
-            state: "After-treatment",
+            state: t('afterTreatment'),
             bg: "242, 201, 76"
         },
         {
-            code: 103,
-            state: "Away",
+            code: 100,
+            state: t('away'),
             bg: "235, 87, 87"
         }
     ]
+
+    const clickOutsideRef = (contentRef, toggleRef) => {
+        document.addEventListener("mousedown", (e) => {
+          // user click toggle
+          if (toggleRef.current && toggleRef.current.contains(e.target)) {
+            contentRef.current.classList.toggle("active");
+          } else {
+            // user click outside toggle and content
+            if (contentRef.current && !contentRef.current.contains(e.target)) {
+              contentRef.current.classList.remove("active");
+            }
+          }
+        });
+    };
+
+    useEffect(() => {
+        clickOutsideRef(dropdownActive, toggleRef)
+    }, [])
+    
 
     const strConnected = t('connected');
     const strConnecting = t('connecting');
@@ -113,10 +136,15 @@ const Topbar = ({ t }) => {
         dispatch(applyState({
             username: user.username,
             token: token,
-            state: 103,
+            state: 100,
             sub_state: reasonID
         }))
         setIsModalVisible(false)
+    }
+
+    const handleCancleModal = () => {
+        setIsModalVisible(false)
+        setReasonID(userState.sub_state)
     }
 
     return (
@@ -132,17 +160,18 @@ const Topbar = ({ t }) => {
             </div>
             <div className='topbar__group'>
                 <div className='topbar__group__account'>
-                    <div className='topbar__group__account__content' onClick={() => { dropdownActive.current.classList.toggle('active') }}>
+                    <div className='topbar__group__account__content' ref={toggleRef} 
+                    >
                         <Dot bg={CheckState(userState.state).bg} />
                         <span className='name'>{userConfig.config?.displayname}</span>
-                        <Text Text color={CheckState(userState.state).bg}>(<b>{CheckState(userState.state).state}</b>)</Text>
+                        <Text color={CheckState(userState.state).bg}>(<b>{CheckState(userState.state).state} {userState.state === 100 && ` - ${awayReasons.away_reasons?.filter(away => away.id === userState.sub_state).map(e => e.text)}`}</b>)</Text>
                         <img src={arrow} />
                     </div>
 
                     <div className='drop-down' ref={dropdownActive}>
                         {
                             userStates.map((item) => (
-                                <div className='drop-down-item' onClick={() => { item.code === 103 ? chooseAwayReason() : handleSetUser(item) }}>
+                                <div className={`drop-down-item ${userState.state === item.code && 'active'}`} onClick={() => { item.code === 100 ? chooseAwayReason() : handleSetUser(item) }}>
                                     <input type="radio" checked={userState.state === item.code ? true : false} />
                                     <span>{item.state}</span>
                                 </div>
@@ -158,17 +187,17 @@ const Topbar = ({ t }) => {
 
             </div>
 
-            <Modal title="away reason" onCancel={() => setIsModalVisible(false)} visible={isModalVisible} onOk={handleAway} cancelButtonProps={{ style: { display: 'none' } }} okButtonProps={{ style: { borderRadius: "8px" } }}>
+            <Modal title="away reason" onCancel={handleCancleModal} visible={isModalVisible} onOk={handleAway} cancelButtonProps={{ style: { display: 'none' } }} okButtonProps={{ style: { borderRadius: "8px" } }}>
                 <h3>Choose one reason:</h3>
                 <div className='reason-body'>
-                    {/* {
+                    {
                         awayReasons.away_reasons?.map((item) => (
-                            <div className='ant-modal-item' >
-                                <input type="radio" name='rdReason' id={item.id} onClick={() => setReasonID(item.id)}/>
+                            <div className={`ant-modal-item ${reasonID === item.id && 'active'}`}  onClick={() => setReasonID(item.id)} >
+                                <input type="radio" name='rdReason' id={item.id} checked={reasonID === item.id ? true : false }/>
                                 <label for={item.id}>{item.text}</label>
                             </div>
                         ))
-                    } */}
+                    }
                 </div>
             </Modal>
             <Modal
@@ -236,10 +265,15 @@ const Wrapper = styled.div`
                     align-items: center;
                     gap:0.5rem;
 
-                    &:hover{
-                        background-color: #F7FFE1;
+                    &.active{
+                        background-color: #F7FFE1 !important;
                         
                     }
+
+                    &:hover{
+                        background-color: #f5f5f5;
+                    }
+
                 }
             }
             .drop-down.active{
@@ -252,8 +286,11 @@ const Wrapper = styled.div`
             display: flex;
             align-items: center;
             gap:0.5rem;
-            img{
-                
+
+            span{
+                @media screen and (max-width: 768px){
+                    display: none;
+                }
             }
         }
         
@@ -289,3 +326,4 @@ const Dot = styled.div`
 `
 
 export default React.memo(Topbar);
+

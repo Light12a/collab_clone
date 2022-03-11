@@ -158,41 +158,55 @@ const SettingScreen = () => {
           </div>
           <h1>{t("voiceSetting")}</h1>
           <div className='setting-voice'>
-            <div className='form-group'>
-              <p>{t("inputDevice")}</p>
-              <Select style={{ width: '100%' }} defaultValue="Choose input device" onSelect={handleSelectMic} suffixIcon={<img src={arrowIcon} />}>
-                {
-                  devices.map((item, key) => {
-                    if (item.kind === "audioinput") {
-                      return (
-                        <Option value={item.deviceId}>{item.label}</Option>
-                      )
-                    }
-                  })
-                }
-              </Select>
+            {/* <div className="App">
+          <ProgressBar bgcolor={"#6a1b9a"} completed={completed} />
+          <Input
+            type='number'
+            value={completed}
+            onChange={onChangeVolumn}
+          />
+        </div> */}
+
+            <div>
+              <div className='form-group'>
+                <p>{t("inputDevice")}</p>
+                <Select style={{ width: '100%' }} defaultValue="Choose input device" onSelect={handleSelectMic} suffixIcon={<img src={arrowIcon} />}>
+                  {
+                    devices.map((item, key) => {
+                      if (item.kind === "audioinput") {
+                        return (
+                          <Option value={item.deviceId}>{item.label}</Option>
+                        )
+                      }
+                    })
+                  }
+                </Select>
+              </div>
+              <div className='form-group'>
+                <p>{t("inputVolume")}</p>
+                <Slider defaultValue={volume * 10} onChange={onVolumnChange} />
+              </div>
+
             </div>
-            <div className='form-group'>
-              <p>{t("outputDevice")}</p>
-              <Select style={{ width: '100%' }} onSelect={handleSelectDevice} defaultValue="Choose output device" suffixIcon={<img src={arrowIcon} />}>
-                {
-                  devices.map((item, key) => {
-                    if (item.kind === "audiooutput") {
-                      return (
-                        <Option value={item.deviceId}>{item.label}</Option>
-                      )
-                    }
-                  })
-                }
-              </Select>
-            </div>
-            <div className='form-group'>
-              <p>{t("inputVolume")}</p>
-              <Slider defaultValue={volume} onChange={onVolumnChange} />
-            </div>
-            <div className='form-group'>
-              <p>{t("outputVolume")}</p>
-              <Slider defaultValue={volume} />
+            <div>
+              <div className='form-group'>
+                <p>{t("outputDevice")}</p>
+                <Select style={{ width: '100%' }} onSelect={handleSelectDevice} defaultValue="Choose output device" suffixIcon={<img src={arrowIcon} />}>
+                  {
+                    devices.map((item, key) => {
+                      if (item.kind === "audiooutput") {
+                        return (
+                          <Option value={item.deviceId}>{item.label}</Option>
+                        )
+                      }
+                    })
+                  }
+                </Select>
+              </div>
+              <div className='form-group'>
+                <p>{t("outputVolume")}</p>
+                <Slider defaultValue={volume * 10} />
+              </div>
             </div>
           </div>
           <Checkbox>{t("settingCheckboxDes")}</Checkbox>
@@ -225,7 +239,7 @@ const SettingScreen = () => {
                 <Button htmlType="submit">Send</Button>
                 <Button onClick={e => clearLogFiles()}>Clear logs</Button>
               </Form>
-              
+
             </div>
           }
           {/* <SettingJB /> */}
@@ -295,6 +309,10 @@ const Wrapper = styled.div`
       display: grid;
       grid-template-columns: 49% 49%;
       gap:2%;
+
+      @media screen and (max-width: 1150px){
+        grid-template-columns: 100%;
+      }
 
     }
 

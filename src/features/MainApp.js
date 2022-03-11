@@ -6,9 +6,10 @@ import Sidebar from '../components/layout/Sidebar'
 import Topbar from '../components/layout/Topbar';
 import useSip from '../hooks/useSip';
 import { setConnect } from '../redux/reducers/connection/connectStatus';
-import { refreshToken } from '../redux/reducers/authen/auth';
+import { getAwayReasons, getUserState, refreshToken } from '../redux/reducers/authen/auth';
 import { withTranslation } from 'react-i18next';
 import { GetAgentList } from '../redux/reducers/agentList/AgentList'
+import { getCorrespondence } from '../redux/reducers/talkscript/correspondence';
 
 const MainApp = ({ t }) => {
 
@@ -19,9 +20,10 @@ const MainApp = ({ t }) => {
 
     useEffect(() => {
         let token = localStorage.getItem('token')
-        if (isAuth)
+        if (isAuth){
             dispatch(GetAgentList(token))
-
+            dispatch(getCorrespondence(token))
+        }
     })
 
     useEffect(() => {
@@ -53,6 +55,10 @@ const Wrapper = styled.div`
         justify-content:space-between;
         width: calc(100% - 100px);
         padding-right: 20px;
+
+        @media screen and (max-width: 768px) {
+            width: 100%;
+        }
     }
 `
 

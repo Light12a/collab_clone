@@ -17,7 +17,6 @@ const Signin = () => {
 
     const { t, i18n } = useTranslation();
     const [isRemember, setIsRemember] = useState(true);
-    const [inputs, setInputs] = useState({});
     const [param, setparam] = useState('');
     const [loginError, setLoginError] = useState('')
 
@@ -56,7 +55,6 @@ const Signin = () => {
 
     const onFinish = async (e) => {
         clearLoginError()
-        console.log(e)
         // message.success('Submit success!');
         try {
             dispatch(signin({

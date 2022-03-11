@@ -65,3 +65,7 @@ export const applyStateAPI = async (body) => {
 export const getAwayReasonsAPI = async (token) => {
     return handleRequest('post', '/get_away_reasons', { token })
 }
+
+export const getCorrespondenceAPI = async (token) => {
+    return handleRequest('post', '/get_correspondence_memo_list', { token })
+}

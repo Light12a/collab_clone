@@ -174,7 +174,7 @@ const HomePage = () => {
                 <div className='homepage__top'>
                     <p>{t('yourNotiNumber')}<span>*</span></p>
                     <div className='homepage__top__group'>
-                        <Select style={{ width: '376px' }} defaultValue={'123-444-444'} suffixIcon={<img src={arrowIcon} />}>
+                        <Select style={{ width: '320px' }} defaultValue={'123-444-444'} suffixIcon={<img src={arrowIcon} />}>
                             <Option value="123-444-444">123-444-444</Option>
                             <Option value="123-555-555">123-555-555</Option>
                         </Select>
@@ -271,7 +271,7 @@ const HomePage = () => {
                 </div>
 
 
-                <div className='homepage__btn-group'>
+                <div className={`homepage__btn-group ${currentRoute !== 'main' ? 'wrap' : ''}`}>
                     {/* <button onClick={e => { hasCurrentCall ? endCall() : call() }} className='btn'>{hasCurrentCall ? t('disconnect') : t('call')}</button> */}
                     {/* <button className='btn' onClick={e => hold()}>{activeCall.state === callStatsContraint.HOLD ? t('unHold') : t('holdOn')}</button>
                     <button className='btn' onClick={e => forward()}>{t('forward')}</button> */}
@@ -348,7 +348,7 @@ const Wrapper = styled.div`
     padding-right: 0;
     height: calc(100vh - 52px);
     flex: 1;
-    min-width: 450px;
+    /* min-width: 450px; */
     
 
     .homepage{
@@ -382,6 +382,7 @@ const Wrapper = styled.div`
                     color: #FFFFFF;
                     white-space: nowrap;
                     cursor: pointer;
+                    margin-left: 2rem;
 
                     img{
                         margin-right: 0.5rem;
@@ -442,8 +443,6 @@ const Wrapper = styled.div`
                     align-items: center;
                     background: rgba(255, 255, 255, 0.14);
                     backdrop-filter: blur(12px);
-                    /* Note: backdrop-filter has minimal browser support */
-
                     border-radius: 8px;
                 }
             }
@@ -484,6 +483,7 @@ const Wrapper = styled.div`
         width: 160px;
         cursor: pointer;
         white-space: nowrap;
+        
 
         &:active{
             background-color: #bae145;
@@ -501,6 +501,7 @@ const Wrapper = styled.div`
             padding: 2.5vw;
             width: 20vw;
             background: rgba(255, 255, 255, 0.14);
+            border: 2px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0px 6px 60px rgba(5, 13, 7, 0.2);
             border-radius: 40px;
             backdrop-filter: blur(30px);
@@ -547,6 +548,8 @@ const Wrapper = styled.div`
         &__descript{
                 p{
                     color: #0084FF;
+                    margin-bottom: 0;
+                    font-weight: 500;
                 }
         }
     }
@@ -555,6 +558,20 @@ const Wrapper = styled.div`
         .coaching__item{
             width: 15vw;
             padding: 1vw;
+        }
+
+        .coaching{
+            @media screen and (max-width: 1400px) {
+                flex-direction: column;
+                gap:1rem;
+            }
+
+            &__descript{
+                @media screen and (max-width: 1400px) {
+                    display: flex ;
+                    gap:1rem;
+                }
+            }
         }
     }
 
@@ -597,6 +614,20 @@ const Wrapper = styled.div`
                     margin-bottom: 10px;
                 }
             }
+        }
+    }
+
+    .wrap{
+        @media screen and (max-width: 1150px){
+            flex-wrap: wrap;
+        }
+        
+    }
+
+    .wrap .btn{
+        /* width: 109px; */
+        @media screen and (max-width: 1150px){
+            flex-basis: 25%;
         }
     }
 `

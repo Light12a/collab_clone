@@ -19,10 +19,10 @@ module.exports = {
                     //     return Object.entries(theme).map(([k, v]) => '@' + k + ':' + v + ';').join("\n");
                     // },
                     lessOptions: {
-                        // modifyVars: {
-                        //     '@primary-color': 'red',
+                        modifyVars: {
+                             '@primary-color': '#99CC00',
                         //     '@success-color': '#000000'
-                        // },
+                        },
                         javascriptEnabled: true,
                     },
                 },

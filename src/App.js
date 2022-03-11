@@ -6,7 +6,7 @@ import Signin from './features/login/Signin';
 import { useDispatch, useSelector } from 'react-redux';
 import MainApp from './features/MainApp';
 import SipProvider from './contexts/SipProvider';
-import { getUserConfig, reLogin, setLoginLoadState, setMe, signin, getUserState } from './redux/reducers/authen/auth';
+import { getUserConfig, reLogin, setLoginLoadState, setMe, signin} from './redux/reducers/authen/auth';
 import { setNetwork } from './redux/reducers/connection/networkStatus';
 import { setConnect } from './redux/reducers/connection/connectStatus';
 import WaitingList from './features/watingList/WaitingList';
@@ -105,7 +105,6 @@ function App() {
   useEffect(() => {
     if (isAuth && isHaveToken)
       dispatch(getUserConfig(token))
-
   }, [isAuth, isHaveToken, dispatch, token])
 
   if (!isHaveToken && !isSettingToken) {

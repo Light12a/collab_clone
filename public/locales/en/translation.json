@@ -85,5 +85,8 @@
     "logOutQuestion":"Are you sure you want to log out ?",
     "yes":"YES",
     "no":"NO",
-    "sendLogs": "Send Logs"
+    "sendLogs": "Send Logs",
+    "away": "Away",
+    "acceptable": "Acceptable",
+    "phoneNumber":"Phone number"
 }

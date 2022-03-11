@@ -129,7 +129,10 @@ const authSlice = createSlice({
             state.userState = action.payload
         },
         [applyState.fulfilled]: (state, action) => {
-            state.userState = action.payload
+            if(action.payload.state !== -1){
+                state.userState = action.payload
+            }
+            
         },
         [getAwayReasons.fulfilled]: (state, action) => {
             state.awayReasons = action.payload
