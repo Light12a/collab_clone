@@ -114,15 +114,13 @@ function App() {
               <StyleSheetManager target={newWaitingWindow}>
                 <NewWindow onClose={() => {
                   dispatch(setIsWaitingListOpen(false))
-                  dispatch(setIsFullScreen(true))
+                
                 }} name='waitinglist'>
                   <WaitingList ref={nwaitingRef} />
                 </NewWindow>
               </StyleSheetManager>
               :
               <Draggable onDrag={() => {
-                dispatch(setIsFullScreen(false))
-                dispatch(setIsFullScreen(true))
               }}>
                 <div className='drag formWaitingList'>
                   <WaitingList />

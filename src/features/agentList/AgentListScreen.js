@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import sortDown from '../../asset/sortDown.svg';
 import sortUp from '../../asset/sortUp.svg';
 import './AgentListScreen.css'
@@ -7,13 +7,15 @@ import { setAgentListOpen } from '../../redux/reducers/agentList/agentListStatus
 import { useTranslation } from 'react-i18next';
 import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/call/currentCall';
 import { appColor } from '../../value/color';
+import Pagination from '../../components/Pagination';
 import { Select } from 'antd';
 import arrowIcon from '../../asset/ic.svg'
-import searchIcon from '../../asset/search.svg'
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import dialpad from '../../asset/dialpad.svg'
 import { setIsKeypadOpen } from '../../redux/reducers/keypad/keypadStatus';
+import SearchBar from '../../components/SearchBar'
 import call from '../../asset/call.svg'
+
 const AgentListScreen = (props) => {
     const { Option } = Select;
     const dispatch = useDispatch()
@@ -22,21 +24,117 @@ const AgentListScreen = (props) => {
     //get user infomation
     // const { isWaitingListOpen } = useSelector(state => state.waitingListStatus)
     const { agentList } = useSelector(state => state.AgentList)
-    const ListAgent = agentList.agentList.users;
+    let ListAgent = agentList.agentList.users;
+    let filterListAgent = [];
 
-    console.log("My Agent List: " + JSON.stringify(ListAgent))
+    // pagination
+    let [totalItems, setTotalItem] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10
+    //x list
+    let xListAgent = ListAgent;
+    xListAgent = xListAgent.concat(xListAgent, ListAgent)
+    xListAgent = xListAgent.concat(xListAgent, ListAgent)
+    
 
+    // get state
     const status = ListAgent.state
-    console.log("My status: " + status)
-    // t("onHoding")
+
+    let [listAgentForShow, setListAgentForShow] = useState([])
+
+  
+
+    useEffect(()=>{
+        let newList = [];
+        for(let i = 0; i < itemsPerPage; i++){
+            console.log((currentPage-1)*itemsPerPage + i )
+            newList.splice(i, 1, xListAgent[(currentPage-1)*itemsPerPage + i])
+        }
+
+        setListAgentForShow(newList)
+
+    },[currentPage])
 
     const onSort = (sortTimeDes, sortCallNumberDes, sortNameDes) => {
+        
+    }
+    const onPageChange = (page) =>{
+        setCurrentPage(page)
+    }
 
+    const onSearch = (e) => {
+        ListAgent.map((el) => {
+            if (el.username.toLowerCase().includes(e.target.value) ||
+                el.ext_number.toLowerCase().includes(e.target.value)) {
+                filterListAgent.push(el)
+                return el;
+            } else {
+
+                return ''
+            }
+        })
+        setListAgentForShow(filterListAgent)
+        e.target.value ?
+            ListAgent = []
+            : ListAgent = agentList.agentList.users
+
+    }
+    const RenderUserItem = () => {
+        return (
+            listAgentForShow && listAgentForShow !== null ?
+            listAgentForShow.map((item) => {
+                    return (
+                    item && item !== null &&
+                    <tr className='itemAgent'>
+                        <td className='containercbStatus'>
+                            <Checkbox className='checkboxStatus' />
+                        </td>
+                        <td>
+                            {
+                                RenderItemStatus(item.state)
+                            }
+                        </td>
+                        <td>
+                            {item.username}
+                        </td>
+                        <td>
+                            {item.ext_number}
+                        </td>
+                        <td><img src={call} /></td>
+                    </tr>
+                    )
+                })
+                :
+                filterListAgent && filterListAgent !== null &&
+                    filterListAgent.map((item) => {
+                        return (item && item !== null &&
+
+                            <tr className='itemAgent'>
+                                <td className='containercbStatus'>
+                                    <Checkbox className='checkboxStatus' />
+                                </td>
+
+                                <td>
+                                    {
+                                        RenderItemStatus(item.state)
+                                    }
+                                </td>
+                                <td>
+                                    {item.username}
+                                </td>
+                                <td>
+                                    {item.ext_number}
+                                </td>
+                                <td><img src={call} /></td>
+                            </tr>
+                        )
+                    }
+                    )
+        )
     }
 
     const RenderItemStatus = (item) => {
 
-        console.log("My Status: " + item)
         switch (item) {
             case 100:
                 return <span className='statusAcceptable'>{t('acceptable')}</span>
@@ -49,7 +147,7 @@ const AgentListScreen = (props) => {
             case 104:
                 return <span className='statusInACall'>{t('inACall')}</span>
             default:
-                return <span className='statusAcceptable'>{t('acceptable')}</span>
+                return null;
         }
 
         {/* {status === "on Hoding" ?
@@ -72,7 +170,6 @@ const AgentListScreen = (props) => {
                                         } */}
 
     }
-
     return (
         <>
             <div className="agent-list__header drag-header">
@@ -95,14 +192,8 @@ const AgentListScreen = (props) => {
                 <div className='container-bar'>
                     <div className='form-group'>
                         <span className='title'>{t('search')}</span>
-                        <div className='search'>
-                            <input placeholder={t('holderInputSearch')}></input>
-                            <img
-                                src={searchIcon}
-                                onClick={() => alert('hi')}
-                                className='iconSearch'
-                            />
-                        </div>
+                        <SearchBar data={listAgentForShow} t={t} onSearch={e => onSearch} />
+
                     </div>
                     <div className='form-group'>
                         <span className='title'>{t('skillGroup')}</span>
@@ -160,31 +251,18 @@ const AgentListScreen = (props) => {
 
                         </thead>
                         <tbody>
-
-                            {ListAgent &&
-                                ListAgent.map((item) =>
-                                (
-                                    <tr className='itemAgent'>
-                                        <td className='containercbStatus'>
-                                            <Checkbox className='checkboxStatus' />
-                                        </td>
-                                        <td>
-                                            {
-                                                RenderItemStatus(item.state)
-                                            }
-                                        </td>
-                                        <td>
-                                            {item.username}
-                                        </td>
-                                        <td>
-                                            {item.ext_number}
-                                        </td>
-                                        <td><img src={call} /></td>
-                                    </tr>
-                                ))}
+                            {RenderUserItem()}
                         </tbody>
-
                     </table>
+                    <Pagination
+                        total={xListAgent}
+                        itemsPerPage={itemsPerPage}
+                        t={t}
+                        onPageChange={(e) =>onPageChange(e)}
+                    />
+                    <div>
+
+                    </div>
                 </div>
             </div>
         </>

@@ -11,7 +11,7 @@
 .agent-list__body .noti-number{
     background: #FBFBFB;
     padding: 16px;
-
+    height: fit-content;
 }
 .agent-list__body .noti-number p{
     font-weight: 500;

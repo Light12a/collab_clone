@@ -171,7 +171,7 @@ const HomePage = () => {
 
     return (
         <Wrapper>
-            <div className={(isWaitingListOpen && !isFullScreen) ? 'haflHomepage' : 'homepage'}>
+            <div className={(isWaitingListOpen) ? 'haflHomepage' : 'homepage'}>
                 <div className='homepage__top'>
                     <p>{t('yourNotiNumber')}<span>*</span></p>
                     <div className='homepage__top__group'>

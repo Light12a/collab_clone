@@ -238,12 +238,15 @@ const SettingScreen = () => {
                 </Form.Item>
                 <Button htmlType="submit">Send</Button>
                 <Button onClick={e => clearLogFiles()}>Clear logs</Button>
-              </Form>
 
+              </Form>
             </div>
           }
+
           {/* <SettingJB /> */}
+
         </div>
+        <div className='versionStyle'>{t('version')}: {version}</div>
       </div>
     </Wrapper>
   )
@@ -304,7 +307,13 @@ const Wrapper = styled.div`
         margin-bottom: 0.25rem;
       }
     }
-
+    .versionStyle {
+      color: red;
+      margin-top: 35vh;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
     .setting-voice{
       display: grid;
       grid-template-columns: 49% 49%;
@@ -326,7 +335,7 @@ const Wrapper = styled.div`
       background-color: #4E525B;
       border-radius: 4px;
     }
-
+  
     .ant-slider-track {
         height: 8px;
         background-color: #99CC00;
