@@ -87,5 +87,6 @@
   "sendLogs": "ログを送信する",
   "away": "離席",
   "acceptable": "受付可",
-  "phoneNumber": "電話番号"
+  "phoneNumber": "電話番号",
+  "offline":"オフライン"
 }

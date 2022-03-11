@@ -115,6 +115,14 @@
 /* .checkboxStatus {
     margin: 1vw;
 } */
+.statusOffline{
+    font-size: calc(0.5vw + 0.6vh);
+    color: #707070;
+    background-color: #ECECEC;
+    border: 1px solid #707070;
+    padding: 3px 10px 3px 10px;
+    border-radius: 100px;
+}
 .statusOnHoding {
     font-size: calc(0.5vw + 0.6vh);
     color: #FFB800;

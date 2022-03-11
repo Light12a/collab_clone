@@ -11,7 +11,6 @@ const SettingJB = () => {
             .then(({ data }) => data.status ? hasJBRef.current = true : hasJBRef.current = false)
     }, [userName])
     const onFinish = async (values) => {
-        console.log(values.size)
         let data
         if (hasJBRef.current) {
             const data = await axios.put(`http://13.113.23.145:8000/api/jitterbuffer?username=${userName}`, { jitterbuffer: values.size })
@@ -19,7 +18,6 @@ const SettingJB = () => {
             const data = await axios.post('http://13.113.23.145:8000/api/jitterbuffers', { username: userName, jitterbuffer: values.size })
             hasJBRef.current = true
         }
-        console.log(`%cdata: ${data}`, 'font-size:30px')
     };
 
     const onFinishFailed = (errorInfo) => {

@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Badge, Select, message } from 'antd';
 import styled from 'styled-components';
 import { setAgentListOpen } from "../../redux/reducers/agentList/agentListStatus";
-import { callStatsContraint, removeAtiveCall, setCurrentCall, changeCurrentCallState } from '../../redux/reducers/call/currentCall';
+import { removeAtiveCall, setCurrentCall, changeCurrentCallState } from '../../redux/reducers/call/currentCall';
+import { callConstant } from '../../util/constant';
 import useSip from '../../hooks/useSip';
 import { useTranslation } from 'react-i18next';
 import { setIsWaitingListOpen } from '../../redux/reducers/waitingList/waitingListStatus';
@@ -53,46 +54,46 @@ const HomePage = () => {
 
     useEffect(() => {
         switch (activeCall.state) {
-            case callStatsContraint.ANSWER:
+            case callConstant.ANSWER:
                 setCallStatus({
                     color: 'blue',
                     text: 'In call',
                 })
                 break
-            case callStatsContraint.HOLD:
+            case callConstant.HOLD:
                 setCallStatus({
                     color: 'yellow',
                     text: 'On hold',
                     time: 0,
                 })
                 break
-            case callStatsContraint.UN_HOLD:
+            case callConstant.UN_HOLD:
                 setCallStatus({
                     color: 'blue',
                     text: 'In call',
                     time: 0,
                 })
                 break
-            case callStatsContraint.END:
+            case callConstant.END:
                 setCallStatus({
                     color: '',
                     text: ''
                 })
                 break
-            case callStatsContraint.HANG_UP:
+            case callConstant.HANG_UP:
                 setCallStatus({
                     color: '',
                     text: ''
                 })
                 break
-            case callStatsContraint.INCALL:
+            case callConstant.INCALL:
                 setCallStatus({
                     color: 'blue',
                     text: 'In call',
                     time: 0
                 })
                 break
-            case callStatsContraint.CALL:
+            case callConstant.MAKE_CALL:
                 setCallStatus({
                     color: 'green',
                     text: 'Calling...'
@@ -105,38 +106,38 @@ const HomePage = () => {
 
     useEffect(() => {
         let intervalTimeID
-        if (activeCall.state === callStatsContraint.INCALL || activeCall.state === callStatsContraint.HOLD) {
+        if (activeCall.state === callConstant.INCALL || activeCall.state === callConstant.HOLD) {
             intervalTimeID = setInterval(() => {
                 setCallStatus(cs => ({ ...cs, time: cs.time + 1 }))
             }, 1000)
         }
         return () => {
-            if (activeCall.state === callStatsContraint.INCALL || activeCall.state === callStatsContraint.HOLD)
+            if (activeCall.state === callConstant.INCALL || activeCall.state === callConstant.HOLD)
                 clearInterval(intervalTimeID)
         }
     }, [activeCall.state])
 
     const endCall = () => {
-        dispatch(changeCurrentCallState(callStatsContraint.HANG_UP))
+        dispatch(changeCurrentCallState(callConstant.HANG_UP))
     }
 
     const call = () => {
         if (keypadNumber.trim() === '') return
-        dispatch(changeCurrentCallState(callStatsContraint.CALL))
+        dispatch(changeCurrentCallState(callConstant.MAKE_CALL))
         ua.call(keypadNumber, callOptions)
     }
 
     const hold = () => {
-        if (activeCall.state === callStatsContraint.HOLD) {
-            dispatch(changeCurrentCallState(callStatsContraint.UN_HOLD))
+        if (activeCall.state === callConstant.HOLD) {
+            dispatch(changeCurrentCallState(callConstant.UN_HOLD))
         }
         else {
-            dispatch(changeCurrentCallState(callStatsContraint.HOLD))
+            dispatch(changeCurrentCallState(callConstant.HOLD))
         }
     }
 
     const forward = () => {
-        dispatch(changeCurrentCallState(callStatsContraint.TRANSFER))
+        dispatch(changeCurrentCallState(callConstant.TRANSFER))
     }
 
     const location = window.location.href.split('?');
@@ -152,7 +153,7 @@ const HomePage = () => {
             if (currentState === 'connected') {
 
                 // console.log('Timeout clear!');
-                dispatch(changeCurrentCallState(callStatsContraint.CALL))
+                dispatch(changeCurrentCallState(callConstant.MAKE_CALL))
                 // ua.call(location[1].split("=")[1], callOptions)
                 clearTimeout(timer)
                 return () => clearTimeout(timer);
@@ -164,7 +165,7 @@ const HomePage = () => {
 
 
     const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text)
+        navigator.clipboard.writeText(activeCall.ext)
         message.success('copy to clipboard')
     }
 
@@ -253,14 +254,14 @@ const HomePage = () => {
                             <span className='display__name'>{(activeCall.displayName && activeCall.displayName.length) > 0 ? activeCall.displayName : 'UNKNOW'} {/*<span style={{ fontSize: '16px' }}>Copy</span>*/}</span>
 
                             <div className='extension__number'>
-                                <span>123-123-113</span>
+                                <span>{activeCall.ext}</span>
                                 <div className='copy__btn' onClick={() => copyToClipboard('123')}>
                                     <img src={copyImg} alt='copy' />
                                 </div>
                             </div>
                         </div>
                             <div className='homepage__monitor__action'>
-                                {activeCall.state === callStatsContraint.HOLD
+                                {activeCall.state === callConstant.HOLD
                                     ? <HomePageIcon icon={playImg} color='white' text={t('realeseHold')} size={48} onClick={hold} />
                                     : <HomePageIcon icon={pauseImg} color='white' text={t('holdOn')} size={48} onClick={hold} />}
                                 <HomePageIcon icon={endCallImg} color='#FF223C' text={t('disconect')} onClick={endCall} />
@@ -273,7 +274,7 @@ const HomePage = () => {
 
                 <div className={`homepage__btn-group ${currentRoute !== 'main' ? 'wrap' : ''}`}>
                     {/* <button onClick={e => { hasCurrentCall ? endCall() : call() }} className='btn'>{hasCurrentCall ? t('disconnect') : t('call')}</button> */}
-                    {/* <button className='btn' onClick={e => hold()}>{activeCall.state === callStatsContraint.HOLD ? t('unHold') : t('holdOn')}</button>
+                    {/* <button className='btn' onClick={e => hold()}>{activeCall.state === callConstant.HOLD ? t('unHold') : t('holdOn')}</button>
                     <button className='btn' onClick={e => forward()}>{t('forward')}</button> */}
                     <button className='btn' onClick={e => { dispatch(setAgentListOpen(true)) }}>{t('call')}</button>
                     <button className='btn'>{t('pickUp')}</button>

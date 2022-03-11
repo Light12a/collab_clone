@@ -19,6 +19,7 @@ const Signin = () => {
     const [isRemember, setIsRemember] = useState(true);
     const [param, setparam] = useState('');
     const [loginError, setLoginError] = useState('')
+    const [isLoggining, setIsLogining] = useState(false)
 
 
     const location = window.location.href.split('?');
@@ -53,31 +54,28 @@ const Signin = () => {
             setLoginError('')
     }
 
-    const onFinish = async (e) => {
+    const onFinish = (e) => {
+        if (isLoggining) return
+        setIsLogining(true)
         clearLoginError()
-        // message.success('Submit success!');
-        try {
-            dispatch(signin({
-                body: {
-                    ...e,
-                    password: calculateMD5(e.password),
+        dispatch(signin({
+            body: {
+                ...e,
+                password: calculateMD5(e.password),
 
-                },
-                ha1: calculateMD5(`${e.username}:asterisk:${e.password}`),
-                setLoginError
-            })).then(() => {
+            },
+            ha1: calculateMD5(`${e.username}:asterisk:${e.password}`),
+            setLoginError
+        }))
+            .then(() => {
                 if (isRemember) {
                     localStorage.setItem('userRemember', JSON.stringify({ domain: e.domain, username: e.username }))
                 }
             })
+            .finally(() => {
+                setIsLogining(false)
+            })
 
-
-        }
-        catch (error) {
-            if (error.response)
-                message.error(error.response.data.message)
-            message.error(String(error))
-        }
     };
 
     const handleCheck = (e) => {

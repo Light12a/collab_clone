@@ -5,7 +5,6 @@ import './AgentListScreen.css'
 import { useDispatch, useSelector } from 'react-redux';
 import { setAgentListOpen } from '../../redux/reducers/agentList/agentListStatus';
 import { useTranslation } from 'react-i18next';
-import { callStatsContraint } from '../../redux/reducers/call/currentCall';
 import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/call/currentCall';
 import { appColor } from '../../value/color';
 import { Select } from 'antd';

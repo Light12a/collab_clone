@@ -25,52 +25,55 @@ export const reLogin = createAsyncThunk('auth/reLogin', async (body, thunkAPI) =
         return data
     } catch (error) {
         console.log(error)
-        thunkAPI.dispatch({ type: 'LOGOUT' })
-        return Promise.reject(error)
+        return thunkAPI.rejectWithValue(error)
     }
 })
 
-export const getUserConfig = createAsyncThunk('auth/getUserConfig', async (token) => {
+export const getUserConfig = createAsyncThunk('auth/getUserConfig', async (token, thunkAPI) => {
     try {
         let { data } = await getUserConfigAPI(token)
+        // thunkAPI.dispatch(setAuthFinish())
         return data
     } catch (error) {
         console.log(error)
-        return Promise.reject(error)
+        return thunkAPI.rejectWithValue(error)
+
     }
 
 })
 
-export const getUserState = createAsyncThunk('auth/getUserState', async (token) => {
+export const getUserState = createAsyncThunk('auth/getUserState', async (token, thunkAPI) => {
     try {
         let { data } = await getUserStateAPI(token)
         return data
     } catch (error) {
         console.log(error)
-        return Promise.reject(error)
+        return thunkAPI.rejectWithValue(error)
     }
 
 })
 
-export const applyState = createAsyncThunk('auth/applyState', async (body) => {
+export const applyState = createAsyncThunk('auth/applyState', async (body, thunkAPI) => {
     try {
         let { data } = await applyStateAPI(body)
         return data
     } catch (error) {
-        console.log(error)
-        return Promise.reject(error)
+        console.dir(error)
+        return thunkAPI.rejectWithValue(error)
+        // return Promise.reject(error)
     }
 })
 
-export const getAwayReasons = createAsyncThunk('auth/getAwayReasons', async (body) => {
+export const getAwayReasons = createAsyncThunk('auth/getAwayReasons', async (body, thunkAPI) => {
     try {
         let { data } = await getAwayReasonsAPI(body)
         return data
     } catch (error) {
         console.dir(error)
+        return thunkAPI.rejectWithValue(error)
     }
 })
-export const refreshToken = createAsyncThunk('auth/refreshToken', async (oldToken) => {
+export const refreshToken = createAsyncThunk('auth/refreshToken', async (oldToken, thunkAPI) => {
     try {
         let { data } = await callAPI({ method: 'post', path: '/refresh_token', body: { token: oldToken } })
         localStorage.setItem('token', data.token)
@@ -78,7 +81,8 @@ export const refreshToken = createAsyncThunk('auth/refreshToken', async (oldToke
         return data
     } catch (error) {
         alert('token refresh fail')
-        return Promise.reject(error)
+        return thunkAPI.rejectWithValue(error)
+
     }
 })
 
@@ -108,6 +112,10 @@ const authSlice = createSlice({
         setInitTokenSuccess(state, action) {
             state.token.isSettingToken = false
         },
+        setAuthFinish(state, action) {
+            state.isAuth = true
+            state.isLoading = false
+        }
     },
     extraReducers: {
         [signin.fulfilled]: (state, action) => {
@@ -117,9 +125,6 @@ const authSlice = createSlice({
             state.token.isSettingToken = false
             state.token.isHaveToken = true
 
-        },
-        [signin.rejected]: (state, action) => {
-            state.error = action.error
         },
         [getUserConfig.fulfilled]: (state, action) => {
             state.userConfig.config = action.payload
@@ -137,9 +142,6 @@ const authSlice = createSlice({
         [getAwayReasons.fulfilled]: (state, action) => {
             state.awayReasons = action.payload
         },
-        [getUserConfig.rejected]: (state, action) => {
-            state.userConfig.isLoading = false
-        },
         [reLogin.fulfilled]: (state, action) => {
             state.isAuth = true
             state.isLoading = false
@@ -152,6 +154,6 @@ const authSlice = createSlice({
     }
 })
 
-export const { setLoginLoadState, setMe, setToken, setInitTokenSuccess, setUserState } = authSlice.actions
+export const { setLoginLoadState, setMe, setToken, setInitTokenSuccess, setUserState, setAuthFinish } = authSlice.actions
 
 export default authSlice.reducer

@@ -5,8 +5,9 @@ import { useSelector, useDispatch } from 'react-redux';
 
 
 import { setConnect } from '../redux/reducers/connection/connectStatus';
-import { callStatsContraint, removeAtiveCall, setCurrentCall, changeCurrentCallState } from '../redux/reducers/call/currentCall';
+import { removeAtiveCall, setCurrentCall, changeCurrentCallState } from '../redux/reducers/call/currentCall';
 import { pushACall, removeACall } from '../redux/reducers/waitingList/waitingCallList'
+import { callConstant } from '../util/constant';
 
 import ringtone from '../service/sounds/ringtone.wav'
 import ringBackTone from '../service/sounds/ringbacktone.wav'
@@ -15,7 +16,6 @@ import { setIsWaitingListOpen } from '../redux/reducers/waitingList/waitingListS
 if (process.env.REACT_APP_PLATFORM === 'app') {
     var electron = window.require("electron");
 }
-console.log(process.env.REACT_APP_PLATFORM, typeof process.env.REACT_APP_PLATFORM, process.env.REACT_APP_PLATFORM === 'app')
 
 export const SipContext = createContext(null)
 
@@ -63,7 +63,7 @@ const SipProvider = ({ children }) => {
 
     useEffect(() => {
         if (waitingCallList.length > 0 && !isIncomingAudioPlaying &&
-            activeCall.state !== (callStatsContraint.ANSWER && callStatsContraint.CALL && callStatsContraint.HOLD && callStatsContraint.UN_HOLD && callStatsContraint.INCALL)) {
+            activeCall.state !== (callConstant.ANSWER && callConstant.MAKE_CALL && callConstant.HOLD && callConstant.UN_HOLD && callConstant.INCALL)) {
             incomingCallAudio.play();
             setIsIncomingAudioPlaying(true);
         }
@@ -76,7 +76,6 @@ const SipProvider = ({ children }) => {
     useEffect(() => {
         if (!ua) {
             Sip.debug.enable('JsSIP:*');
-            console.log(userConfig)
             // let socket = new Sip.WebSocketInterface(userConfig.config.pbx_domain_ws)
             let socket = new Sip.WebSocketInterface('wss://35.75.95.117:8090/ws')
 
@@ -92,13 +91,12 @@ const SipProvider = ({ children }) => {
             console.log(config)
             setUa(new Sip.UA(config))
         }
-    }, [ua, user, userConfig])
+    }, [ua, user, userConfig.config])
 
     // listen connect/register envent 
     useEffect(() => {
         let registerTimeOutID
         let regiserIntervalId
-        console.log('ua start')
         if (ua && isConnected) {
             ua.start()
             ua.on('connecting', () => {
@@ -112,7 +110,7 @@ const SipProvider = ({ children }) => {
                 setConnectionState('disconnected')
             });
             ua.on('registered', function (e) {
-                console.log('registered,', e)
+                console.log('registered')
                 setConnectionState('connected')
                 regiserIntervalId = setInterval(() => {
                     ua.register()
@@ -131,13 +129,18 @@ const SipProvider = ({ children }) => {
                 setConnectionState('disconnected')
             });
         }
-        return () => {
+        window.addEventListener('beforeunload', cleanup)
+        function cleanup() {
             clearTimeout(registerTimeOutID)
             clearInterval(regiserIntervalId)
             if (ua) {
-                console.log('stoppppp')
+                ua.unregister()
                 ua.stop()
             }
+        }
+        return () => {
+            window.removeEventListener('beforeunload', cleanup)
+            cleanup()
         }
     }, [ua, dispatch, isConnected])
 
@@ -160,7 +163,7 @@ const SipProvider = ({ children }) => {
 
                 session.on('sending', () => {
                     console.log('sending', session);
-                    dispatch(setCurrentCall({ sessionId: session.id, state: callStatsContraint.CALL }))
+                    dispatch(setCurrentCall({ sessionId: session.id, state: callConstant.MAKE_CALL }))
                     if (!isRingBackAudioPlaying) {
                         ringBackAudio.play().catch(error => {
                             console.log(error)
@@ -171,7 +174,7 @@ const SipProvider = ({ children }) => {
                 })
                 // incoming call here
                 session.on("accepted", function () {
-                    dispatch(changeCurrentCallState(callStatsContraint.INCALL))
+                    dispatch(changeCurrentCallState(callConstant.INCALL))
                     incomingCallAudio.pause();
                     setIsIncomingAudioPlaying(false);
                     // the call has answered
@@ -194,18 +197,16 @@ const SipProvider = ({ children }) => {
                         session.connection.getStats().then(data => {
                             let packetsSend = 0
                             data.forEach(item => {
-                                if (item.type.includes('inbound') || item.type.includes('outbound')) {
-                                    // // log local-remote jb
-                                    // console.log(item)
-                                }
+                                // if (item.type.includes('inbound') || item.type.includes('outbound')) {
+
+                                // }
                                 if (item.type === 'outbound-rtp') {
                                     packetsSend = item.packetsSent
-                                    console.log('packetsSend', packetsSend)
                                 }
                                 if (item.type === 'remote-inbound-rtp') {
                                     let rttValue = item.roundTripTime, packetLostRate = 0
                                     packetLostRate = item.packetsLost / packetsSend
-                                    console.log('lossRate', item.packetsLost, packetsSend, item.packetsReceived)
+
                                     if (packetLostRate <= 0.05) {
                                         pcl = 0
                                     }
@@ -215,7 +216,6 @@ const SipProvider = ({ children }) => {
                                     else {
                                         pcl = 2
                                     }
-                                    console.log('pclValue ', typeof packetLostRate, packetLostRate)
 
                                     if (rttValue < 0.1) {
                                         rtt = 0
@@ -239,7 +239,7 @@ const SipProvider = ({ children }) => {
                 });
                 session.on("ended", function (e) {
                     // the call has ended
-                    dispatch(changeCurrentCallState(callStatsContraint.END))
+                    dispatch(changeCurrentCallState(callConstant.END))
                     dispatch(removeACall(session.ssId))
                     dispatch(removeAtiveCall())
                     if (intervalLogJBId) {
@@ -251,7 +251,7 @@ const SipProvider = ({ children }) => {
                 session.on("failed", function (e) {
 
                     // unable to establish the call
-                    dispatch(changeCurrentCallState(callStatsContraint.END))
+                    // dispatch(changeCurrentCallState(callConstant.END))
                     dispatch(removeAtiveCall())
                     dispatch(removeACall(session.id))
                     // console.log('call failed with cause: ' + e.message.reason_phrase);
@@ -268,15 +268,14 @@ const SipProvider = ({ children }) => {
                         setIsIncomingAudioPlaying(true);
                     }
                 });
-                session.on('icecandidate', (data) => {
-                    console.log('candidate:', data)
-                })
+                // session.on('icecandidate', (data) => {
+                //     console.log('candidate:', data)
+                // })
 
                 // ANCHOR force run ready to complete gather icecandidate after last candidate if this has stun candidate
                 let endGatherIceId = null
                 let hasStunCandidate = false
                 session.on('icecandidate', ({ candidate, ready }) => {
-                    console.log('icecandidate', candidate)
                     if (endGatherIceId) {
                         clearTimeout(endGatherIceId)
                     }
@@ -285,7 +284,7 @@ const SipProvider = ({ children }) => {
                     }
                     if (hasStunCandidate) {
                         endGatherIceId = setTimeout(() => {
-                            console.log('timeout')
+
                             ready()
                         }, 500)
                     }
@@ -345,7 +344,7 @@ const SipProvider = ({ children }) => {
                 }
                 else {
                     console.log('con', session.connection)
-                    dispatch(setCurrentCall({ sessionId: session.id, state: callStatsContraint.INCALL }))
+                    dispatch(setCurrentCall({ sessionId: session.id, state: callConstant.INCALL }))
                     session.connection.addEventListener('addstream', function (e) {
                         remoteAudio.srcObject = e.stream;
                     });
@@ -394,7 +393,7 @@ const SipProvider = ({ children }) => {
                 const NOTIFICATION_BODY = ` Have a call from ${waitingCallList[0].skillName}. Click to answer call`
                 new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY })
                     .onclick = () => {
-                        dispatch(setCurrentCall({ sessionId: waitingCallList[0].ssId, state: callStatsContraint.ANSWER, displayName: waitingCallList[0].skillName }))
+                        dispatch(setCurrentCall({ sessionId: waitingCallList[0].ssId, state: callConstant.ANSWER, displayName: waitingCallList[0].skillName }))
                         electron.ipcRenderer.send('open-app')
                     }
             }
@@ -420,42 +419,42 @@ const SipProvider = ({ children }) => {
     useEffect(() => {
 
         const session = sessionRef.current.find(ss => ss.id === activeCall.sessionId)
-        // if (activeCall.state === callStatsContraint.CALL) {
+        // if (activeCall.state === callConstant.CALL) {
         //     ua.call(keypadNumber, callOptions)
 
         // }
         if (!session) return
         var holdStatus = session.isOnHold();
         switch (activeCall.state) {
-            case callStatsContraint.ANSWER:
+            case callConstant.ANSWER:
                 dispatch(removeACall(activeCall.sessionId))
                 session.answer(callOptions)
                 break
-            case callStatsContraint.HOLD:
+            case callConstant.HOLD:
                 if (!holdStatus.local) {
                     session.hold();
                 }
 
                 break
-            case callStatsContraint.UN_HOLD:
+            case callConstant.UN_HOLD:
                 if (holdStatus.local) {
                     session.unhold();
-                    dispatch(changeCurrentCallState(callStatsContraint.INCALL))
+                    dispatch(changeCurrentCallState(callConstant.INCALL))
                 }
                 break
-            case callStatsContraint.END:
+            case callConstant.END:
                 break
-            case callStatsContraint.HANG_UP:
+            case callConstant.HANG_UP:
                 session.terminate()
                 dispatch(removeAtiveCall())
                 break
-            case callStatsContraint.INCALL:
+            case callConstant.INCALL:
 
                 break
-            case callStatsContraint.CALL:
+            case callConstant.MAKE_CALL:
 
                 break
-            case callStatsContraint.TRANSFER:
+            case callConstant.TRANSFER:
                 //session.refer(keypadNumber);
                 blindTransfer(keypadNumber, session);
                 break
@@ -466,10 +465,8 @@ const SipProvider = ({ children }) => {
 
     const setConnectionState = state => {
         if (currentState === state) {
-            console.log('samee')
             return
         }
-        console.log('notsamee')
         dispatch(setConnect(state))
     }
 

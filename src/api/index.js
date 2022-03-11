@@ -4,12 +4,15 @@ import { message } from 'antd'
 async function handleRequest(method, link, body) {
     try {
         let data = await axiosAPIServerIntance[method](link, body)
-        return data
+        return Promise.resolve(data)
     } catch (error) {
         // handle error request
         console.dir(error)
         if (error.response?.status === 500) {
-            message.error('request API fail')
+            message.error('This API fail b/c server')
+        }
+        if (error.response?.status === 401) {
+            // LOGOUT
         }
         return Promise.reject(error)
     }
@@ -59,7 +62,7 @@ export const getUserStateAPI = async (token) => {
 }
 
 export const applyStateAPI = async (body) => {
-    return handleRequest('post', '/apply_state', body)
+    return await handleRequest('post', '/apply_state', body)
 }
 
 export const getAwayReasonsAPI = async (token) => {

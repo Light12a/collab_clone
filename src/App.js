@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import './App.less';
+// import './App.less';
 import './App.css'
 import Signin from './features/login/Signin';
 import { useDispatch, useSelector } from 'react-redux';
 import MainApp from './features/MainApp';
 import SipProvider from './contexts/SipProvider';
-import { getUserConfig, reLogin, setLoginLoadState, setMe, signin} from './redux/reducers/authen/auth';
+import { getUserConfig, reLogin, setLoginLoadState, setMe, signin, getUserState, setAuthFinish } from './redux/reducers/authen/auth';
 import { setNetwork } from './redux/reducers/connection/networkStatus';
 import { setConnect } from './redux/reducers/connection/connectStatus';
 import WaitingList from './features/watingList/WaitingList';
@@ -20,9 +20,8 @@ import { setIsFullScreen } from './redux/reducers/homePage/homePageSlice'
 import { StyleSheetManager } from 'styled-components';
 import { setInitTokenSuccess, setToken } from './redux/reducers/authen/auth.js';
 
-// const { ipcRenderer } = require('electron')
 function App() {
-  const { isLoading, isAuth, user, token: { isHaveToken, token, isSettingToken }, userConfig: { isLoading: userConfigLoading } } = useSelector(state => state.auth)
+  const { isLoading, isAuth, token: { isHaveToken, token, isSettingToken }, userConfig: { isLoading: userConfigLoading, config } } = useSelector(state => state.auth)
   const { isWaitingListOpen } = useSelector(state => state.waitingListStatus)
   const { isAgentListOpen } = useSelector(state => state.agentListStatus)
   const { isKeypadOpen } = useSelector(state => state.keypadStatus)
@@ -31,7 +30,6 @@ function App() {
 
   const nwaitingRef = useCallback(node => setNewWaitingWindow(node), [])
   const dispatch = useDispatch()
-  console.log('app')
 
   useEffect(() => {
     if (navigator.mediaDevices.getUserMedia !== null) {
@@ -54,13 +52,10 @@ function App() {
 
   }, []);
 
-  console.log(isHaveToken, isSettingToken, 'hahah')
-
   useEffect(() => {
     if (isSettingToken === true) {
 
       let tokenInStorage = localStorage.getItem('token')
-      console.log('hehe', typeof tokenInStorage)
 
       if (tokenInStorage) {
         dispatch(setToken(tokenInStorage))
@@ -82,33 +77,28 @@ function App() {
 
   useEffect(() => {
     let user = JSON.parse(localStorage.getItem('user'))
-    console.log('userrrrr')
-    console.log(user)
     if (user) {
       dispatch(setMe(user))
     }
   }, [dispatch])
 
   useEffect(() => {
-    if (isHaveToken && !isAuth && !isLoading) {
-      // setLoginLoadState/getMe
-      dispatch(reLogin({
-        tenant_id: user.tenant_id,
-        username: user.username,
-        token
-      }))
-    }
+    if (isHaveToken && !isAuth && !isLoading)
+      dispatch(getUserConfig(token)).then((data) => {
+        if (data.meta.requestStatus === 'fulfilled') {
+          dispatch(setAuthFinish())
+        }
+      })
+
   }, [isHaveToken, token, isLoading, isAuth, dispatch])
 
-
-  
   useEffect(() => {
-    if (isAuth && isHaveToken)
+    if (isAuth && isHaveToken && !config)
       dispatch(getUserConfig(token))
-  }, [isAuth, isHaveToken, dispatch, token])
+
+  }, [isAuth, isHaveToken, dispatch, token, config])
 
   if (!isHaveToken && !isSettingToken) {
-    console.log('!have token')
     return <Signin />
   }
 
@@ -148,7 +138,7 @@ function App() {
             </Draggable>
           }
           {isKeypadOpen &&
-              <Draggable positionOffset={{ x: '-50%', y: '-50%' }}>
+            <Draggable positionOffset={{ x: '-50%', y: '-50%' }}>
               <div className='drag keypad'>
                 <Keypad />
               </div>

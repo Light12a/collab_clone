@@ -4,7 +4,7 @@ import sortUp from '../../asset/sortUp.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsWaitingListOpen } from '../../redux/reducers/waitingList/waitingListStatus';
 import { useTranslation } from 'react-i18next';
-import { callStatsContraint } from '../../redux/reducers/call/currentCall';
+import { callConstant } from '../../util/constant';
 import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/call/currentCall';
 import CustomSelect from "./CustomSelect";
 import styled from 'styled-components';
@@ -215,7 +215,7 @@ const WaitingList = React.forwardRef((props, ref) => {
         if (calls && calls.length > 0) {
             console.log("incoming im in");
             calls.sort((a, b) => new Date(a.arrivedTime) - new Date(b.arrivedTime));
-            dispatch(setCurrentCall({ sessionId: calls[0].ssId, state: callStatsContraint.ANSWER, displayName: displayName }));
+            dispatch(setCurrentCall({ sessionId: calls[0].ssId, state: callConstant.ANSWER, displayName: displayName }));
         }
         dispatch(setIsWaitingListOpen(false));
     }

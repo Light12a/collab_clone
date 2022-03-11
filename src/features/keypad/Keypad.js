@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled, { css, StyleSheetManager } from 'styled-components';
-import { callStatsContraint, changeCurrentCallState } from '../../redux/reducers/call/currentCall';
+import { changeCurrentCallState, setActiveCallExtNumber, setExtNumber } from '../../redux/reducers/call/currentCall';
+import { callConstant } from '../../util/constant';
 import closeIcon from '../../asset/Close.svg'
 import callIcon from '../../asset/call.svg'
 import imgCopy from '../../asset/copy.svg'
@@ -12,6 +13,7 @@ import { setIsKeypadOpen, setKeypadInput, resetKeypad } from '../../redux/reduce
 import deleteIcon from '../../asset/delete.svg'
 import { message } from 'antd';
 import { t } from 'i18next';
+import PresenceState from '../../components/PresenceState';
 const defaulKeypad = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#',]
 
 
@@ -19,11 +21,28 @@ const Keypad = (props) => {
     const ua = useSip()
     const [callNumber, setCallNumber] = useState('')
     const { userConfig } = useSelector(state => state.auth)
+    const { currentState } = useSelector(state => state.connectStatus)
     const dispatch = useDispatch()
+    const { agentList } = useSelector(state => state.AgentList)
+    const ListAgent = agentList.agentList.users;
+    const [filterNumberList, setFilterNumberList] = useState([])
+
+    useLayoutEffect(() => {
+        if (callNumber)
+            setFilterNumberList(() => {
+                return ListAgent.filter(item => item.ext_number.includes(callNumber))
+            })
+        else setFilterNumberList([])
+    }, [callNumber])
 
     const call = () => {
+        if (currentState !== 'connected') {
+            message.error('not connect to PBX')
+            return
+        }
         if (callNumber.trim() === '') return
-        dispatch(changeCurrentCallState(callStatsContraint.CALL))
+        dispatch(changeCurrentCallState(callConstant.MAKE_CALL))
+        dispatch(setActiveCallExtNumber(callNumber))
         ua.call(callNumber, callOptions)
     }
     var callOptions = {
@@ -38,52 +57,9 @@ const Keypad = (props) => {
             // iceTransportPolicy: 'relay',
         },
         // fromUserName:'sasuketamin',
-        fromDisplayName: userConfig.config.displayname,
-        // extraHeaders: ['uchihahaha','ninjadapda']
+        fromDisplayName: 'haizaaa',
+        extraHeaders: ['uchihahaha:helo;']
     };
-
-    const data = [
-        {
-            name: "Maria Sharapova",
-            phone: "123-345-108",
-            state: "After-Treatment"
-        },
-        {
-            name: "Maria Sharapova",
-            phone: "123-345-108",
-            state: "Acceptable"
-        },
-        {
-            name: "Maria Sharapova",
-            phone: "123-345-108",
-            state: "Away"
-        },
-        {
-            name: "Maria Sharapova",
-            phone: "123-345-108",
-            state: "After-Treatment"
-        },
-        {
-            name: "Maria Sharapova",
-            phone: "123-345-108",
-            state: "After-Treatment"
-        },
-        {
-            name: "Maria Sharapova",
-            phone: "123-345-108",
-            state: "Acceptable"
-        },
-        {
-            name: "Maria Sharapova",
-            phone: "123-345-108",
-            state: "Away"
-        },
-        {
-            name: "Maria Sharapova",
-            phone: "123-345-108",
-            state: "After-Treatment"
-        }
-    ]
 
     useEffect(() => {
         dispatch(setKeypadInput(callNumber));
@@ -128,26 +104,39 @@ const Keypad = (props) => {
                 </div>
                 {/* <h1 className={callNumber === '' ? 'white-blur' : 'white'} onChange={e => { onKeypadValueChange(e.target.value) }} >{callNumber === '' ? 'Phone number' : callNumber}</h1> */}
                 <div className='phone-number-main'>
-                    <input placeholder={t('phoneNumber')} onChange={e => { onKeypadValueChange(e.target.value) }} value={callNumber} onKeyPress={e => e.preventDefault()} />
+                    <input placeholder={t('phoneNumber')} onChange={e => { onKeypadValueChange(e.target.value) }} value={callNumber} onKeyDown={e => e.preventDefault()} />
                     {
                         callNumber && <button onClick={handleCopy}><img src={imgCopy} /></button>
                     }
                 </div>
 
                 {
-                    callNumber &&
+                    filterNumberList.length !== 0 &&
                     <div className='filter-wrap'>
                         <div className='phone-number-filter'>
                             {
-                                data.map((item) => (
-                                    <div className='filter-item'>
-                                        <span>{item.name}</span>
-                                        <span>{item.phone}</span>
+                                filterNumberList.map((item) => {
+                                    let firstMatchPoint = item.ext_number.indexOf(callNumber)
+                                    let lastMatchPoint = callNumber.length + firstMatchPoint
+                                    console.log('f, l:', firstMatchPoint, lastMatchPoint)
+                                    return <div className='filter-item' key={item.username} onClick={() => { setCallNumber(item.ext_number) }}>
+                                        <span>{item.displayname}</span>
+                                        <div>
+                                            <span>
+                                                {item.ext_number.slice(0, firstMatchPoint)}
+                                            </span>
+                                            <span className='highlight__ext'>
+                                                {item.ext_number.slice(firstMatchPoint, lastMatchPoint)}
+                                            </span>
+                                            <span>
+                                                {item.ext_number.slice(lastMatchPoint)}
+                                            </span>
+                                        </div>
                                         <div className='filter-state'>
-                                            <span className='statusOnHoding'>{item.state}</span>
+                                            <PresenceState state={item.state} />
                                         </div>
                                     </div>
-                                ))
+                                })
                             }
                         </div>
                     </div>
@@ -237,6 +226,8 @@ const Wrapper = styled.div`
         background: #99CC00 linear-gradient(360deg, rgba(43, 43, 43, 0.1) 0%, rgba(43, 43, 43, 0) 100%);
         border-radius: 4px 4px 0 0;
         height: 33vh;
+        display:flex ;
+        flex-direction: column ;
 
         &__close{
             display: flex;
@@ -298,8 +289,9 @@ const Wrapper = styled.div`
         .filter-wrap{
             background: #FBFBFB;
             overflow-y: scroll;
-            height: 18vh;
-
+            height: 15vh;
+            flex-grow:2 ;
+            border-bottom:1px solid #ECECEC ;
             &::-webkit-scrollbar{
                 width: 6px;
             }
@@ -321,13 +313,20 @@ const Wrapper = styled.div`
            max-width: 400px;
            margin: 0 auto;
            transform: translateX(5px);
-            
+           background-color:#FBFBFB ;
             .filter-item{
+                cursor: pointer;
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
                 padding: 12px 0;
                 border-bottom: 1px solid #ECECEC;
                 font-weight: 400;
+                .highlight__ext {
+                    color:#99CC00 ;
+                }
+            }
+            .filter-item:hover {
+                background-color: #efefef ;
             }
 
         }

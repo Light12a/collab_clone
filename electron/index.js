@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu, Tray, ipcMain, dialog } = require('electron')
+const { app, BrowserWindow, Menu, Tray, ipcMain, dialog, webContents } = require('electron')
 const path = require('path')
 const log = require('electron-log');
 
@@ -73,9 +73,9 @@ function createWindow() {
   // console.log(mainWindow.webContents.getURL())
   // and load the index.html of the app.
   // mainWindow.loadFile(path.join(__dirname, 'build/index.html'))
-  console.log(process.env.NODE_ENV)
+
   const loadURL = isDev ? 'http://localhost:3000' : path.join(__dirname, '../index.html')
-  console.log(loadURL)
+
   mainWindow.loadURL(loadURL)
 
   // Open the DevTools.
@@ -205,13 +205,13 @@ app.whenReady().then(() => {
   // notification
 
   ipcMain.on('open-app', (event, arg) => {
-    console.log('new-call')
     mainWindow.show()
   })
 
 
   function handleChangeStatus(t) {
     // TODO send status to renderer process
+    webContents.send('presence-state', t)
 
     console.log(t)
 
