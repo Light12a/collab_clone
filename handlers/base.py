@@ -19,7 +19,7 @@ class BaseHandler(RequestHandler):
         authorized Collabos user.
         Access with `self.current_user`.
         """
-        return None
+        return self.get_secure_cookie("user")
 
     def get(self, *args, **kwargs):
         """ Override this method in derived class. """
@@ -50,7 +50,7 @@ class BaseHandler(RequestHandler):
 
     def _on_data_received(self, chunk):
         pass
-    
+
     # def write_error(self, status_code, **kwargs):
     #     self.finish(json.dumps({
     #         'error': {
