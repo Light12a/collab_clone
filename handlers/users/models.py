@@ -1,18 +1,19 @@
-from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Table, Text, Time, text
+from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Table, Text, Time, text, inspect
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, LONGTEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.ext.declarative import declarative_base
-
+from ..tenant_settings.models import Tenant
 Base = declarative_base()
 metadata = Base.metadata
+
 class User(Base):
     __tablename__ = 'users'
     __table_args__ = {'comment': 'Users : User information'}
 
     id = Column(BIGINT(20), primary_key=True, nullable=False, unique=True, comment='id')
-    tenant_id = Column(ForeignKey('tenant.tenant_id'), primary_key=True, nullable=False, index=True, comment='Tenant Id')
-    user_id = Column(ForeignKey('token.user_id'), primary_key=True, nullable=False, index=True, comment='User ID')
+    tenant_id = Column(ForeignKey(Tenant.tenant_id), primary_key=True, nullable=False, index=True, comment='Tenant Id')
+    user_id = Column(VARCHAR(256), primary_key=True, nullable=False, index=True, comment='User ID')
     user_name = Column(VARCHAR(256), comment='Username : Username is used to login collabos by user')
     password = Column(VARCHAR(1024), comment='Password')
     mail = Column(VARCHAR(256), comment='Email : Email address of user')
@@ -32,15 +33,20 @@ class User(Base):
     middlename = Column(VARCHAR(1024), comment='Middle Name')
     project_id = Column(BIGINT(20), comment='Project Id : Project which user is belong')
 
-    tenant = relationship('Tenant')
-    user = relationship('Token')
+    tenant = relationship(Tenant)
+    
+    def to_json(self):
+        return {c.key: getattr(self, c.key)
+                for c in inspect(self).mapper.column_attrs}
+
 
 class Token(Base):
     __tablename__ = 'token'
     __table_args__ = {'comment': 'Token : Manage token of each user for authentication'}
 
-    user_id = Column(String(256), primary_key=True, comment='User Id')
+    user_id = Column(ForeignKey(User.user_id), primary_key=True,nullable=False, index=True, comment='User Id')
     token_id = Column(VARCHAR(60), unique=True, comment='Token Id : Each user has an unique token_id')
-    expired_date = Column(INTEGER(11), comment='Expired Time : Expired time of token')
-    create_date = Column(INTEGER(11), comment='Create Date : Created Date of token')
+    expired_date = Column(BIGINT(20), comment='Expired Time : Expired time of token')
+    create_date = Column(DateTime, comment='Create Date : Created Date of token')
 
+    user = relationship(User)
