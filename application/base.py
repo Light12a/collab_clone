@@ -24,6 +24,7 @@ class CollabosBaseApplication(Application):
 
         return {
             # 'xsrf_cookies': True,
-            'cookie_secret': self._cookie_secret
+            'cookie_secret': 'u5SXVuerTfyQTT7uTbu7HjqiqHnh8UsBm37J4Y5lwto=',
+            'login_url': "/register"
         }
         # return {}

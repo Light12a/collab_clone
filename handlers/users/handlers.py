@@ -7,7 +7,7 @@ from .models import User, Token
 from http import HTTPStatus
 from utils.config import config
 from utils.response import ResponseMixin
-from tornado import gen
+from tornado import gen, web
 # class LoginHandler(BaseHandler):
 #     @property
 #     def db(self):
@@ -28,6 +28,11 @@ class LoginHandler(ResponseMixin, BaseHandler):
     def data_received(self, chunk=None):
         if self.request.body:
             return json.loads(self.request.body)
+
+    @gen.coroutine
+    def get(self):
+        self.set_secure_cookie("user", "test")
+        self.write("Login success.")
 
     @gen.coroutine
     def post(self):
@@ -128,3 +133,28 @@ class LoginHandler(ResponseMixin, BaseHandler):
             })
             self.set_status(406)
             err = "Username: {} or tenant_id: {} attached in json request is not existed in db"
+
+
+class RegisterHanlder(ResponseMixin, BaseHandler):
+
+    @gen.coroutine
+    def get(self):
+        self.write("You need to register.")
+
+
+class TestHanlder(BaseHandler):
+
+    @gen.coroutine
+    @web.authenticated
+    def get(self):
+        self.write("Hello, world")
+
+
+class LogoutHandler(BaseHandler):
+
+    @gen.coroutine
+    def get(self):
+        self.clear_cookie("user")
+        self.write("Logout success.")
+
+
