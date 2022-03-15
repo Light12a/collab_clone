@@ -34,7 +34,7 @@ class User(Base):
     project_id = Column(BIGINT(20), comment='Project Id : Project which user is belong')
 
     tenant = relationship(Tenant)
-    
+
     def to_json(self):
         return {c.key: getattr(self, c.key)
                 for c in inspect(self).mapper.column_attrs}

@@ -12,7 +12,7 @@ class S3Connection:
             aws_access_key_id = config['s3server']['access_key'],
             aws_secret_access_key = config['s3server']['secrect_access_key']
         )
-        
+
     def upload_file(self):
         pass
 
