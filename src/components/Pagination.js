@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 const Pagination = (props) => {
 
-    const [pageNumber, setPageNumber] = useState([1,2,3]);
+    const [pageNumber, setPageNumber] = useState([]);
     let [currentPage, setCurrentPage] = useState(1)
 
     const {total, itemsPerPage, t} = props
@@ -14,12 +14,6 @@ const Pagination = (props) => {
     // console.log("My PageNumber: " + pageNumber)
     useEffect(()=>{
         renderPageNumber(1)
-        // for(let i = 0; i < total; i++){
-        //     setPageNumber(total.slice(i, itemsPerPage))
-        // }
-        console.log("My currentPage in Pagin: " + currentPage)
-        // props.onPageChange(currentPage)
-
     }, [])
 
     const renderPageNumber = (page)=> {

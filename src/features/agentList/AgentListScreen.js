@@ -2,25 +2,28 @@ import React, { useState, useEffect, useCallback } from 'react';
 import sortDown from '../../asset/sortDown.svg';
 import sortUp from '../../asset/sortUp.svg';
 import './AgentListScreen.css'
+import { callConstant } from '../../util/constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAgentListOpen } from '../../redux/reducers/agentList/agentListStatus';
 import { useTranslation } from 'react-i18next';
-import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/call/currentCall';
+import { changeCurrentCallState, setCurrentCall, setActiveCallExtNumber } from '../../redux/reducers/call/currentCall';
 import { appColor } from '../../value/color';
 import Pagination from '../../components/Pagination';
-import { Select } from 'antd';
+import { Select, message } from 'antd';
 import arrowIcon from '../../asset/ic.svg'
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import dialpad from '../../asset/dialpad.svg'
 import { setIsKeypadOpen } from '../../redux/reducers/keypad/keypadStatus';
 import SearchBar from '../../components/SearchBar'
 import call from '../../asset/call.svg'
+import useSip from '../../hooks/useSip';
 
 const AgentListScreen = (props) => {
     const { Option } = Select;
+    const ua = useSip()
     const dispatch = useDispatch()
     const { t, i18n } = useTranslation();
-
+    const { currentState } = useSelector(state => state.connectStatus)
     //get user infomation
     // const { isWaitingListOpen } = useSelector(state => state.waitingListStatus)
     const { agentList } = useSelector(state => state.AgentList)
@@ -31,13 +34,12 @@ const AgentListScreen = (props) => {
     let [totalItems, setTotalItem] = useState(0)
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10
+
     //x list
     let xListAgent = ListAgent;
     xListAgent = xListAgent.concat(xListAgent, ListAgent)
     xListAgent = xListAgent.concat(xListAgent, ListAgent)
    
-    
-
     // get state
     const status = ListAgent.state
 
@@ -48,29 +50,53 @@ const AgentListScreen = (props) => {
     useEffect(()=>{
         let newList = [];
         for(let i = 0; i < itemsPerPage; i++){
-            console.log((currentPage-1)*itemsPerPage + i )
             newList.splice(i, 1, xListAgent[(currentPage-1)*itemsPerPage + i])
         }
 
+        console.log("My agent list: " + JSON.stringify(ListAgent))
         setListAgentForShow(newList)
 
     },[currentPage])
 
-    const onSort = (sortTimeDes, sortCallNumberDes, sortNameDes) => {
-        
+    const onSort = (list) => {
+        // return (list.sort())
+        console.log("HI sort" + JSON.stringify(list))
     }
     const onPageChange = (page) =>{
         setCurrentPage(page)
     }
-
+    const makeCall = (callNumber) => {
+        if (currentState !== 'connected') {
+            message.error('not connect to PBX')
+            return
+        }
+        if (callNumber.trim() === '') return
+        dispatch(changeCurrentCallState(callConstant.MAKE_CALL))
+        dispatch(setActiveCallExtNumber(callNumber))
+        ua.call(callNumber, callOptions)
+    }
+    var callOptions = {
+        mediaConstraints: {
+            audio: true, // only audio calls
+            video: false
+        },
+        pcConfig: {
+            iceServers: [{
+                urls: ["stun:stun.l.google.com:19302"]
+            }],
+            // iceTransportPolicy: 'relay',
+        },
+        // fromUserName:'sasuketamin',
+        fromDisplayName: 'haizaaa',
+        extraHeaders: ['uchihahaha:helo;']
+    };
     const onSearch = (e) => {
-        ListAgent.map((el) => {
+        xListAgent.map((el) => {
             if (el.username.toLowerCase().includes(e.target.value) ||
                 el.ext_number.toLowerCase().includes(e.target.value)) {
                 filterListAgent.push(el)
                 return el;
             } else {
-
                 return ''
             }
         })
@@ -101,7 +127,9 @@ const AgentListScreen = (props) => {
                         <td>
                             {item.ext_number}
                         </td>
-                        <td><img src={call} /></td>
+                        <td>
+                            <img className='callButton' src={call} onClick={e=> makeCall(item.ext_number)}/>
+                        </td>
                     </tr>
                     )
                 })
@@ -126,7 +154,9 @@ const AgentListScreen = (props) => {
                                 <td>
                                     {item.ext_number}
                                 </td>
-                                <td><img src={call} /></td>
+                                <td>
+                                    <button src={call} onClick={e => console.log("hi")}/>
+                                </td>
                             </tr>
                         )
                     }
@@ -242,7 +272,7 @@ const AgentListScreen = (props) => {
                             <th>
                                 <div className="table-th">
                                     <span>{t('extensionNumber')}</span>
-                                    <div className='table-sort' onClick={e => { onSort(null, null, true) }}>
+                                    <div className='table-sort' onClick={() => { onSort(xListAgent.ext_number) }}>
                                         <img src={sortUp}></img>
                                         <img src={sortDown}></img>
                                     </div>
