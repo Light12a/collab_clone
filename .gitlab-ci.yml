@@ -10,8 +10,8 @@ workflow:
           when: never
         - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
           when: never
-        - if: '$CI_PIPELINE_SOURCE == "schedule"'
-        - when: always
+        - if: $CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_TITLE !~ /Increase version to.*/
+          when: always
 
 before_script:
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -28,9 +28,9 @@ build web:
     stage: build
     script:
         - echo "Build web..."
-        - git clone -b frontend_web_master --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
+        - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
         - cd collabos
-        - npm version patch -m "Increate version to %s"
+        - npm version patch -m "Increase version to %s"
         - git push
         - npm install
         - npm run build
