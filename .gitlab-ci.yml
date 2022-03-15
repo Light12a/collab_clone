@@ -21,6 +21,8 @@ before_script:
     - chmod 700 ~/.ssh
     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
+    - git config --global user.email "pipeline@collabos"
+    - git config --global user.name "Pipeline"
 
 build web:
     stage: build
@@ -28,6 +30,8 @@ build web:
         - echo "Build web..."
         - git clone -b frontend_web_master --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
         - cd collabos
+        - npm version patch -m "Increate version to %s"
+        - git push
         - npm install
         - npm run build
     artifacts:
