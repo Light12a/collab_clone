@@ -1,0 +1,47 @@
+image: node:12.18.0 
+
+stages:
+    - build
+    - deploy
+
+workflow:
+    rules: 
+        - if: '$CI_PIPELINE_SOURCE == "push"'
+          when: never
+        - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+          when: never
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
+        - when: always
+
+before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+build web:
+    stage: build
+    script:
+        - echo "Build web..."
+        - git clone -b frontend_web_master --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
+        - cd collabos
+        - npm install
+        - npm run build
+    artifacts:
+        paths:
+            - collabos/build/
+
+
+deploy web:
+    stage: deploy
+    script:
+        - echo "Deploy web..."
+        - echo "$SSH_PRIVATE_KEY_EC2" >> key.pem
+        - chmod 700 key.pem
+        - rm -rf build/*
+        - scp -r -i key.pem collabos/build/* ubuntu@3.114.97.64:~/build
+    dependencies:
+        - build web
