@@ -78,6 +78,10 @@ class ResponseMixin(object):
         status_code = HTTPStatus.OK.value
         self.write_response(result_code, response_data, status_code, message=message)
 
+    def see_other(self, result_code, response_data, message='See Other.'):
+        status_code = HTTPStatus.SEE_OTHER.value
+        self.write_response(result_code, response_data, status_code, message)
+
     def no_content(self):
         status_code = HTTPStatus.NO_CONTENT.value
         self._audit(status_code)
@@ -144,5 +148,12 @@ class ResponseMixin(object):
             result['message'] = message
         self.write(result)
         self.set_status(code)
+        self.finish()
+        raise Finish()
+
+    def service_unavailable(self):
+        status_code = HTTPStatus.SERVICE_UNAVAILABLE.value
+        self.clear()
+        self.set_status(status_code)
         self.finish()
         raise Finish()
