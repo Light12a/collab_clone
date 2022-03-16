@@ -1,14 +1,9 @@
 from logging.config import fileConfig
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-from handlers.tenant_settings.models import Base as BaseTenant
-from handlers.users.models import Base as BaseUser
-from handlers.sound_settings.models import Base as BaseSound
-from handlers.corresponding_memo.models import Base as BaseCoMemo
-from alembic import context
 
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
+
+from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -16,13 +11,14 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-fileConfig(config.config_file_name)
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [BaseTenant.metadata, BaseUser.metadata, BaseSound.metadata, BaseCoMemo.metadata]
+target_metadata = None
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -80,11 +76,3 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
-
-
-if context.is_offline_mode():
-    run_migrations_offline()
-else:
-    run_migrations_online()
-
-
