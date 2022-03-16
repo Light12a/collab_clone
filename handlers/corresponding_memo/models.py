@@ -10,7 +10,6 @@ metadata = Base.metadata
 
 
 
-
 class CorrespondenceMemo(Base):
     __tablename__ = 'correspondence_memo'
 

@@ -1,9 +1,10 @@
+from email.policy import HTTP
 import imp
 import datetime
 import uuid
 import json
 from ..base import BaseHandler
-from .models import SoundFiles, User, Token
+from .models import CorrespondenceMemo, SoundFiles, User, Token
 from http import HTTPStatus
 from utils.config import config
 from utils.response import ResponseMixin
@@ -13,7 +14,7 @@ from services.logging import logger as log
 
 log = log.get(__name__)
 
-class GetCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
+class GetCorrespondenceMemoListHandler(ResponseMixin, BaseHandler):
     """
     This class is created to build API for get correspondence memo.
     Params of request is token.
@@ -33,7 +34,7 @@ class GetCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
             if 'token' in data:
                 check, token = self._check_token_exists(data["token"])
                 if check:
-                    pass
+                    self._get_correspondence_memo(token)
             else: raise ValueError
         except ValueError:
             self.write_response("Error", code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
@@ -55,12 +56,17 @@ class GetCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
             raise gen.Return(True, token)
     
     def _get_correspondence_memo(self):
-        results = self.db.query.all()
+        results = self.db.query(CorrespondenceMemo).all()
         if results:
-             memo =[{
+            memo =[{
                 "id": result[0][0],
                 "text": result[0][2]
                 } for result in results]
+            resp = {
+                "code": 200,
+                "memo": memo
+            }
+            self.write_response("Success", code = HTTPStatus.OK.value, response_data=resp)
         else:
             resp = {
             "code": 404,
@@ -68,10 +74,8 @@ class GetCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
             }
             err = "Not found any correspondence memo"
             log.error(err)
-            self.write_response("Failure",)
-       
-        self.write_response
-
+            self.write_response("Failure", code=HTTPStatus.NOT_FOUND.value, response_data=resp)
+        
 
 
 
