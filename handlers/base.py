@@ -4,6 +4,10 @@ from tornado.web import RequestHandler
 import json
 
 class BaseHandler(RequestHandler):
+    @property
+    def db(self):
+        return self.application.session
+
     def initialize(self, **kwargs):
         RequestHandler.initialize(self, **kwargs)
         self._http_client = AsyncHTTPClient()
@@ -51,22 +55,22 @@ class BaseHandler(RequestHandler):
     def _on_data_received(self, chunk):
         pass
     
-    # def write_error(self, status_code, **kwargs):
-    #     self.finish(json.dumps({
-    #         'error': {
-    #             'code': status_code,
-    #             'message': self._reason
-    #         }
-    #     }))
+    def write_error(self, status_code, **kwargs):
+        self.finish(json.dumps({
+            'error': {
+                'code': status_code,
+                'message': self._reason
+            }
+        }))
 
-    # def write_response(self, status_code, result=None, message=None):
-    #     self.set_status(status_code)
-    #     if result:
-    #         self.finish(json.dumps(result))
-    #     elif message:
-    #         self.finish(json.dumps({
-    #             "message": message
-    #         }))
-    #     elif status_code:
-    #         self.set_status(status_code)
-    #         self.finish()
+    def write_response(self, status_code, result=None, message=None):
+        self.set_status(status_code)
+        if result:
+            self.finish(json.dumps(result))
+        elif message:
+            self.finish(json.dumps({
+                "message": message
+            }))
+        elif status_code:
+            self.set_status(status_code)
+            self.finish()
