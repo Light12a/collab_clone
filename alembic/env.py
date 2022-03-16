@@ -1,8 +1,10 @@
 from logging.config import fileConfig
-
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-
+from handlers.tenant_settings.models import Base as BaseTenant
+from handlers.users.models import Base as BaseUser
+from handlers.sound_settings.models import Base as BaseSound
+from handlers.corresponding_memo.models import Base as BaseCorresMemo
 from alembic import context
 
 # this is the Alembic Config object, which provides
@@ -18,7 +20,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = [BaseTenant.metadata, BaseUser.metadata, BaseCorresMemo.metadata, BaseSound.metadata]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
