@@ -1,9 +1,10 @@
 import asyncio
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.web import RequestHandler
+from utils.response import ResponseMixin
 import json
 
-class BaseHandler(RequestHandler):
+class BaseHandler(RequestHandler, ResponseMixin):
     def initialize(self, **kwargs):
         RequestHandler.initialize(self, **kwargs)
         self._http_client = AsyncHTTPClient()
@@ -51,6 +52,10 @@ class BaseHandler(RequestHandler):
     def _on_data_received(self, chunk):
         pass
     
+    @property
+    def db(self):
+        return self.application.session
+        
     # def write_error(self, status_code, **kwargs):
     #     self.finish(json.dumps({
     #         'error': {

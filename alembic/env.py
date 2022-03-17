@@ -1,8 +1,12 @@
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from handlers.tenant_settings.models import Base as BaseT
-from handlers.users.models import Base as BaseS
+from handlers.tenant_settings import models
+from handlers.users import models
+from handlers.announcement_setting import models
+from handlers.trigger_settings import models
+from handlers.talk_script_settings import models
+from services.database.mysqldb import Base
 from alembic import context
 
 # this is the Alembic Config object, which provides
@@ -17,7 +21,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [BaseT.metadata, BaseS.metadata]
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
