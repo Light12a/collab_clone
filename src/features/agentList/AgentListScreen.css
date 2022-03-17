@@ -8,6 +8,9 @@
     cursor: pointer;
 }
 
+.agent-list__body {
+    height: fit-content;
+}
 .agent-list__body .noti-number{
     background: #FBFBFB;
     padding: 16px;

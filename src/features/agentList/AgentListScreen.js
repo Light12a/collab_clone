@@ -25,7 +25,6 @@ const AgentListScreen = (props) => {
     const { t, i18n } = useTranslation();
     const { currentState } = useSelector(state => state.connectStatus)
     //get user infomation
-    // const { isWaitingListOpen } = useSelector(state => state.waitingListStatus)
     const { agentList } = useSelector(state => state.AgentList)
     let ListAgent = agentList.agentList.users;
     let filterListAgent = [];
@@ -39,30 +38,30 @@ const AgentListScreen = (props) => {
     let xListAgent = ListAgent;
     xListAgent = xListAgent.concat(xListAgent, ListAgent)
     xListAgent = xListAgent.concat(xListAgent, ListAgent)
-   
+
     // get state
     const status = ListAgent.state
 
     let [listAgentForShow, setListAgentForShow] = useState([])
+    let [nameAgent, setNameAgent] = useState 
 
-  
 
-    useEffect(()=>{
+    useEffect(() => {
         let newList = [];
-        for(let i = 0; i < itemsPerPage; i++){
-            newList.splice(i, 1, xListAgent[(currentPage-1)*itemsPerPage + i])
+        for (let i = 0; i < itemsPerPage; i++) {
+            newList.splice(i, 1, xListAgent[(currentPage - 1) * itemsPerPage + i])
         }
 
         console.log("My agent list: " + JSON.stringify(ListAgent))
         setListAgentForShow(newList)
 
-    },[currentPage])
+    }, [currentPage])
 
     const onSort = (list) => {
         // return (list.sort())
         console.log("HI sort" + JSON.stringify(list))
     }
-    const onPageChange = (page) =>{
+    const onPageChange = (page) => {
         setCurrentPage(page)
     }
     const makeCall = (callNumber) => {
@@ -73,6 +72,7 @@ const AgentListScreen = (props) => {
         if (callNumber.trim() === '') return
         dispatch(changeCurrentCallState(callConstant.MAKE_CALL))
         dispatch(setActiveCallExtNumber(callNumber))
+        dispatch(setAgentListOpen(false))
         ua.call(callNumber, callOptions)
     }
     var callOptions = {
@@ -109,58 +109,68 @@ const AgentListScreen = (props) => {
     const RenderUserItem = () => {
         return (
             listAgentForShow && listAgentForShow !== null ?
-            listAgentForShow.map((item) => {
+                listAgentForShow.map((item) => {
                     return (
-                    item && item !== null &&
-                    <tr className='itemAgent'>
-                        <td className='containercbStatus'>
+                        item && item !== null &&
+                        <tr className='itemAgent'>
+                            {/* {
+                            false && 
+                            <td className='containercbStatus'>
                             <Checkbox className='checkboxStatus' />
-                        </td>
-                        <td>
-                            {
-                                RenderItemStatus(item.state)
-                            }
-                        </td>
-                        <td>
-                            {item.username}
-                        </td>
-                        <td>
-                            {item.ext_number}
-                        </td>
-                        <td>
-                            <img className='callButton' src={call} onClick={e=> makeCall(item.ext_number)}/>
-                        </td>
-                    </tr>
+                            </td>
+                        } */}
+
+                            <td>
+                                {
+                                    RenderItemStatus(item.state)
+                                }
+                            </td>
+                            <td>
+                                {item.group_id}
+                            </td>
+                            <td>
+                                {item.username}
+                            </td>
+                            <td>
+                                {item.ext_number}
+                            </td>
+                            <td>
+                                <img className='callButton' src={call} onClick={e => makeCall(item.ext_number)} />
+                            </td>
+                        </tr>
                     )
                 })
                 :
                 filterListAgent && filterListAgent !== null &&
-                    filterListAgent.map((item) => {
-                        return (item && item !== null &&
+                filterListAgent.map((item) => {
+                    return (item && item !== null &&
 
-                            <tr className='itemAgent'>
-                                <td className='containercbStatus'>
+                        <tr className='itemAgent'>
+                            {/* <td className='containercbStatus'>
                                     <Checkbox className='checkboxStatus' />
-                                </td>
+                                </td> */}
 
-                                <td>
-                                    {
-                                        RenderItemStatus(item.state)
-                                    }
-                                </td>
-                                <td>
-                                    {item.username}
-                                </td>
-                                <td>
-                                    {item.ext_number}
-                                </td>
-                                <td>
-                                    <button src={call} onClick={e => console.log("hi")}/>
-                                </td>
-                            </tr>
-                        )
-                    }
+                            <td>
+                                {
+                                    RenderItemStatus(item.state)
+                                }
+                            </td>
+                            <td>
+                                {item.group_id}
+                            </td>
+                            <td>
+                                {item.username}
+                            </td>
+                            <td>
+                                {item.ext_number}
+                            </td>
+                            <td>
+                                <button src={call} onClick={e => console.log("hi")} />
+                            </td>
+                        </tr>
                     )
+                }
+                )
         )
     }
 
@@ -247,7 +257,7 @@ const AgentListScreen = (props) => {
                 <div className='agent-list__body__table'>
                     <table>
                         <thead>
-                            <th></th>
+
                             <th>
                                 <div className="table-th">
                                     <span>{t('status')}</span>
@@ -261,6 +271,15 @@ const AgentListScreen = (props) => {
 
                             <th>
                                 <div className="table-th">
+                                    <span>{t('skillGroupName')}</span>
+                                    <div className='table-sort' onClick={e => { onSort(null, null, true) }}>
+                                        <img src={sortUp}></img>
+                                        <img src={sortDown}></img>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div className="table-th">
                                     <span>{t('agentName')}</span>
                                     <div className='table-sort' onClick={e => { onSort(null, null, true) }}>
                                         <img src={sortUp}></img>
@@ -268,7 +287,6 @@ const AgentListScreen = (props) => {
                                     </div>
                                 </div>
                             </th>
-
                             <th>
                                 <div className="table-th">
                                     <span>{t('extensionNumber')}</span>
@@ -289,7 +307,7 @@ const AgentListScreen = (props) => {
                         total={xListAgent}
                         itemsPerPage={itemsPerPage}
                         t={t}
-                        onPageChange={(e) =>onPageChange(e)}
+                        onPageChange={(e) => onPageChange(e)}
                     />
                     <div>
 

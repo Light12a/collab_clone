@@ -13,8 +13,9 @@
 }
 
 .agent-list{
-    width: 840px;
-    /* min-width: 800px; */
+    width: 840px;   
+    min-height: 750px;
+    max-height: fit-content !important;
 }
 .keypad{
     width: 840px;
