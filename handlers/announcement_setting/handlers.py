@@ -47,7 +47,7 @@ class AnnouncementCreateHandler(BaseHandler):
     def post(self, *args, **kwargs):
         pass
     
-class AnnouncementUpdateHandler(BaseHandler,ResponseMixin):
+class AnnouncementUpdateHandler(BaseHandler):
 
     @gen.coroutine    
     def post(self, *args, **kwargs):
