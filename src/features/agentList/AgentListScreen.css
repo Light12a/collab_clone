@@ -8,6 +8,9 @@
     cursor: pointer;
 }
 
+.agent-list__body {
+    height: fit-content;
+}
 .agent-list__body .noti-number{
     background: #FBFBFB;
     padding: 16px;
@@ -182,4 +185,11 @@
 .containercbStatus {
     /* background-color: red; */
     width: 4vw !important;
+}
+
+.callButton{
+    cursor: pointer;
+    /* height: 30px;
+    width: 30px;
+    background-color: #009944; */
 }

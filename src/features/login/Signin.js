@@ -78,6 +78,9 @@ const Signin = () => {
 
     };
 
+    // const onClose = ()=>{
+    //     window.close();
+    // }
     const handleCheck = (e) => {
         setIsRemember(e.target.checked);
     }
@@ -92,6 +95,7 @@ const Signin = () => {
             <div className='signin'>
                 <div className='title'>
                     <h4>LOGIN</h4>
+                    {/* <button onClick={e => onClose()} >cancel</button> */}
                 </div>
                 <div className='content'>
                     <Form
