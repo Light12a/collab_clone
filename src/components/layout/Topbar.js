@@ -15,7 +15,6 @@ import {Modal} from 'antd';
 const Topbar = ({ t }) => {
     const dropdownActive = useRef()
     const toggleRef = useRef()
-    const [ws, setWs] = useState(null);
 
     const { token: { token } } = useSelector(state => state.auth)
     const { user } = useSelector(state => state.auth)
@@ -54,10 +53,14 @@ const Topbar = ({ t }) => {
     // useEffect(() => {
     //     const wsClient = new WebSocket('wss://18.179.96.129:8888/collabos');
     //     wsClient.onopen = () => {
-    //         console.log('ws opened');
-    //         setWs(wsClient);
+    //         alert('ws opened');
     //       };
     //     wsClient.onclose = () => console.log('ws closed');
+
+    //     wsClient.onmessage  = e => {
+    //         const message = JSON.parse(e.data);
+    //         console.log('e', message);
+    //       };
        
     //       return () => {
     //         wsClient.close();
