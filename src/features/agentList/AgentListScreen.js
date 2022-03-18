@@ -43,9 +43,7 @@ const AgentListScreen = (props) => {
     const status = ListAgent.state
 
     let [listAgentForShow, setListAgentForShow] = useState([])
-    let [nameAgent, setNameAgent] = useState 
-
-
+   
     useEffect(() => {
         let newList = [];
         for (let i = 0; i < itemsPerPage; i++) {
@@ -60,6 +58,34 @@ const AgentListScreen = (props) => {
     const onSort = (list) => {
         // return (list.sort())
         console.log("HI sort" + JSON.stringify(list))
+    }
+    
+    const onSortStatus = (list) => {
+        list.sort((a,b)=>{
+            return b.state - a.state
+        })
+        setListAgentForShow(list)
+    }
+    const onSortSkillGroupName = (list) => {
+        list.sort((a,b)=>{
+            return b.group_id - a.group_id
+        })
+        setListAgentForShow(list)
+    }
+    const onSortName = (list) => {
+        list.sort((a,b)=>{
+            return b.username.localeCompare(a.username)
+        })
+        setListAgentForShow(list)
+    }
+    const onSortExtension = (list) => {
+        list.sort((a,b)=>{
+            if(a> b)
+                return b.ext_number - a.ext_number
+            return a.ext_number-b.ext_number
+        })
+        console.log("My Lít: " + JSON.stringify(list))
+        setListAgentForShow(list)
     }
     const onPageChange = (page) => {
         setCurrentPage(page)
@@ -90,6 +116,8 @@ const AgentListScreen = (props) => {
         fromDisplayName: 'haizaaa',
         extraHeaders: ['uchihahaha:helo;']
     };
+    
+    
     const onSearch = (e) => {
         xListAgent.map((el) => {
             if (el.username.toLowerCase().includes(e.target.value) ||
@@ -261,7 +289,7 @@ const AgentListScreen = (props) => {
                             <th>
                                 <div className="table-th">
                                     <span>{t('status')}</span>
-                                    <div className='table-sort' onClick={e => { onSort(null, null, true) }}>
+                                    <div className='table-sort' onClick={e => { onSortStatus(xListAgent) }}>
                                         <img src={sortUp}></img>
                                         <img src={sortDown}></img>
                                     </div>
@@ -272,7 +300,7 @@ const AgentListScreen = (props) => {
                             <th>
                                 <div className="table-th">
                                     <span>{t('skillGroupName')}</span>
-                                    <div className='table-sort' onClick={e => { onSort(null, null, true) }}>
+                                    <div className='table-sort' onClick={e => { onSortSkillGroupName(xListAgent) }}>
                                         <img src={sortUp}></img>
                                         <img src={sortDown}></img>
                                     </div>
@@ -281,7 +309,7 @@ const AgentListScreen = (props) => {
                             <th>
                                 <div className="table-th">
                                     <span>{t('agentName')}</span>
-                                    <div className='table-sort' onClick={e => { onSort(null, null, true) }}>
+                                    <div className='table-sort' onClick={e => { onSortName(xListAgent) }}>
                                         <img src={sortUp}></img>
                                         <img src={sortDown}></img>
                                     </div>
@@ -290,7 +318,7 @@ const AgentListScreen = (props) => {
                             <th>
                                 <div className="table-th">
                                     <span>{t('extensionNumber')}</span>
-                                    <div className='table-sort' onClick={() => { onSort(xListAgent.ext_number) }}>
+                                    <div className='table-sort' onClick={() => { onSortExtension(xListAgent) }}>
                                         <img src={sortUp}></img>
                                         <img src={sortDown}></img>
                                     </div>
