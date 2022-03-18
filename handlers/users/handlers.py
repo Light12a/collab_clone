@@ -16,4 +16,16 @@ class LoginHandler(BaseHandler):
 
     @gen.coroutine
     def get(self):
-        pass
+        self.set_secure_cookie("user", "85a55880-a85b-4515-a89f-a263fd1c07ce")
+        self.write("85a55880-a85b-4515-a89f-a263fd1c07ce")
+
+        # self.set_secure_cookie("user", "092HK3399p@3")
+        # self.write("092HK3399p@3")
+
+
+class LogoutHandler(BaseHandler):
+
+    @gen.coroutine
+    def get(self):
+        self.clear_cookie("user")
+        self.write("Logout")

@@ -1,11 +1,15 @@
 import asyncio
 import tornado.autoreload
 import os
+import json
+
 from application.settings import SettingsApplication
 from tornado.escape import utf8
 from tornado.httpclient import AsyncHTTPClient
 from tornado.ioloop import IOLoop
 from tornado.options import parse_command_line, define, options
+
+from utils.util import ObjAwareEncoder
 
 define('port', default=8888)
 define('num_chunks', default=40)
@@ -34,4 +38,5 @@ def runserver():
     IOLoop.instance().start()
 
 if __name__ == '__main__':
+    json._default_encoder = ObjAwareEncoder()  # Use custom encoder
     runserver()

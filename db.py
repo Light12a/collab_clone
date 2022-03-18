@@ -71,7 +71,7 @@ class Authority(Base):
     __tablename__ = 'authority'
 
     auth_id = Column(BIGINT(20), primary_key=True)
-    tenant_id = Column(String(256), nullable=False)
+    tenant_id = Column(ForeignKey('tenant.tenant_id'), index=True, comment='Tenant ID')
     auth_name = Column(String(256), nullable=False)
     use_monitor = Column(TINYINT(1), server_default=text("0"))
     use_address = Column(TINYINT(1), server_default=text("0"))
@@ -132,6 +132,8 @@ class Authority(Base):
     dl_log = Column(TINYINT(1), server_default=text("0"))
     insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
+
+    tenant = relationship('Tenant')
 
 
 class BusinessHour(Base):
