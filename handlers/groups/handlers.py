@@ -1,7 +1,23 @@
 from tornado import gen
 from handlers.base import BaseHandler
 from http import HTTPStatus
+from email.headerregistry import Group
+import imp
+import datetime
+import uuid
+import json
+import MySQLdb
+from sqlalchemy import func
+from ..base import BaseHandler
+from ..users.models import User, Token, Tenant
+from .models import Group
+from http import HTTPStatus
+from utils.config import config
+from utils.response import ResponseMixin
+from tornado import gen
+from services.logging import logger as log
 
+log = log.get(__name__)
 class GroupSearchHandler(BaseHandler):													
 
     @gen.coroutine
@@ -71,3 +87,69 @@ class GroupUpdateHandler(BaseHandler):
         """
 
         self.write_response()
+    
+class GetSkillGroupsHandler(BaseHandler):
+    
+    @property
+    def db(self):
+        return self.application.session
+        
+    def data_received(self, chunk=None):
+        if self.request.body:
+            return json.loads(bytes.decode(self.request.body))
+    
+    @gen.coroutine
+    def post(self):
+        try:
+            request = self.data_received()
+            if "token" in request:
+                check = yield self._check_token_exists(request['token'])
+                if check:
+                    groups = yield self._get_groups(request['token'])
+                    self.write({
+                        "code": 200, 
+                        "skill_groups": groups
+                    })
+                    self.set_status(200)
+                else:
+                    self.write({"code":404, "errorMessage": "groups not found"})
+                    self.set_status(404)
+            else:
+                raise ValueError
+        except ValueError:
+            self.set_status(400)
+            self.write({"code":400, "errorMessage":"Bad request"})
+
+    @gen.coroutine
+    def _get_groups(self, token_id):
+        results = self.db.query(Group).filter(Group.tenant_id == User.tenant_id,
+                                              User.user_id == Token.user_id,
+                                              Token.token_id == token_id).all()
+        if results:
+            results_ = []
+            for elemant in results:
+                results_.append(elemant.to_json())
+                
+            groups = [{
+                "group_id": element['group_id'],
+                "name": element['group_name']
+            } for element in results_]
+        else:
+            err = "Not found any group"
+            raise gen.Return(False)
+        raise gen.Return(groups)
+
+    @gen.coroutine
+    def _check_token_exists(self, token):
+        """
+        Function take in token to verify this one is the newest.
+        @params: Token.
+        """
+        result = self.db.query(Token.token_id).filter(Token.token_id==token).distinct().all()
+
+        try:
+            raise gen.Return(result[0][0])
+        except IndexError:
+            self.write({"code":401, "errorMessage":"token is wrong"})
+            self.set_status(401)
+            raise gen.Return(False)
