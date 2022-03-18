@@ -404,7 +404,6 @@ const Wrapper = styled.div`
     background-color: white;
     box-shadow: 0px 6px 60px rgba(0, 0, 0, 0.16);
     border-radius: 4px;
-    max-height: 95vh;
     max-width: 90vw;
 
     .drag-header {
