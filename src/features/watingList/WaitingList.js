@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import sortDown from '../../asset/sortDown.png';
 import sortUp from '../../asset/sortUp.png';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,28 +9,27 @@ import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/cal
 import CustomSelect from "./CustomSelect";
 import styled from 'styled-components';
 import { Select, Radio } from "antd";
-import arrowIcon from '../../asset/arrow_green.png'
+import TimerClock from './TimerClock';
 
 const WaitingList = React.forwardRef((props, ref) => {
+    const log = require('electron-log');
     const dispatch = useDispatch()
     const { t, i18n } = useTranslation();
 
-    const [callList, setCallList] = useState([]);
-    const [callInfo, setCallInfo] = useState([]);
-    const [isSortWaitingTimeDes, setIsSortWaitingTimeDes] = useState(true);
+    const [isSortWaitingTimeDes, setIsSortWaitingTimeDes] = useState(null);
     const [isSortWaitingCallDes, setIsSortWaitingCallDes] = useState(null);
     const [isSortNameDes, setIsSortNameDes] = useState(null);
     //use for render
-    const intervalId = useRef(null);
     var pageNo = 1;
     const pageSize = 9;
     const [pages, setPages] = useState([]);
     const [renderPage, setRenderPage] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [renderItems, setRenderItems] = useState([]);
-    const [isFirstLoop, setIsFirstLoop] = useState(true);
-    const [skillGroups, setSkillGroups] = useState([]);
+    const isFirstLoop = useRef(true);
+    const skillGroups = useRef([]);
     const [selectedGroup, setSelectedGroup] = useState(null);
+
 
     //redux
     const { waitingList, skillGroupList, newestCall, removedCall } = useSelector(state => state.waiting)
@@ -39,169 +38,119 @@ const WaitingList = React.forwardRef((props, ref) => {
 
     //apply change when change page, sort
     useEffect(() => {
-        if (isFirstLoop) return;
-        restartInterval();
+        if (isFirstLoop.current) return;
+        renderTable();
 
     }, [isSortWaitingTimeDes, currentPage, isSortWaitingCallDes, isSortNameDes]);
 
     //load call from store when open waiting list
     useEffect(() => {
         loadCalls();
-        restartInterval();
-
-        return () => {
-            if (intervalId.current) {
-                clearInterval(intervalId.current);
-            }
-        }
     }, []);
 
     //trigger when new call coming
     useEffect(() => {
-        if (isFirstLoop || !newestCall) return;
+        if (isFirstLoop.current || !newestCall) return;
         addACall(newestCall);
-        onSort(isSortWaitingTimeDes, isSortWaitingCallDes, isSortNameDes, false);
-        //restartInterval();
+        onSort(isSortWaitingTimeDes === null ? null : true, isSortWaitingCallDes === null ? null : true, isSortNameDes === null ? null : true, false);
     }, [newestCall]);
 
     //trigger when call timeout to remove call from list
     useEffect(() => {
-        if (isFirstLoop || !removedCall) return;
+        if (isFirstLoop.current || !removedCall) return;
         removeACall(removedCall)
-        onSort(isSortWaitingTimeDes, isSortWaitingCallDes, isSortNameDes, false);
-        //restartInterval();
+        onSort(isSortWaitingTimeDes === null ? null : true, isSortWaitingCallDes === null ? null : true, isSortNameDes === null ? null : true, false);
     }, [removedCall]);
 
     //load waiting calls when open waiting list
     const loadCalls = () => {
         var skillGroupsCopy = JSON.parse(JSON.stringify(skillGroupList))
-        skillGroupsCopy.push({
-            "group_id": 98,
-            "group_name": "Conference"
-        },
-            {
-                "group_id": 99,
-                "group_name": "Other"
-            });
+        
         skillGroupsCopy.forEach(group => {
-            group.calls = [];
             waitingList.forEach(waiting => {
                 if (waiting.group_id === group.group_id) {
                     group.calls.push(waiting);
                 }
             });
         });
-
-        for (let i = 0; i < 9; i++) {
-            skillGroupsCopy.push({
-                "group_id": 100 + i,
-                "group_name": "group " + 100 + i,
-                "calls": []
-            })
-        }
-
-        skillGroups.splice(0, skillGroups.length, ...skillGroupsCopy);
-        setSkillGroups([...skillGroups]);
-
-        if (skillGroups.length % pageSize === 0) {
-            pageNo = Math.floor(skillGroups.length / pageSize);
-        }
-        else {
-            pageNo = Math.floor(skillGroups.length / pageSize) + 1;
-        }
-        for (let i = 1; i <= pageNo; i++) {
-            pages.push(i)
-        }
-
-        console.log("pageNo: " + pageNo);
-
+        
+        skillGroups.current.splice(0, skillGroups.current.length, ...skillGroupsCopy);
+        calculatePagination();
+        onDataChange();
         onPageChange(1);
-
-
-
     }
 
     //add new call
     const addACall = (call) => {
-        skillGroups.forEach(group => {
+        skillGroups.current.forEach(group => {
             if (group.group_id === call.group_id) {
                 group.calls.push(call);
             }
         });
-
-        setSkillGroups([...skillGroups]);
+        onDataChange();
     }
 
     //remove canceled call
     const removeACall = (sessionId) => {
-        console.log("removeACall ssId: ", sessionId);
-        console.log("removeACall before filter: ", JSON.stringify(skillGroups));
-        skillGroups.forEach(group => {
+        skillGroups.current.forEach(group => {
             group.calls = group.calls?.filter(item => item.ssId !== sessionId);
-            console.log("removeACall group.calls: ", group.calls);
         });
-
-        console.log("removeACall after filter: ", JSON.stringify(skillGroups));
-        setSkillGroups([...skillGroups]);
+        onDataChange();
     }
 
-    //restart interval to apply data change
-    const restartInterval = () => {
-        if (intervalId.current) {
-            clearInterval(intervalId.current);
+    const calculatePagination = () => {
+        if (skillGroups.current.length % pageSize === 0) {
+            pageNo = Math.floor(skillGroups.current.length / pageSize);
         }
-        intervalId.current = setInterval(runLoop, 1000);
+        else {
+            pageNo = Math.floor(skillGroups.current.length / pageSize) + 1;
+        }
+        for (let i = 1; i <= pageNo; i++) {
+            pages.splice(i -1, 1, i);
+        }
+        pages.length = pageNo;
+        log.info("WaitingList.js::calculatePagination() page list after calculated: ", pages);
     }
 
-    const runLoop = () => {
-        console.log("Skill group list: ", JSON.stringify(skillGroups))
-        skillGroups.forEach(element => {
-            let longestWait = 0;
-            element.calls?.forEach(call => {
-                let now = new Date();
-                let wait = Math.abs(now - new Date(call.arrivedTime));
-                if (wait > longestWait) {
-                    longestWait = wait;
-                }
-            });
-            element.waitingTimeMilisecond = longestWait;
-            let waitSeconds = Math.floor(longestWait / 1000);
-            let waitMinutes = Math.floor(waitSeconds / 60);
-            if (waitMinutes > 0) {
-                if (waitMinutes < 10) {
-                    waitMinutes = "0" + waitMinutes.toString();
-                }
-                waitSeconds = waitSeconds % 60;
-            }
-            else {
-                waitMinutes = "00"
-            }
-            if (waitSeconds < 10) {
-                waitSeconds = "0" + waitSeconds.toString();
-            }
-            element.waitingTime = waitMinutes + ":" + waitSeconds;
-
-            element.waitingCall = element.calls?.length || 0;
+    //use for re-format data after add/remove skillGroups
+    const onDataChange = () => {
+        //get longest waiting call
+        skillGroups.current.forEach(element => {
+            element.calls?.sort((a, b) => new Date(a.arrivedTime) - new Date(b.arrivedTime));
+            element.longestWait = element.calls[0]?.arrivedTime;
         });
 
-        if (isFirstLoop) {
-            skillGroups.sort((a, b) => b.waitingTimeMilisecond - a.waitingTimeMilisecond);
-            setIsFirstLoop(false);
+        //sort by time when first time add data
+        if (isFirstLoop.current) {
+            skillGroups.current.sort((a, b) => new Date(a.longestWait) - new Date(b.longestWait));
+            isFirstLoop.current = false;
+            setIsSortWaitingTimeDes(!isSortWaitingTimeDes);
         }
+        renderTable();
+    }
 
+    //render table of skillGroups
+    const renderTable = () => {
         for (let i = 0; i < pageSize; i++) {
-            renderItems.splice(i, 1, skillGroups[(currentPage - 1) * pageSize + i] ? skillGroups[(currentPage - 1) * pageSize + i] : {})
+            renderItems.splice(i, 1, skillGroups.current[(currentPage - 1) * pageSize + i] ? skillGroups.current[(currentPage - 1) * pageSize + i] : {})
         }
-
-        setSkillGroups([...skillGroups]);
+        log.info("WaitingList.js::renderTable() items will be rendered in table: ", renderItems);
+        setRenderItems([...renderItems])
     }
 
     const onSort = (sortTimeDes, sortCallNumberDes, sortNameDes, sortFromClick) => {
-        console.log("onSort: " + sortTimeDes + sortCallNumberDes + sortNameDes);
+        let sortNameDec = isSortNameDes;
+        let sortWaitingCallDec = isSortWaitingCallDes;
+        let sortWaitingTimeDec = isSortWaitingTimeDes;
+        if (!sortFromClick) {
+            sortNameDec = !isSortNameDes;
+            sortWaitingCallDec = !isSortWaitingCallDes;
+            sortWaitingTimeDec = !isSortWaitingTimeDes;
+        }
         //seperate list skill group to 2 list, have and don't have calls in
         var hadCallGroups = [];
         var noCallGroups = [];
-        skillGroups.forEach(group => {
+        skillGroups.current.forEach(group => {
             if (group.calls?.length > 0) {
                 hadCallGroups.push(group)
             }
@@ -209,18 +158,16 @@ const WaitingList = React.forwardRef((props, ref) => {
                 noCallGroups.push(group)
             }
         });
-        console.log("hadCallGroups: ", JSON.stringify(hadCallGroups));
-        console.log("noCallGroups: ", JSON.stringify(noCallGroups));
 
         //sort by waiting time
         if (sortTimeDes) {
-            if (!isSortWaitingTimeDes) {
-                hadCallGroups.sort((a, b) => b.waitingTimeMilisecond - a.waitingTimeMilisecond);
-                noCallGroups.sort((a, b) => b.waitingTimeMilisecond - a.waitingTimeMilisecond);
+            if (!sortWaitingTimeDec) {
+                hadCallGroups.sort((a, b) => new Date(a.longestWait) - new Date(b.longestWait));
+                noCallGroups.sort((a, b) => new Date(a.longestWait) - new Date(b.longestWait));
             }
             else {
-                hadCallGroups.sort((a, b) => a.waitingTimeMilisecond - b.waitingTimeMilisecond);
-                noCallGroups.sort((a, b) => a.waitingTimeMilisecond - b.waitingTimeMilisecond);
+                hadCallGroups.sort((a, b) => new Date(b.longestWait) - new Date(a.longestWait));
+                noCallGroups.sort((a, b) => new Date(b.longestWait) - new Date(a.longestWait));
             }
             if (sortFromClick) {
                 setIsSortNameDes(null);
@@ -231,13 +178,13 @@ const WaitingList = React.forwardRef((props, ref) => {
 
         //sort by number of waiting calls
         if (sortCallNumberDes) {
-            if (!isSortWaitingCallDes) {
-                hadCallGroups.sort((a, b) => b.waitingCall - a.waitingCall);
-                noCallGroups.sort((a, b) => b.waitingCall - a.waitingCall);
+            if (!sortWaitingCallDec) {
+                hadCallGroups.sort((a, b) => b.calls.length - a.calls.length);
+                noCallGroups.sort((a, b) => b.calls.length - a.calls.length);
             }
             else {
-                hadCallGroups.sort((a, b) => a.waitingCall - b.waitingCall);
-                noCallGroups.sort((a, b) => a.waitingCall - b.waitingCall);
+                hadCallGroups.sort((a, b) => a.calls.length - b.calls.length);
+                noCallGroups.sort((a, b) => a.calls.length - b.calls.length);
             }
             if (sortFromClick) {
                 setIsSortNameDes(null);
@@ -248,7 +195,7 @@ const WaitingList = React.forwardRef((props, ref) => {
 
         //sort by name
         if (sortNameDes) {
-            if (!isSortNameDes) {
+            if (!sortNameDec) {
                 hadCallGroups.sort((a, b) => a.group_name.localeCompare(b.group_name));
                 noCallGroups.sort((a, b) => a.group_name.localeCompare(b.group_name));
             }
@@ -263,14 +210,16 @@ const WaitingList = React.forwardRef((props, ref) => {
             }
         }
 
-        skillGroups.splice(0, skillGroups.length, ...hadCallGroups, ...noCallGroups);
-
-        setSkillGroups([...skillGroups]);
+        skillGroups.current.splice(0, skillGroups.current.length, ...hadCallGroups, ...noCallGroups);
+        
+        log.info("WaitingList.js::onSort() Skill groups list after sort: ", skillGroups.current);
+        renderTable();
     }
 
     const onPageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
         let maxRenderPage = 3;
+
         if (pages.length < maxRenderPage) {
             maxRenderPage = pages.length;
         }
@@ -297,10 +246,11 @@ const WaitingList = React.forwardRef((props, ref) => {
                 renderPage.splice(i, 1, pageNumber - 1 + i);
             }
         }
+        renderPage.length = maxRenderPage;
     }
 
     const answer = () => {
-        skillGroups.forEach(group => {
+        skillGroups.current.forEach(group => {
             if (group.group_id === selectedGroup.group_id
                 && group?.calls?.length > 0) {
                 group.calls.sort((a, b) => new Date(a.arrivedTime) - new Date(b.arrivedTime));
@@ -308,6 +258,21 @@ const WaitingList = React.forwardRef((props, ref) => {
             }
         });
         dispatch(setIsWaitingListOpen(false));
+    }
+
+    //filter
+    const onSelect = (group) => {
+        if (group.group_id > 0) {
+            loadCalls();
+            skillGroups.current = skillGroups.current.filter(item => item.group_id === group.group_id);
+            onDataChange();
+            calculatePagination();
+            renderTable();
+            onPageChange(1);
+        }
+        else{
+            loadCalls();
+        }
     }
 
     const paginationItem = {
@@ -322,11 +287,6 @@ const WaitingList = React.forwardRef((props, ref) => {
         border: '1px solid #CDCDCD',
         borderRadius: '4px'
     }
-    const skillGroup = [
-        { id: 1, name: "Skill group 1" },
-        { id: 2, name: "Skill group 2" },
-        { id: 3, name: "Skill group 3" },
-      ]
 
     return (
         <Wrapper ref={ref}>
@@ -336,18 +296,11 @@ const WaitingList = React.forwardRef((props, ref) => {
             </div>
             <div className='waiting-list__body drag-body'>
                 <p>{t('skillGroup')}</p>
-                {/* <Select style={{ width: '300px' }} defaultValue={t('selectSkillGroup')} suffixIcon={<img src={arrowIcon} />}>
-                    <Option value="skillGroup1">Skillgroup 1</Option>
-                    <Option value="skillGroup2">Skillgroup 2</Option>
-                    <Option value="skillGroup3">Skillgroup 3</Option>
-                </Select> */}
-
                 <CustomSelect
                     defaultText="Select skill group"
-                    optionsList={skillGroup}
+                    optionsList={skillGroupList}
+                    onSelectGroup={e => onSelect(e)}
                 />
-
-
                 <table className='drag-table'>
                     <thead>
                         <th></th>
@@ -386,13 +339,24 @@ const WaitingList = React.forwardRef((props, ref) => {
                                 <tr>
                                     <td>
                                         <input
-                                            style={{ verticalAlign: 'middle' }} type="radio" name='rdCall' disabled={item.waitingCall > 0 ? false : true}
+                                            style={{ verticalAlign: 'middle', visibility: item.group_name ? 'visible' : 'hidden' }}
+                                            type="radio"
+                                            name='rdCall'
+                                            disabled={item.calls?.length > 0 ? false : true}
                                             onChange={e => setSelectedGroup(item)}
                                         />
                                     </td>
                                     <td>{item.group_name}</td>
-                                    <td>{item.waitingCall}</td>
-                                    <td>{item.waitingTime}</td>
+                                    <td>{item.calls ? item.calls.length : ''}</td>
+                                    {item.group_id &&
+                                        <TimerClock
+                                            longestWait={item.longestWait}
+                                        />
+                                    }
+                                    {!item.group_id &&
+                                        <td></td>
+                                    }
+
                                 </tr>
                             ))
                         }
@@ -425,6 +389,7 @@ const WaitingList = React.forwardRef((props, ref) => {
             </div>
             <div className='waiting-list__footer drag-footer'>
                 <button
+                    disabled={selectedGroup?.calls?.length > 0 ? false : true}
                     className={selectedGroup?.calls?.length > 0 ? 'btn-primary' : 'btn-primary disable'}
                     onClick={e => answer()}
                 >Answer</button>
@@ -503,4 +468,4 @@ const Wrapper = styled.div`
 `
 
 
-export default React.memo(WaitingList);
+export default WaitingList;

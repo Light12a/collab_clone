@@ -1,6 +1,7 @@
 import React from "react";
 import styled from 'styled-components'
 import imgArrow from '../../asset/arrow_green.png'
+import { withTranslation } from 'react-i18next';
 
 class CustomSelect extends React.Component {
   constructor(props) {
@@ -54,16 +55,30 @@ class CustomSelect extends React.Component {
 
   // This method handles the setting of name in select text area
   // and list display on selection
-  handleOptionClick = e => {
-    this.setState({
-      defaultSelectText: e.target.getAttribute("data-name"),
-      showOptionList: false
-    });
+  handleOptionClick = (group, e) => {
+    if (group) {
+      this.setState({
+        defaultSelectText: e.target.getAttribute("data-name"),
+        showOptionList: false
+      });
+      this.props.onSelectGroup(group);
+    }
+    else {
+      this.setState({
+        defaultSelectText: this.props.t('all'),
+        showOptionList: false
+      });
+      this.props.onSelectGroup({
+        "group_id": -1,
+        "group_name": "All"
+      });
+    }
   };
 
   render() {
     const { optionsList } = this.props;
     const { showOptionList, defaultSelectText } = this.state;
+    const { t } = this.props;
     return (
       <CustomSelectWrapper>
         <div
@@ -74,15 +89,20 @@ class CustomSelect extends React.Component {
         </div>
         {showOptionList && (
           <ul className="select-options">
+            <li
+              className={`custom-select-option ${defaultSelectText === 'All' && 'active'}`}
+              onClick={e => this.handleOptionClick(null, e)}
+            >{t('all')}
+            </li>
             {optionsList.map(option => {
               return (
                 <li
-                  className={`custom-select-option ${defaultSelectText === option.name && 'active'}`}
-                  data-name={option.name}
-                  key={option.id}
-                  onClick={this.handleOptionClick}
+                  className={`custom-select-option ${defaultSelectText === option.group_name && 'active'}`}
+                  data-name={option.group_name}
+                  key={option.group_id}
+                  onClick={e => this.handleOptionClick(option, e)}
                 >
-                  {option.name}
+                  {option.group_name}
                 </li>
               );
             })}
@@ -129,6 +149,8 @@ const CustomSelectWrapper = styled.div`
   padding: 0;
   z-index: 10;
   margin-top: 2px;
+  max-height: 250px; 
+  overflow: auto;
 }
 
 .select-options {
@@ -164,5 +186,4 @@ const CustomSelectWrapper = styled.div`
     background-color: #F7FFE1;
 }
 `
-
-export default CustomSelect;
+export default withTranslation()(CustomSelect);
