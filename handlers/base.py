@@ -8,6 +8,13 @@ class BaseHandler(RequestHandler):
     def db(self):
         return self.application.session
 
+    def data_received(self, chunk=None):
+        if self.request.body:             
+            try:
+                return json.loads(bytes.decode(self.request.body))
+            except ValueError:
+                return False
+
     def initialize(self, **kwargs):
         RequestHandler.initialize(self, **kwargs)
         self._http_client = AsyncHTTPClient()

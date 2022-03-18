@@ -31,9 +31,11 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
         try:
             data = self.data_received()
             if 'token' in data:
-                check, token = self._check_token_exists(data['token'])
+                check, token = yield self._check_token_exists(data['token'])
                 if check:
                     self._get_selected_ring_tone(token)
+                else:
+                    self.write_response("Success", code=HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
             else: raise ValueError
         except ValueError:
             self.write_response("Error", code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
@@ -45,8 +47,6 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
         """
             Meaning: Checking the token's existence
             Input: token
-            Output: False  or
-                    True and token
         """
         result = self.db.query(Token.token_id).filter(Token.token_id == token)
         if result == None:
@@ -56,9 +56,8 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
 
     def _get_selected_ring_tone(self, token):
         """
-        "select sound_id, sound_name, location_path from backend.user as u 
-        join backend.token as t on u.user_id = t.user_id join 
-        backend.sound_files as s on u.tone_id = s.sound_id  where t.token_id = '{}';"
+        Meaning: get user's the selected ringtone
+        Input: token
         """
         result = self.db.query(SoundFiles.sound_id, SoundFiles.sound_name, SoundFiles.location_path)\
                 .join(Token, Token.user_id == SoundFiles.user_id).join(SoundFiles, User.sound_id == SoundFiles.sound_id)\
@@ -106,9 +105,8 @@ class GetAllRingTonesHandler(ResponseMixin, BaseHandler):
 
     def _get_all_ringtones(self, token):
         """
-        select sound_id, sound_name, location_path from backend.user as u join\
-        backend.token as t on u.user_id = t.user_id join backend.sound_files as s\
-        on u.tone_id = s.sound_id  where t.token_id = '{}';
+        Meaning: get tenant's all ringtones
+        Input: token
         """
         try:
             results = self.db.query(SoundFiles).all()

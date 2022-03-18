@@ -1,3 +1,4 @@
+from turtle import back
 from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Table, Text, Time, text, inspect
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, LONGTEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import relationship
@@ -50,3 +51,36 @@ class Token(Base):
     create_date = Column(INTEGER(11), comment='Create Date : Created Date of token')
 
     user = relationship(User)
+    def to_json(self):
+        return {c.key: getattr(self, c.key)
+                for c in inspect(self).mapper.column_attrs}
+class UserRecord(Base):
+    __tablename__ = 'user_records'
+
+    user_record_id = Column(BIGINT(20), primary_key=True, unique=True)
+    tenant_id = Column(String(256))
+    user_id = Column(String(256))
+    acd_status = Column(INTEGER(11))
+    start_date = Column(DateTime)
+    end_date = Column(DateTime)
+    aux_detail = Column(BIGINT(20))
+    incoming_skill = Column(String(256))
+    insert_date = Column(DateTime, nullable=False)
+    update_date = Column(DateTime, nullable=False)
+    def to_json(self):
+        return {c.key: getattr(self, c.key)
+                for c in inspect(self).mapper.column_attrs}
+class AwayReason(Base):
+    __tablename__ = 'away_reason'
+    __table_args__ = {'comment': 'Away Reason : Away Reason'}
+
+    id = Column(BIGINT(20), primary_key=True, unique=True, comment='Id')
+    tenant_id = Column(ForeignKey(Tenant.tenant_id), index=True, comment='Tenant Id : Tenant Id which these away reasons are belong to')
+    away_reason = Column(String(1024), comment='Away Reason : Content of Away reason')
+    is_display = Column(TINYINT(1), comment='Is Display : 0 is not displayed, 1 is displayed')
+    update_date = Column(DateTime, comment='Update date : Last time that away reason is changed')
+    tenant = relationship(Tenant)
+
+    def to_json(self):
+        return {c.key: getattr(self, c.key)
+                for c in inspect(self).mapper.column_attrs}

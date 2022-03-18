@@ -1,7 +1,7 @@
 import configparser
 import os
 
-os.environ['COLLABOS_SRC'] = "D:\\TMA project\\collabos"
+os.environ['COLLABOS_SRC'] = "D:\\collabos"
 
 CONFIG_DIR = os.path.join(os.environ['COLLABOS_SRC'], 'config.ini')
 

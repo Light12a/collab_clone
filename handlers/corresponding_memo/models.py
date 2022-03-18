@@ -18,3 +18,6 @@ class CorrespondenceMemo(Base):
     correspondence_memo_tag = Column(INTEGER(11))
     correspondence_memo_explaination = Column(String(45))
     last_change_date = Column(DateTime)
+
+
+

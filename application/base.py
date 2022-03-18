@@ -11,7 +11,8 @@ class CollabosBaseApplication(Application):
         settings.update(self._generate_required_settings())
         handlers += self._generate_required_handlers()
         self.session = scoped_session(sessionmaker(bind=self.db.engine, autocommit=False, autoflush=True,
-                                              expire_on_commit=False))
+                                              expire_on_commit=False)) 
+        print("test mysql:",self.session)
         Application.__init__(self, handlers=handlers, **settings)
 
     def _generate_required_handlers(self):
