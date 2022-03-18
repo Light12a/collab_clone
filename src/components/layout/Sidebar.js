@@ -3,11 +3,13 @@ import { Menu } from 'antd';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurentRoute } from '../../redux/reducers/route/route';
-import { setIsWaitingListOpen } from '../../redux/reducers/waitingList/waitingListStatus';
+import { setIsWaitingListOpen, setZIndexWaitingList } from '../../redux/reducers/waitingList/waitingListStatus';
 import { setIsFullScreen } from '../../redux/reducers/homePage/homePageSlice';
 import imgBar from '../../asset/menu.svg'
 import imgArrow from '../../asset/arrow-2.svg'
 import './Sidebar.css'
+import { setIsKeypadOpen, setZIndexKeyPad } from '../../redux/reducers/keypad/keypadStatus';
+import { setAgentListOpen, setZIndexAgentList } from '../../redux/reducers/agentList/agentListStatus';
 
 
 function Sidebar({ t }) {
@@ -17,6 +19,7 @@ function Sidebar({ t }) {
     const waitingCallList = useSelector(state => state.waiting);
     const waitingListStatus = useSelector(state => state.waitingListStatus)
     const currentRoute = useSelector(state => state.route.currentRoute)
+
 
 
 
@@ -46,7 +49,9 @@ function Sidebar({ t }) {
             >
                 <li onClick={e => {
                     dispatch(setIsWaitingListOpen(true));
-                    dispatch(setIsFullScreen(false))
+                    //  dispatch(setZIndexWaitingList());
+                    dispatch(setIsKeypadOpen(false));
+                    dispatch(setAgentListOpen(false));
                 }} className={`${waitingCallList.length > 0 ? 'ant-menu-item blink_me' : 'ant-menu-item'} ${waitingListStatus.isWaitingListOpen && 'active' }`}>
                     <div className='ant-menu-title-content'>
                         <img src={require('../../asset/phone.svg').default} />

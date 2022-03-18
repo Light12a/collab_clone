@@ -187,7 +187,7 @@ const HomePage = () => {
                             <Option value="123-444-444">123-444-444</Option>
                             <Option value="123-555-555">123-555-555</Option>
                         </Select>
-                        <button onClick={e => { dispatch(setIsKeypadOpen(true)) }}><img src={dialpad} alt="" />{t("dialPad")}</button>
+                        <button onClick={e => { dispatch(setIsKeypadOpen(true)); dispatch(setIsWaitingListOpen(false)) }}><img src={dialpad} alt="" />{t("dialPad")}</button>
                     </div>
 
                 </div>
@@ -284,7 +284,7 @@ const HomePage = () => {
                     {/* <button onClick={e => { hasCurrentCall ? endCall() : call() }} className='btn'>{hasCurrentCall ? t('disconnect') : t('call')}</button> */}
                     {/* <button className='btn' onClick={e => hold()}>{activeCall.state === callConstant.HOLD ? t('unHold') : t('holdOn')}</button>
                     <button className='btn' onClick={e => forward()}>{t('forward')}</button> */}
-                    <button className='btn' onClick={e => { dispatch(setAgentListOpen(true)) }}>{t('call')}</button>
+                    <button className='btn' onClick={e => { dispatch(setAgentListOpen(true));dispatch(setIsWaitingListOpen(false)); dispatch(setIsKeypadOpen(false)) }}>{t('call')}</button>
                     <button className='btn'>{t('pickUp')}</button>
                     <button className='btn'>{t('conference')}</button>
                     <button className='btn'>{t('coach')}</button>
@@ -355,7 +355,7 @@ const Wrapper = styled.div`
     font-size: 14px;
     padding: 20px;
     padding-right: 0;
-    height: calc(100vh - 52px);
+    min-height: calc(100vh - 52px);
     flex: 1;
     /* min-width: 450px; */
     

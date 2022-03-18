@@ -265,6 +265,7 @@ const Wrapper = styled.div`
       border: 1px solid #ECECEC;
       width: 50%;
       overflow: hidden;
+      position: relative;
 
 
       &__header{
@@ -309,10 +310,13 @@ const Wrapper = styled.div`
     }
     .versionStyle {
       color: red;
-      margin-top: 35vh;
       flex: 1;
       display: flex;
       justify-content: center;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
     }
     .setting-voice{
       display: grid;
