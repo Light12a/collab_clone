@@ -7,10 +7,10 @@ Base = declarative_base()
 
 class SQLChemyConnection(object):
     def __init__(self) -> None:
-        self.host = config['db_local']['host']
-        self.user = config['db_local']['user']
-        self.password = config['db_local']['password']
-        self.database = config['db_local']['database']
+        self.host = config['db2']['host']
+        self.user = config['db2']['user']
+        self.password = config['db2']['password']
+        self.database = config['db2']['database']
         self.engine = create_engine('mysql://%s:%s@%s/%s?charset=utf8' %
                    (self.user, self.password, self.host, self.database),
                    encoding='utf-8', echo=False,

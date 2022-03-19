@@ -8,6 +8,7 @@ from unittest import result
 from urllib import request
 import uuid
 import json
+from zipfile import BadZipfile
 from ..base import BaseHandler
 from .models import User, Token, Tenant
 from http import HTTPStatus
@@ -26,6 +27,13 @@ log = log.get(__name__)
 #         results = self.db.query(User).all()
 #         for result in results:
 #             print(result.user_name)
+
+class TestHandler(ResponseMixin, BaseHandler):
+    def post(self):
+        results = self.db.query(User).all()
+        for result in results:
+            print(result.username)
+
 class LoginHandler(ResponseMixin, BaseHandler):
     """
     This class is created to build Login API.
@@ -84,6 +92,7 @@ class LoginHandler(ResponseMixin, BaseHandler):
         result = self.db.query(User.user_id).join(Tenant, User.tenant_id == Tenant.tenant_id).filter(
             Tenant.domain == domain, User.user_name == username).distinct().all()
         print("issue")
+        print(result)
         try:
             raise gen.Return(result[0][0])
         except IndexError:
