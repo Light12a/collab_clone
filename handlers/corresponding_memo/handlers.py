@@ -6,7 +6,7 @@ import json
 from handlers.tenant_settings.models import CallRecord
 from handlers.users.models import UserRecord, Token
 from ..base import BaseHandler
-from .models import CorrespondenceMemo, SoundFiles, User, Token
+from .models import CorrespondenceMemo, RespondingMemo, User
 from http import HTTPStatus
 from utils.config import config
 from utils.response import ResponseMixin
@@ -21,24 +21,16 @@ class GetCorrespondenceMemoListHandler(ResponseMixin, BaseHandler):
     This class is created to build API for get correspondence memo.
     Params of request is token.
     """
-    @property
-    def db(self):
-        return self.application.session
-
-    def data_received(self, chunk=None):
-        if self.request.body:
-            return json.loads(bytes.decode(self.request.body))
-
     @gen.coroutine
     def post(self):
-        try:
-            data = self.data_received()
-            if 'token' in data:
-                check, token = self._check_token_exists(data["token"])
-                if check:
-                    self._get_correspondence_memo(token)
-            else: raise ValueError
-        except ValueError:
+        data = self.data_received()
+        if 'token' in data:
+            check, token = yield self._check_token_exists(data["token"])
+            if check:
+                self._get_correspondence_memo()
+            else:
+                self.write_response("Failure", code=HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
+        else: 
             self.write_response("Error", code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
             err = "Token {} in wrong format"
             log.debug(err.format(data['token']))
@@ -48,21 +40,24 @@ class GetCorrespondenceMemoListHandler(ResponseMixin, BaseHandler):
         """
             Meaning: Checking the token's existence
             Input: token
-            Output: False  or
-                    True and token
         """
-        result = self.db.query(Token.token_id).filter(Token.token_id == token)
-        if result == None:
-            raise gen.Return(False)
-        else:
-            raise gen.Return(True, token)
+        try:
+            result = self.db.query(Token.token_id).filter(Token.token_id == token)
+            print('start1')
+            print("query = ", result)
+            if result[0][0] == token:
+                print("hello")
+                return True, token
+            else: return False, None
+        except:
+            return False, None
     
     def _get_correspondence_memo(self):
-        results = self.db.query(CorrespondenceMemo).all()
+        results = self.db.query(RespondingMemo.memo_id, RespondingMemo.memo_name).all()
         if results:
             memo =[{
-                "id": result[0][0],
-                "text": result[0][2]
+                "id": result[0],
+                "text": result[1]
                 } for result in results]
             resp = {
                 "code": 200,
@@ -89,9 +84,11 @@ class ApplyCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
         if 'token' and 'memo_id' and 'memo_note' and 'call_id' in data:
             check, token = yield self._check_token_exists(data['token'])
             if check:
-                yield self._apply_correspondence_memo()
+                self._apply_correspondence_memo(data)
             else:
-                self.write_response("Failure", HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
+                print("issue start")
+                self.write_response("Failure", code = HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
+                print("issue end")
         else:
             self.write_response("Error", code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
             err = "Token {}, memo id {}, memo {}, call_id {} in wrong format"
@@ -100,8 +97,11 @@ class ApplyCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
     @gen.coroutine
     def _apply_correspondence_memo(self, data):
         try:
-            query = self.db.query(CallRecord, User, Token).filter(Token.user_id == User.user_id, CallRecord.call_id == data['call_id'])
+            query = self.db.query(CallRecord.memo_id).filter(Token.user_id == User.user_id, Token.token_id == data['token'], )
+            print("QUERY", query)
             query.memo_id = data["memo_id"]
+            print("Here is fine")
+            self.db.commit()
         except:
             self.write_response("Failure", HTTPStatus.NOT_FOUND.value, "memo_id not found")
 
@@ -110,11 +110,14 @@ class ApplyCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
         """
             Meaning: Checking the token's existence
             Input: token
-            Output: False  or
-                    True and token
         """
-        result = self.db.query(Token.token_id).filter(Token.token_id == token)
-        if result == None:
-            raise gen.Return(False)
-        else:
-            raise gen.Return(True, token)
+        try:
+            result = self.db.query(Token.token_id).filter(Token.token_id == token)
+            print('start1')
+            print("query = ", result)
+            if result[0][0] == token:
+                print("hello")
+                return True, token
+            else: return False, None
+        except:
+            return False, None

@@ -33,7 +33,7 @@ class User(Base):
     lastname = Column(VARCHAR(1024), comment='Last Name')
     middlename = Column(VARCHAR(1024), comment='Middle Name')
     project_id = Column(BIGINT(20), comment='Project Id : Project which user is belong')
-
+    sound_id = Column(INTEGER(11), comment="Sound Id: ringtone which user have selected" )
     tenant = relationship(Tenant)
 
     def to_json(self):
@@ -46,14 +46,12 @@ class Token(Base):
     __table_args__ = {'comment': 'Token : Manage token of each user for authentication'}
 
     user_id = Column(ForeignKey(User.user_id), primary_key=True,nullable=False, index=True, comment='User Id')
-    token_id = Column(VARCHAR(60), unique=True, comment='Token Id : Each user has an unique token_id')
-    expired_date = Column(INTEGER(11), comment='Expired Time : Expired time of token')
-    create_date = Column(INTEGER(11), comment='Create Date : Created Date of token')
+    token_id = Column(VARCHAR(512), unique=True, comment='Token Id : Each user has an unique token_id')
+    expired_date = Column(BIGINT(20), comment='Expired Time : Expired time of token')
+    create_date = Column(DateTime, comment='Create Date : Created Date of token')
 
     user = relationship(User)
-    def to_json(self):
-        return {c.key: getattr(self, c.key)
-                for c in inspect(self).mapper.column_attrs}
+
 class UserRecord(Base):
     __tablename__ = 'user_records'
 

@@ -4,7 +4,8 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from handlers.tenant_settings.models import Base as BaseT
 from handlers.users.models import Base as BaseS
-
+from handlers.sound_settings.models import Base as BaseSo
+from handlers.corresponding_memo.models import Base as BaseC
 from alembic import context
 
 # this is the Alembic Config object, which provides
@@ -20,7 +21,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [BaseT.metadata, BaseS.metadata]
+target_metadata = [BaseT.metadata, BaseS.metadata, BaseSo.metadata, BaseC.metadata]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -46,6 +47,7 @@ def run_migrations_offline():
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True
     )
 
     with context.begin_transaction():

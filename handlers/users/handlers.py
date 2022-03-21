@@ -1,6 +1,7 @@
 from asyncio.proactor_events import _ProactorBaseWritePipeTransport
 import code
 from dataclasses import dataclass
+from email.policy import HTTP
 import imp
 import datetime
 from multiprocessing.sharedctypes import synchronized
@@ -10,7 +11,7 @@ import uuid
 import json
 from zipfile import BadZipfile
 from ..base import BaseHandler
-from .models import User, Token, Tenant
+from .models import User, Token, Tenant, UserRecord
 from http import HTTPStatus
 from utils.config import config
 from utils.response import ResponseMixin
@@ -91,7 +92,7 @@ class LoginHandler(ResponseMixin, BaseHandler):
         print("start issue")
         result = self.db.query(User.user_id).join(Tenant, User.tenant_id == Tenant.tenant_id).filter(
             Tenant.domain == domain, User.user_name == username).distinct().all()
-        print("issue")
+        print("issue", result)
         print(result)
         try:
             raise gen.Return(result[0][0])
@@ -105,7 +106,9 @@ class LoginHandler(ResponseMixin, BaseHandler):
         Params: user_id, password.
         """
         result = self.db.query(User.password).filter(User.user_id == user_id)
+        print("query = ", result)
         try:
+            print("pass = ", result[0][0])
             if result[0][0] == password:
                 raise gen.Return(True)
         except ValueError:
@@ -134,10 +137,15 @@ class LoginHandler(ResponseMixin, BaseHandler):
         )
 
         self._remove_expired_token(user_id=user_id)
+        print("all fine")
         new_token = Token(user_id = params['user_id'], token_id = params['token_id'],
                           expired_date = params['expiration_time'], create_date = params['create_time'])
+        print("expried token",params['expiration_time'])
+        print("issue1?")
         self.db.add(new_token)
+        print("issue2?")
         self.db.commit()
+        print("issue3")
 
         raise gen.Return(params) 
     @gen.coroutine
@@ -467,12 +475,12 @@ class GetUserStateHandler(ResponseMixin, BaseHandler):
         else:
             raise gen.Return(True, token)
             
-class GetUserConfigHandler(BaseHandler, ResponseMixin):
+class GetUserConfigHandler(ResponseMixin, BaseHandler):
     @gen.coroutine
     def post(self):
         data = self.data_received()
         if 'token' in data:
-            check, token = self._check_token_exists(data['token'])
+            check, token = yield self._check_token_exists(data['token'])
             if check:
                 yield self._get_user_config(data)
             else:
@@ -487,29 +495,36 @@ class GetUserConfigHandler(BaseHandler, ResponseMixin):
             select u.user_id, u.username,concat(u.firstname,' ', u.middlename,' ', u.lastname) 
             as displayname, u.group_id,  t.tenant_name, u.authority_id, u.user_state_id, 
             u.extension_number, u.user_classifier, u.user_state_id, t.prefix, u.allow_monitor,
-             u.allow_coach from backend.user as u join backend.tenant as t on u.tenant_id = t.tenant_id 
+            u.allow_coach from backend.user as u join backend.tenant as t on u.tenant_id = t.tenant_id 
             join backend.token as tok on tok.user_id = u.user_id where tok.token_id = '{}';
             """
             try:
-                query = self.db.query(User, Token, Tenant).filter().first()
-                respo = {}
-                self.write_response("Success",)
+                # query = self.db.query(User.user_id, User.user_name, (User.firstname + User.middlename + User.lastname) + \
+                #     User.group_id + Tenant.tenant_name + User.authority_id + UserRecord.acd_status)\
+                #     .filter().first()
+                query = self.db.query(User, Tenant, Token).filter(Token.token_id == data['token'])
+                respo = {   "code": 200,
+                            "username": query.user_name }
+                self.write_response("Success", HTTPStatus.OK.value, response_data=respo)
             except:
-                self.write_response("Failure", HTTPStatus.NOT_FOUND, message="error")
+                self.write_response("Failure", HTTPStatus.NOT_FOUND.value, message="error")
                 err = "Issue in query statement"
                 log.debug(err)
-
     @gen.coroutine
     def _check_token_exists(self, token):
         """
             Meaning: Checking the token's existence
             Input: token
-            Output: False  or
-                    True and token
         """
-        result = self.db.query(Token.token_id).filter(Token.token_id == token)
-        if result == None:
-            raise gen.Return(False)
-        else:
-            raise gen.Return(True, token)
+        try:
+            result = self.db.query(Token.token_id).filter(Token.token_id == token)
+            print('start1')
+            print("query = ", result)
+            if result[0][0] == token:
+                print("hello")
+                return True, token
+            else: return False, None
+        except:
+            return False, None
+   
      

@@ -3,7 +3,8 @@ import datetime
 import uuid
 import json
 from ..base import BaseHandler
-from .handlers import SoundFiles, User, Token
+from handlers.users.models import User, Token
+from handlers.sound_settings.models import SoundFiles
 from http import HTTPStatus
 from utils.config import config
 from utils.response import ResponseMixin
@@ -18,29 +19,20 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
     This class is created to build API for get selected ringtone.
     Params of request is token.
     """
-    @property
-    def db(self):
-        return self.application.session
-
-    def data_received(self, chunk=None):
-        if self.request.body:
-            return json.loads(bytes.decode(self.request.body))
-
-    @gen.coroutine
+    @gen.coroutine  
     def post(self):
-        try:
             data = self.data_received()
             if 'token' in data:
                 check, token = yield self._check_token_exists(data['token'])
                 if check:
-                    self._get_selected_ring_tone(token)
+                    self._get_selected_ring_tone(data['token'])
                 else:
-                    self.write_response("Success", code=HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
-            else: raise ValueError
-        except ValueError:
-            self.write_response("Error", code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
-            err = "Token {} in wrong format"
-            log.debug(err.format(data['token']))
+                    self.write_response("Failure", code=HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
+           
+            else:
+                self.write_response("Failure", code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
+                err = "Token {} in wrong format"
+                log.debug(err.format(data['token']))
 
     @gen.coroutine
     def _check_token_exists(self, token):
@@ -48,11 +40,17 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
             Meaning: Checking the token's existence
             Input: token
         """
-        result = self.db.query(Token.token_id).filter(Token.token_id == token)
-        if result == None:
-            raise gen.Return(False)
-        else:
-            raise gen.Return(True, token)
+        try:
+            result = self.db.query(Token.token_id).filter(Token.token_id == token)
+            print('start1')
+            print("query = ", result)
+            if result[0][0] == token:
+                print("hello")
+                return True, token
+            else: return False, None
+        except:
+            return False, None
+           
 
     def _get_selected_ring_tone(self, token):
         """
@@ -60,12 +58,16 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
         Input: token
         """
         result = self.db.query(SoundFiles.sound_id, SoundFiles.sound_name, SoundFiles.location_path)\
-                .join(Token, Token.user_id == SoundFiles.user_id).join(SoundFiles, User.sound_id == SoundFiles.sound_id)\
-                .filter(Token.token_id == token)      
+                .join(User, User.sound_id == SoundFiles.sound_id).join(Token, Token.user_id == User.user_id)\
+                .filter(Token.token_id == token) 
+        
+        print("query: ", result)     
         try:
+            print("result[0][0]", result[0][0])
+            print("result[0]", result[0])
             resp = {
                 "code": 200,
-                "tone_id": result[0][0],
+                "tone_id": result[0][0],    
                 "name": result[0][1],
                 "url": result[0][2]
             }
@@ -73,47 +75,43 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
         except:
             resp = {
                 "code": 404,
-                "errorMessage": "Issue in Code"
+                "errorMessage": "Issue in Server"
             }
-            self.write_response("Failure", code = HTTPStatus.NOT_FOUND.value, response_data=resp)
+            self.write_response("Error", code = HTTPStatus.NOT_FOUND.value, response_data=resp)
 class GetAllRingTonesHandler(ResponseMixin, BaseHandler):
     """
     This class is created to build API for get all ringtone.
     Params of request is token.
     """
-    @property
-    def db(self):
-        return self.application.session
-
-    def data_received(self, chunk=None):
-        if self.request.body:
-            return json.loads(bytes.decode(self.request.body))
 
     @gen.coroutine
     def post(self):
-        try:
-            data = self.data_received()
-            if 'token' in data:
-                check, token = self._check_token_exists(data['token'])
-                if check:
-                    self._get_all_ringtones(token)
-            else: raise ValueError
-        except ValueError:
+        data = self.data_received()
+        print('data', data)
+        if 'token' in data:
+            check, token = yield self._check_token_exists(data['token'])
+            if check:
+                self._get_all_ringtones()
+            else:
+                self.write_response("Failure", code=HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
+        else:
             self.write_response("Error", code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
             err = "Token {} in wrong format"
             log.debug(err.format(data['token']))
 
-    def _get_all_ringtones(self, token):
+    def _get_all_ringtones(self):
         """
         Meaning: get tenant's all ringtones
         Input: token
         """
         try:
-            results = self.db.query(SoundFiles).all()
-            ringtones = [{"tone_id": result[0][0],
-                            "name": result[0][1],
-                            "url": result[0][2],
-                            "selected": "False"} for result in results] #adjust in database
+            results = self.db.query(SoundFiles.sound_id, SoundFiles.sound_name, SoundFiles.location_path).all()
+            print("QUERY", results)
+            print("result[0][0]", results[0][0])
+            ringtones = [{  "tone_id": result[0],
+                            "name": result[1],
+                            "url": result[2],
+                            "selected": "False"     } for result in results] #adjust in database
             respo = {
                 "code": 200,
                 "ringtones": ringtones
@@ -131,11 +129,15 @@ class GetAllRingTonesHandler(ResponseMixin, BaseHandler):
         """
             Meaning: Checking the token's existence
             Input: token
-            Output: False  or
-                    True and token
         """
-        result = self.db.query(Token.token_id).filter(Token.token_id == token)
-        if result == None:
-            raise gen.Return(False)
-        else:
-            raise gen.Return(True, token)
+        try:
+            result = self.db.query(Token.token_id).filter(Token.token_id == token)
+            print('start1')
+            print("query = ", result)
+            if result[0][0] == token:
+                print("hello")
+                return True, token
+            else: return False, None
+        except:
+            return False, None
+           
