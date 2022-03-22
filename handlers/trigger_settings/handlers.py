@@ -5,43 +5,42 @@ import json
 
 from sqlalchemy import delete
 from ..base import BaseHandler
-from .models import TalkScript
+from .models import (Trigger,TriggerCondition,TriggerContent)
 from http import HTTPStatus
 from utils.config import config
-from utils.response import ResponseMixin
 from tornado import gen
 
-class TriggerSearchHandler(BaseHandler,ResponseMixin):
+class TriggerSearchHandler(BaseHandler):
 
     @gen.coroutine    
     def post(self, *args, **kwargs):
         pass
 
-class TriggerGetHandler(BaseHandler,ResponseMixin):
+class TriggerGetHandler(BaseHandler):
 
     @gen.coroutine
     def post(self, *args, **kwargs):
         pass
 
-class TriggerDeleteHandler(BaseHandler,ResponseMixin):
+class TriggerDeleteHandler(BaseHandler):
 
     @gen.coroutine
     def post(self, *args, **kwargs):
         pass
 
-class TriggerCreateHandler(BaseHandler,ResponseMixin):
+class TriggerCreateHandler(BaseHandler):
 
     @gen.coroutine
     def post(self, *args, **kwargs):
         pass
 
-class TriggerUpdateHandler(BaseHandler,ResponseMixin):
+class TriggerUpdateHandler(BaseHandler):
 
     @gen.coroutine
     def post(self, *args, **kwargs):
         pass
 
-class TriggerListGetHandler(BaseHandler,ResponseMixin):
+class TriggerListGetHandler(BaseHandler):
 
     @gen.coroutine
     def post(self, *args, **kwargs):

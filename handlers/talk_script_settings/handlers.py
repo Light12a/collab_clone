@@ -8,13 +8,9 @@ from ..base import BaseHandler
 from .models import TalkScript
 from http import HTTPStatus
 from utils.config import config
-from utils.response import ResponseMixin
 from tornado import gen
 
-class TalkScriptHandler(BaseHandler,ResponseMixin):
-    @property
-    def db(self):
-        return self.application.session
+class TalkScriptHandler(BaseHandler):
 
     @gen.coroutine
     def get(self):

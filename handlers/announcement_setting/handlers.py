@@ -8,7 +8,6 @@ from ..base import BaseHandler
 from .models import TalkScript
 from http import HTTPStatus
 from utils.config import config
-from utils.response import ResponseMixin
 from tornado import gen
 
 
@@ -18,31 +17,31 @@ class AnnouncementSearchHandler(BaseHandler):
     def post(self, *args, **kwargs):
         pass
 
-class AnnouncementListGetHandler(BaseHandler,ResponseMixin):
+class AnnouncementListGetHandler(BaseHandler):
 
     @gen.coroutine    
     def post(self, *args, **kwargs):
         pass
     
-class AnnouncementGetHandler(BaseHandler,ResponseMixin):
+class AnnouncementGetHandler(BaseHandler):
 
     @gen.coroutine    
     def post(self, *args, **kwargs):
         pass
     
-class AnnouncementDeleteHandler(BaseHandler,ResponseMixin):
+class AnnouncementDeleteHandler(BaseHandler):
 
     @gen.coroutine    
     def post(self, *args, **kwargs):
         pass
     
-class AnnouncementFileGetHandler(BaseHandler,ResponseMixin):
+class AnnouncementFileGetHandler(BaseHandler):
 
     @gen.coroutine    
     def post(self, *args, **kwargs):
         pass
     
-class AnnouncementCreateHandler(BaseHandler,ResponseMixin):
+class AnnouncementCreateHandler(BaseHandler):
 
     @gen.coroutine    
     def post(self, *args, **kwargs):
