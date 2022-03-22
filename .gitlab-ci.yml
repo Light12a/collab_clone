@@ -4,6 +4,7 @@ default:
 stages:
     - build
     - deploy
+    - set_version
 
 workflow:
     rules: 
@@ -31,8 +32,6 @@ build web:
         - echo "Build web..."
         - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
         - cd collabos
-        - npm version patch -m "Increase version to %s"
-        - git push
         - npm install
         - npm run build
     artifacts:
@@ -59,8 +58,19 @@ build app:
         - echo "Build app..."
         - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
         - cd collabos
+        - npm  cache clear --force
         - npm install
         - npm run build:winonlinux
-        - zip -r "$(date +"%Y_%m_%d_%I_%M").zip" dist
+        - zip -r "softphone_$(node -pe "require('./package.json')['version']").zip" dist
         - cp *.zip /app
-        - echo "Output file is located at /home/tma/app/$(ls *.zip)"
+        - echo "Output file is located at /home/tma/app/softphone_$(node -pe "require('./package.json')['version']").zip"
+
+set version:
+    stage: set_version
+    script:
+        - echo "Increase package.json version..."
+        - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
+        - cd collabos
+        - npm version patch -m "Increase version to %s"
+        - git push
+    dependencies: []
