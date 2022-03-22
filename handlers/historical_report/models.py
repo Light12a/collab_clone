@@ -40,7 +40,7 @@ class HistoricalReportCallCols(Base):
     __tablename__ = 'hreport_call_cols'
 
     id = Column(BIGINT(20), primary_key=True, unique=True)
-    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), BIGINT(20), nullable=False)
+    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
     show_from = Column(TINYINT(1), server_default=text("0"))
     show_to = Column(TINYINT(1), server_default=text("0"))
     show_startdate = Column(TINYINT(1), server_default=text("0"))
