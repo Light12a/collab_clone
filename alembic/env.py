@@ -6,6 +6,7 @@ from handlers.tenant_settings.models import Base as BaseT
 from handlers.users.models import Base as BaseS
 from handlers.sound_settings.models import Base as BaseSo
 from handlers.corresponding_memo.models import Base as BaseC
+from handlers.authority.models import Base as BaseA
 from alembic import context
 
 # this is the Alembic Config object, which provides
@@ -21,7 +22,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [BaseT.metadata, BaseS.metadata, BaseSo.metadata, BaseC.metadata]
+target_metadata = [BaseT.metadata, BaseS.metadata, BaseSo.metadata, BaseC.metadata, BaseA.metadata]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

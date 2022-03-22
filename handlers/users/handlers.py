@@ -12,6 +12,7 @@ import json
 from zipfile import BadZipfile
 from ..base import BaseHandler
 from .models import User, Token, Tenant, UserRecord
+from ..authority.models import Authority
 from http import HTTPStatus
 from utils.config import config
 from utils.response import ResponseMixin
@@ -89,11 +90,8 @@ class LoginHandler(ResponseMixin, BaseHandler):
         This function use domain and username to find out user_id of user who has just logged in.
         Params: domain, username
         """
-        print("start issue")
         result = self.db.query(User.user_id).join(Tenant, User.tenant_id == Tenant.tenant_id).filter(
             Tenant.domain == domain, User.user_name == username).distinct().all()
-        print("issue", result)
-        print(result)
         try:
             raise gen.Return(result[0][0])
         except IndexError:
@@ -106,9 +104,7 @@ class LoginHandler(ResponseMixin, BaseHandler):
         Params: user_id, password.
         """
         result = self.db.query(User.password).filter(User.user_id == user_id)
-        print("query = ", result)
         try:
-            print("pass = ", result[0][0])
             if result[0][0] == password:
                 raise gen.Return(True)
         except ValueError:
@@ -137,16 +133,11 @@ class LoginHandler(ResponseMixin, BaseHandler):
         )
 
         self._remove_expired_token(user_id=user_id)
-        print("all fine")
         new_token = Token(user_id = params['user_id'], token_id = params['token_id'],
                           expired_date = params['expiration_time'], create_date = params['create_time'])
         print("expried token",params['expiration_time'])
-        print("issue1?")
         self.db.add(new_token)
-        print("issue2?")
         self.db.commit()
-        print("issue3")
-
         raise gen.Return(params) 
     @gen.coroutine
     def _check_format_json(self, json):
@@ -476,38 +467,64 @@ class GetUserStateHandler(ResponseMixin, BaseHandler):
             raise gen.Return(True, token)
             
 class GetUserConfigHandler(ResponseMixin, BaseHandler):
+    """
+    This class will output all information about user by token
+    The acceptable cases is described on COLLABOS API - sheet Presence State Code
+    @param token
+    """
     @gen.coroutine
     def post(self):
         data = self.data_received()
         if 'token' in data:
             check, token = yield self._check_token_exists(data['token'])
             if check:
-                yield self._get_user_config(data)
+                self._get_user_config(token)
             else:
-                self.write_response("Success", HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
+                self.write_response("Failure", HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
         else:
             err = "Bad request with json request"
             log.info(err)
             self.error(code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
     @gen.coroutine
-    def _get_user_config(self, data):
+    def _get_user_config(self, token):
             """
-            select u.user_id, u.username,concat(u.firstname,' ', u.middlename,' ', u.lastname) 
-            as displayname, u.group_id,  t.tenant_name, u.authority_id, u.user_state_id, 
-            u.extension_number, u.user_classifier, u.user_state_id, t.prefix, u.allow_monitor,
-            u.allow_coach from backend.user as u join backend.tenant as t on u.tenant_id = t.tenant_id 
-            join backend.token as tok on tok.user_id = u.user_id where tok.token_id = '{}';
+            Main function of API
+            Input: token
+            Output: Json reponse
             """
             try:
-                # query = self.db.query(User.user_id, User.user_name, (User.firstname + User.middlename + User.lastname) + \
-                #     User.group_id + Tenant.tenant_name + User.authority_id + UserRecord.acd_status)\
-                #     .filter().first()
-                query = self.db.query(User, Tenant, Token).filter(Token.token_id == data['token'])
-                respo = {   "code": 200,
-                            "username": query.user_name }
-                self.write_response("Success", HTTPStatus.OK.value, response_data=respo)
+                query = self.db.query(User.user_id, User.user_name, (User.firstname + ' ' + User.middlename + ' ' +  User.lastname),\
+                                    User.group_id, User.extension, Tenant.prefix, Authority.use_monitor,  
+                                    User.user_classifier, Tenant.tenant_name, UserRecord.acd_status).filter(Token.token_id == token, Token.user_id == User.user_id)
+                pbx_domain = "13.113.23.145"
+                port_pbx_domain = "8089"
+                respo = {   
+                        "code": 200,
+                        "userId": query[0][0],
+                        "username": query[0][1],
+                        "displayname": query[0][2],
+                        "group_id": query[0][3],
+                        "ext_number": query[0][4],
+                        "prefix":query[0][5],
+                        "allow_monitor":query[0][6],
+                        "allow_coach":query[0][6],
+                        "conf_max_paticipant":5,
+                        "role":query[0][7],
+                        "tenant":query[0][8],   
+                        "state":query[0][9],
+                        "domain":  self.request.host,
+                        "domain_wss": 'wss://' + self.request.host,
+                        "pbx_domain": pbx_domain,
+                        "pbx_ws": 'wss://' + pbx_domain + ':' + port_pbx_domain,
+                        "dial_plan": {  
+                                        "monitor": 88,
+                                        "coach" : 99
+                                     }
+                        }
+                
+                self.write_response("Success", code=HTTPStatus.OK.value, response_data=respo)
             except:
-                self.write_response("Failure", HTTPStatus.NOT_FOUND.value, message="error")
+                self.write_response("Failure", code=HTTPStatus.NOT_FOUND.value, message="error")
                 err = "Issue in query statement"
                 log.debug(err)
     @gen.coroutine
@@ -518,10 +535,7 @@ class GetUserConfigHandler(ResponseMixin, BaseHandler):
         """
         try:
             result = self.db.query(Token.token_id).filter(Token.token_id == token)
-            print('start1')
-            print("query = ", result)
             if result[0][0] == token:
-                print("hello")
                 return True, token
             else: return False, None
         except:

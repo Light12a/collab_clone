@@ -42,10 +42,7 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
         """
         try:
             result = self.db.query(Token.token_id).filter(Token.token_id == token)
-            print('start1')
-            print("query = ", result)
             if result[0][0] == token:
-                print("hello")
                 return True, token
             else: return False, None
         except:
@@ -63,15 +60,13 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
         
         print("query: ", result)     
         try:
-            print("result[0][0]", result[0][0])
-            print("result[0]", result[0])
             resp = {
                 "code": 200,
                 "tone_id": result[0][0],    
                 "name": result[0][1],
                 "url": result[0][2]
             }
-            self.write_response("Success", code = HTTPStatus.OK.value, response_data=resp)
+            self.write_response("Success", code=HTTPStatus.OK.value, response_data=resp)
         except:
             resp = {
                 "code": 404,
@@ -87,7 +82,6 @@ class GetAllRingTonesHandler(ResponseMixin, BaseHandler):
     @gen.coroutine
     def post(self):
         data = self.data_received()
-        print('data', data)
         if 'token' in data:
             check, token = yield self._check_token_exists(data['token'])
             if check:
@@ -106,8 +100,6 @@ class GetAllRingTonesHandler(ResponseMixin, BaseHandler):
         """
         try:
             results = self.db.query(SoundFiles.sound_id, SoundFiles.sound_name, SoundFiles.location_path).all()
-            print("QUERY", results)
-            print("result[0][0]", results[0][0])
             ringtones = [{  "tone_id": result[0],
                             "name": result[1],
                             "url": result[2],
@@ -132,10 +124,7 @@ class GetAllRingTonesHandler(ResponseMixin, BaseHandler):
         """
         try:
             result = self.db.query(Token.token_id).filter(Token.token_id == token)
-            print('start1')
-            print("query = ", result)
             if result[0][0] == token:
-                print("hello")
                 return True, token
             else: return False, None
         except:
