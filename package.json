@@ -53,7 +53,9 @@
     "build:win": "run-s build-react-prod-app copy-electron-to-build dist",
     "pack": "electron-builder --dir",
     "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "copy-electron-to-build-on-linux": "cp -R electron build",
+    "build:winonlinux": "run-s build-react-prod-app copy-electron-to-build-on-linux dist"
   },
   "eslintConfig": {
     "extends": "react-app"

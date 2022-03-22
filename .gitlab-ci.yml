@@ -1,4 +1,5 @@
-image: node:12.18.0 
+default:
+    image: node:12.18.0 
 
 stages:
     - build
@@ -35,6 +36,7 @@ build web:
         - npm install
         - npm run build
     artifacts:
+        expire_in: 1 hr
         paths:
             - collabos/build/
 
@@ -49,3 +51,16 @@ deploy web:
         - scp -r -i key.pem collabos/build/* ubuntu@3.114.97.64:~/build
     dependencies:
         - build web
+
+build app:
+    stage: build
+    image: node_for_app
+    script:
+        - echo "Build app..."
+        - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
+        - cd collabos
+        - npm install
+        - npm run build:winonlinux
+        - zip -r "$(date +"%Y_%m_%d_%I_%M").zip" dist
+        - cp *.zip /app
+        - echo "Output file is located at /home/tma/app/$(ls *.zip)"
