@@ -495,7 +495,7 @@ class GetUserByUsernameHandler(BaseHandler):
 
     @gen.coroutine
     def _get_user_by_username(self, username):
-        result = self.db.query(User).filter(User.user_name == username).all()
+        result = self.db.query(User).filter(User.user_name == username)
         raise gen.Return(result[0].to_json())
 
     @gen.coroutine        
