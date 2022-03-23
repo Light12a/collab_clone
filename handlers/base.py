@@ -1,18 +1,48 @@
 import asyncio
+from copy import deepcopy
+import tornado.gen
+from tornado.web import HTTPError
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.web import RequestHandler
 from utils.response import ResponseMixin
 import json
+from jsonschema.exceptions import ValidationError
+from sqlalchemy import inspect
 
 class BaseHandler(RequestHandler, ResponseMixin):
     def initialize(self, **kwargs):
         RequestHandler.initialize(self, **kwargs)
         self._http_client = AsyncHTTPClient()
+        self.validated_data = None
 
     async def _async_request(self, url, method='GET', **kwargs):
         request = HTTPRequest(url=url, method=method, **kwargs)
         response = await self._http_client.fetch(request=request)
         return response
+
+    @tornado.gen.coroutine
+    def prepare(self):
+        """
+        Called at the beginning of a request before  `get`/`post`/etc.
+
+        Override this method to perform common initialization regardless
+        of the request method.
+        """
+        super(BaseHandler, self).prepare()
+        # Validate incoming request body against.
+        # Only POST, PUT and PATCH HTTP methods should have any form of request
+        # body.
+        data = {}
+        if self.request.method in ['POST', 'PUT', 'PATCH']:
+            try:
+                data = json.loads(self.request.body or '{}')
+            except ValueError:
+                raise tornado.gen.Return(
+                    self.error('Invalid json in request body.', code=400))
+        if self.request.method == 'GET':
+            # Validate incoming arguments.
+            pass
+        self.validated_data = deepcopy(data)
 
     def get_current_user(self):
         """
@@ -20,15 +50,26 @@ class BaseHandler(RequestHandler, ResponseMixin):
         authorized Collabos user.
         Access with `self.current_user`.
         """
-        return None
+        return self.get_secure_cookie("user")
 
+    """ Override theses method in derived class. """
     def get(self, *args, **kwargs):
-        """ Override this method in derived class. """
-        pass
+        raise HTTPError(405)
 
     def post(self, *args, **kwargs):
-        """ Override this method in derived class. """
-        pass
+        raise HTTPError(405)
+
+    def delete(self, *args, **kwargs):
+        raise HTTPError(405)
+
+    def patch(self, *args, **kwargs):
+        raise HTTPError(405)
+
+    def put(self, *args, **kwargs):
+        raise HTTPError(405)
+
+    def options(self, *args, **kwargs):
+        raise HTTPError(405)
 
     async def _body_producer(self, write):
         """
@@ -51,11 +92,15 @@ class BaseHandler(RequestHandler, ResponseMixin):
 
     def _on_data_received(self, chunk):
         pass
-    
+
     @property
     def db(self):
         return self.application.session
-        
+
+    def to_json(self, data):
+        return {c.key: getattr(data, c.key)
+                for c in inspect(data).mapper.column_attrs}
+
     # def write_error(self, status_code, **kwargs):
     #     self.finish(json.dumps({
     #         'error': {
