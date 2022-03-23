@@ -16,4 +16,3 @@ class SQLChemyConnection(object):
                    encoding='utf-8', echo=False,
                    pool_size=100, pool_recycle=10)
 
-    

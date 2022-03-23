@@ -57,7 +57,12 @@ class ResponseMixin(object):
             data.update(additional_data)
 
         if response_data is not None:
-            data['data'] = response_data
+            if isinstance(response_data, list):
+                data['records'] = len(response_data)
+                data['data'] = response_data
+            else:
+                data['records'] = 1
+                data['data'] = [response_data]
 
         return data
 
@@ -70,7 +75,7 @@ class ResponseMixin(object):
         status_code = HTTPStatus.OK.value
         self.write_response(result_code, None, status_code, 'Record(s) Deleted.')
 
-    def created(self, result_code, response_data, message='Record(s) Created.'):
+    def created(self, result_code, response_data, message='Success.'):
         status_code = HTTPStatus.CREATED.value
         self.write_response(result_code, response_data, status_code, message=message)
 
