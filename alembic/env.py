@@ -7,6 +7,7 @@ from handlers.announcement_setting import models
 from handlers.trigger_settings import models
 from handlers.talk_script_settings import models
 from handlers.realtime_reports import models
+from handlers.global_settings import models
 from services.database.mysqldb import Base
 from alembic import context
 
