@@ -58,10 +58,8 @@ class ResponseMixin(object):
 
         if response_data is not None:
             if isinstance(response_data, list):
-                data['records'] = len(response_data)
                 data['data'] = response_data
             else:
-                data['records'] = 1
                 data['data'] = [response_data]
 
         return data
