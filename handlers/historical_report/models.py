@@ -184,7 +184,7 @@ class HistoricalReportSkill(Base):
 
 class HistoricalReportUserCols(Base):
 
-    __tablename__ = 'hreport_user_cols',
+    __tablename__ = 'hreport_user_cols'
 
     id = Column(BIGINT(20), primary_key=True, nullable=False, unique=True)
     hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
@@ -243,7 +243,7 @@ class HistoricalReportUser(Base):
 
     id = Column(BIGINT(20), primary_key=True, unique=True)
     hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
-    user_id	= Column(ForeignKey(User.user_id),String(256), nullable=False)
+    user_id	= Column(ForeignKey(User.user_id), nullable=False)
     insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     historical_setting = relationship(HistoricalReportSetting)
