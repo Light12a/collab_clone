@@ -1,5 +1,7 @@
 import imp
 import datetime
+from types import coroutine
+from urllib import response
 import uuid
 import json
 from ..base import BaseHandler
@@ -10,11 +12,18 @@ from utils.config import config
 from utils.response import ResponseMixin
 from tornado import gen
 from services.logging import logger as log
+from tornado.websocket import WebSocketHandler
+from websocket import create_connection
+import websockets, tornado
+import ssl
 
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = False
+ssl_context.verify_mode = ssl.CERT_NONE
 
 log = log.get(__name__)
 
-class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
+class GetSelectedRingtoneHandler(ResponseMixin, WebSocketHandler, BaseHandler):
     """
     This class is created to build API for get selected ringtone.
     Params of request is token.
@@ -27,21 +36,28 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
         if self.request.body:
             return json.loads(bytes.decode(self.request.body))
 
-    @gen.coroutine
-    def post(self):
+    # @gen.coroutine
+    async def post(self):
         try:
             data = self.data_received()
             if 'token' in data:
-                check = yield self._check_token_exists(data['token'])
+                check = self._check_token_exists(data['token'])
                 if check:
-                    selected_ringtone = yield self._get_selected_ringtone(data['token'])
+                    selected_ringtone = self._get_selected_ringtone(data['token'])
                     if selected_ringtone:
-                        self.write({
+                        response = {
                             "code": 200, 
                             "tone_id": selected_ringtone['sound_id'],
                             "name": selected_ringtone['sound_name'],
                             "url": selected_ringtone['location_path']
-                        })
+                        }
+                        response_wss = {
+                            "api_name": "changed_ringtone",
+                            "selected_ringtone": selected_ringtone['location_path']
+                        }
+                        self.write(response)
+                        log.info(response)
+                        await self._send_json(response_wss)
                     else:
                         self.write({"code":404, "errorMessage": "selected ringtone not found"})
                         self.set_status(404)
@@ -54,8 +70,12 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
             self.write_response("Error", code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
             err = "Token {} in wrong format"
             log.debug(err.format(data['token']))
-
-    @gen.coroutine
+    
+    async def _send_json(self, responses):
+        async with websockets.connect("wss://18.179.96.129:8888/collabos", ssl=ssl_context) as ws:
+            await ws.send(json.dumps(responses))
+           
+    # @gen.coroutine
     def _check_token_exists(self, token):
         """
         Function take in token to verify this one is the newest.
@@ -64,11 +84,13 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
         result = self.db.query(Token.token_id).filter(Token.token_id==token).distinct().all()
 
         try:
-            raise gen.Return(result[0][0])
+            # raise gen.Return(result[0][0])
+            return result[0][0]
         except IndexError:            
-            raise gen.Return(False)
+            # raise gen.Return(False)
+            return False
 
-    @gen.coroutine
+    # @gen.coroutine
     def _get_selected_ringtone(self, token):
         """
         Meaning: get user's the selected ringtone
@@ -78,10 +100,12 @@ class GetSelectedRingtoneHandler(ResponseMixin, BaseHandler):
                                                   User.user_id == Token.user_id,
                                                   Token.token_id == token)
         if result:
-            raise gen.Return(result[0].to_json())
+            # raise gen.Return(result[0].to_json())
+            return result[0].to_json()
         else:
             err = "Not found selected ring tone"
-            raise gen.Return(False)
+            # raise gen.Return(False)
+            return False
 
 
 class GetAllRingTonesHandler(ResponseMixin, BaseHandler):
