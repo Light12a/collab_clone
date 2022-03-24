@@ -66,7 +66,10 @@ class CallerIdUpdateHandler(BaseHandler):
         self.write_response()
     
 class GetNotificationNumbersHandler(BaseHandler):
-    
+    """
+    This class is created to build get_notification_numbers API.
+    Param of request is token_id.
+    """
     @property
     def db(self):
         return self.application.session
@@ -103,9 +106,15 @@ class GetNotificationNumbersHandler(BaseHandler):
 
     @gen.coroutine
     def _get_numbers(self, token_id):
-        results = self.db.query(CallerId).filter(CallerId.caller_num_id == CallerIdUser.caller_num_id,
-                                                 CallerIdUser.user_id == Token.user_id,
-                                                 Token.token_id == token_id).all()
+        """
+        Find out the list of notification numbers.
+        Param: token_id
+        """
+        results = self.db.query(CallerId).filter(
+            CallerId.caller_num_id == CallerIdUser.caller_num_id,
+            CallerIdUser.user_id == Token.user_id,
+            Token.token_id == token_id
+        ).all()
         if results:
             results_ = []
             for elemant in results:
@@ -133,3 +142,80 @@ class GetNotificationNumbersHandler(BaseHandler):
             raise gen.Return(result[0][0])
         except IndexError:
             raise gen.Return(False)
+<<<<<<< HEAD
+=======
+                             
+class ApplyNotificationNumberHandler(ResponseMixin, BaseHandler):
+    """
+    This class is created to build apply_notification_number API.
+    Params of request are token_id and number_id.
+    """
+    @property
+    def db(self):
+        return self.application.session
+    
+    def data_received(self, chunk=None):
+        if self.request.body:
+            return json.loads(bytes.decode(self.request.body))
+        
+    @gen.coroutine
+    def post(self):
+        try:
+            request = self.data_received()
+            if "token" in request and "number_id" in request:
+                check = yield self._check_token_exists(request['token'])
+                if check:
+                    apply = yield self._apply_notification_number(request)
+                    print(apply)
+                    if apply:
+                        self.write({
+                            "code": 200                        
+                        })
+                        self.set_status(200)
+                    else:
+                        self.write({"code":401, "errorMessage":"number_id not found"})
+                        self.set_status(401)
+                else:
+                    self.write({"code":401, "errorMessage":"token is wrong"})
+                    self.set_status(401)
+                    # self.write_response("Failure", code = HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
+            else:
+                raise ValueError
+            
+        except ValueError:
+            self.set_status(400)
+            self.write({"code":400, "errorMessage":"Bad request"})
+    
+    @gen.coroutine
+    def _apply_notification_number(self, request):
+        """
+        Apply notification number with a number_id for a user.
+        Params: request['token'] and request['number_id]
+        """    
+        try:
+            query = self.db.query(CallerId).filter(
+                Token.user_id == User.user_id,
+                CallerId.tenant_id == User.tenant_id,
+                Token.token_id == request['token']
+            ).one()
+            query.caller_num_id = request['number_id']
+            self.db.commit()
+            return True
+        except:
+            # self.write_response("Failure", HTTPStatus.NOT_FOUND.value, "number_id not found")
+            err = "Not found any number"
+            return False
+                                       
+    @gen.coroutine
+    def _check_token_exists(self, token):
+        """
+        Function take in token to verify this one is the newest.
+        @params: Token.
+        """
+        result = self.db.query(Token.token_id).filter(Token.token_id==token).distinct().all()
+
+        try:
+            raise gen.Return(result[0][0])
+        except IndexError:
+            raise gen.Return(False)                         
+>>>>>>> 18152fe... write API apply_notification_number
