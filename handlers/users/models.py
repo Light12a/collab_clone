@@ -4,8 +4,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.ext.declarative import declarative_base
 from ..tenant_settings.models import Tenant
-Base = declarative_base()
-metadata = Base.metadata
+from services.database.mysqldb import Base
+
 
 class User(Base):
     __tablename__ = 'users'
@@ -31,13 +31,8 @@ class User(Base):
     firstname = Column(VARCHAR(1024), comment='First Name')
     lastname = Column(VARCHAR(1024), comment='Last Name')
     middlename = Column(VARCHAR(1024), comment='Middle Name')
-    project_id = Column(BIGINT(20), comment='Project Id : Project which user is belong')
 
     tenant = relationship(Tenant)
-
-    def to_json(self):
-        return {c.key: getattr(self, c.key)
-                for c in inspect(self).mapper.column_attrs}
 
 
 class Token(Base):
@@ -46,7 +41,7 @@ class Token(Base):
 
     user_id = Column(ForeignKey(User.user_id), primary_key=True,nullable=False, index=True, comment='User Id')
     token_id = Column(VARCHAR(60), unique=True, comment='Token Id : Each user has an unique token_id')
-    expired_date = Column(INTEGER(11), comment='Expired Time : Expired time of token')
-    create_date = Column(INTEGER(11), comment='Create Date : Created Date of token')
+    expired_date = Column(BIGINT(20), comment='Expired Time : Expired time of token')
+    create_date = Column(DateTime, comment='Create Date : Created Date of token')
 
     user = relationship(User)
