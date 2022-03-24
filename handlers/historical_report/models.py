@@ -83,7 +83,7 @@ class HistoricalReportCcCols(Base):
     __tablename__ = 'hreport_cc_cols'
 
     id = Column(BIGINT(20), primary_key=True, unique=True)
-    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), BIGINT(20), nullable=False)
+    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
     show_ccname = Column(TINYINT(1), server_default=text("0"))
     show_ans_rate = Column(TINYINT(1), server_default=text("0"))
     show_abd_rate = Column(TINYINT(1), server_default=text("0"))
@@ -122,7 +122,7 @@ class HistoricalReportGroup(Base):
     __tablename__ = 'hreport_groups'
 
     id = Column(BIGINT(20), primary_key=True, unique=True)
-    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), BIGINT(20), nullable=False)
+    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
     group_id = Column(String(256), nullable=False)
     insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
@@ -134,7 +134,7 @@ class HistoricalReportProjects(Base):
     __tablename__ = 'hreport_projects'
 
     id = Column(BIGINT(20), primary_key=True, nullable=False, unique=True)
-    hreport_id =Column(ForeignKey(HistoricalReportSetting.hreport_id), BIGINT(20), nullable=False)
+    hreport_id =Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
     project_id = Column(BIGINT(20), nullable=False)
     insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     update_date =Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
@@ -147,7 +147,7 @@ class HistoricalReportSkillColsSetting(Base):
     __tablename__ = 'hreport_skill_cols'
 
     id = Column(BIGINT(20), primary_key=True, nullable=False, unique=True)
-    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), BIGINT(20), nullable=False)
+    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
     show_skill_name = Column(TINYINT(1), server_default=text("0"))
     show_skill_id = Column(TINYINT(1), server_default=text("0"))
     show_incoming_cnt = Column( TINYINT(1), server_default=text("0"))
@@ -173,7 +173,7 @@ class HistoricalReportSkill(Base):
     __tablename__ = 'hreport_skills'
 
     id = Column(BIGINT(20), primary_key=True, unique=True)
-    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), BIGINT(20), nullable=False)
+    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
     group_id = Column(String(256), nullable=False)
     insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
@@ -187,7 +187,7 @@ class HistoricalReportUserCols(Base):
     __tablename__ = 'hreport_user_cols',
 
     id = Column(BIGINT(20), primary_key=True, nullable=False, unique=True)
-    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), BIGINT(20), nullable=False)
+    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
     show_user_ext = Column(TINYINT(1), server_default=text("0"))
     show_user_id = Column(TINYINT(1), server_default=text("0"))
     show_user_name = Column(TINYINT(1), server_default=text("0"))
@@ -242,7 +242,7 @@ class HistoricalReportUser(Base):
     __tablename__ = 'hreport_users'
 
     id = Column(BIGINT(20), primary_key=True, unique=True)
-    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), BIGINT(20), nullable=False)
+    hreport_id = Column(ForeignKey(HistoricalReportSetting.hreport_id), nullable=False)
     user_id	= Column(ForeignKey(User.user_id),String(256), nullable=False)
     insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
