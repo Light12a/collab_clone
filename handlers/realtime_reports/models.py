@@ -66,15 +66,12 @@ class RealtimeReportSetting(Base):
     insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
 
-    def to_json(self):
-        return {c.key: getattr(self, c.key)
-                for c in inspect(self).mapper.column_attrs}
 
 class RealtimeReportProject(Base):
     __tablename__ = 'rreport_projects'
 
     id = Column(BIGINT(20), primary_key=True, unique=True)
-    rreport_id = Column(ForeignKey(RealtimeReportSetting.rreport_id), BIGINT(20), nullable=False, index=True)
+    rreport_id = Column(ForeignKey(RealtimeReportSetting.rreport_id), nullable=False, index=True)
     tenant_id = Column(ForeignKey(Tenant.tenant_id), nullable=False, index=True, comment='Tenant ID')
     project_id = Column(BIGINT(20), nullable=False)
     insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
@@ -82,6 +79,3 @@ class RealtimeReportProject(Base):
     realtime_report = relationship(RealtimeReportSetting)
     tenant = relationship(Tenant)
 
-    def to_json(self):
-        return {c.key: getattr(self, c.key)
-                for c in inspect(self).mapper.column_attrs}
