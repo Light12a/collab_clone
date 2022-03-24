@@ -2,11 +2,8 @@ from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Table, Text, 
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, LONGTEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import NullType
-from sqlalchemy.ext.declarative import declarative_base
 from ..tenant_settings.models import Tenant
-Base = declarative_base()
-metadata = Base.metadata
-
+from services.database.mysqldb import Base
 
 class RealtimeReportSetting(Base):
     __tablename__ = 'rreport_settings'
