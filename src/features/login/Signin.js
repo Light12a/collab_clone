@@ -69,7 +69,7 @@ const Signin = () => {
         }))
             .then(() => {
                 if (isRemember) {
-                    localStorage.setItem('userRemember', JSON.stringify({ domain: e.domain, username: e.username }))
+                    localStorage.setItem('userRemember', JSON.stringify({ company_id: e.company_id, username: e.username }))
                 }
             })
             .finally(() => {
@@ -81,6 +81,12 @@ const Signin = () => {
     // const onClose = ()=>{
     //     window.close();
     // }
+
+    const onClose = ()=>{
+        // window.close();
+        // window.onoffline(e=>console.log("My Log of window off: " + e))
+    }
+
     const handleCheck = (e) => {
         setIsRemember(e.target.checked);
     }
@@ -104,13 +110,13 @@ const Signin = () => {
                         autoComplete="off"
                         requiredMark={false}
                         initialValues={{
-                            domain: !localStorage.getItem('userRemember') ? "" : JSON.parse(localStorage.getItem('userRemember')).domain,
+                            company_id: !localStorage.getItem('userRemember') ? "" : JSON.parse(localStorage.getItem('userRemember')).company_id,
                             username: !localStorage.getItem('userRemember') ? "" : JSON.parse(localStorage.getItem('userRemember')).username,
                             remember: !!localStorage.getItem('userRemember'),
                         }}
                     >
                         <Form.Item
-                            name="domain"
+                            name="company_id"
                             label={t('contract_company_ID')}
 
                             rules={[
