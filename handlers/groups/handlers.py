@@ -17,10 +17,6 @@ class GroupSearchHandler(BaseHandler):
         :param  Offset: 0
         :param  Limit: 10
         """
-        data = self.data_received()
-        if data is None:
-            pass
-
         self.write_response()
 
 class GroupDetailHandler(BaseHandler):

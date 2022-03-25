@@ -1,10 +1,9 @@
-import imp
 from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Table, Text, Time, text
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, LONGTEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import NullType
 from services.database.mysqldb import Base
-from ..tenant_settings.models import Tenant
+from handlers.tenant_settings.models import Tenant
 from handlers.authority.models import Authority
 
 class Group(Base):
