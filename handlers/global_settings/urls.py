@@ -1,4 +1,3 @@
-from django.urls import URLPattern
 from .handlers import SettingListHandler, SettingUpdateHandler
 
 urlpatterns = [

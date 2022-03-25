@@ -7,13 +7,21 @@ from tornado.web import RequestHandler
 from utils.response import ResponseMixin
 import json
 from jsonschema.exceptions import ValidationError
+from jsonschema import FormatChecker
+from jsonschema import validate
 from sqlalchemy import inspect
+from services.logging import logger
+
+
+LOG = logger.get(__name__)
+
 
 class BaseHandler(RequestHandler, ResponseMixin):
     def initialize(self, **kwargs):
         RequestHandler.initialize(self, **kwargs)
         self._http_client = AsyncHTTPClient()
         self.validated_data = None
+        self.schema = None
 
     async def _async_request(self, url, method='GET', **kwargs):
         request = HTTPRequest(url=url, method=method, **kwargs)
@@ -34,15 +42,40 @@ class BaseHandler(RequestHandler, ResponseMixin):
         # body.
         data = {}
         if self.request.method in ['POST', 'PUT', 'PATCH']:
+            if(len(self.request.files)):
+                return
             try:
                 data = json.loads(self.request.body or '{}')
             except ValueError:
                 raise tornado.gen.Return(
                     self.error('Invalid json in request body.', code=400))
+            try:
+                schema_to_apply = self.get_local_schema_with_overrides(
+                    self.request.method)
+                # Validate the data against the schema to apply
+                LOG.debug({"schema": schema_to_apply, "data": data})
+                validate(data, schema_to_apply, format_checker=FormatChecker())
+            except ValidationError as supported_exception:
+                e_mssg = supported_exception.message
+                if e_mssg.endswith('is too long') and len(e_mssg) > 250:
+                    supported_exception.message = (
+                        e_mssg[:50] + ' ... ... ... ' + e_mssg[-50:])
+                raise self.error(supported_exception.message, code=400)
         if self.request.method == 'GET':
             # Validate incoming arguments.
             pass
         self.validated_data = deepcopy(data)
+
+    @classmethod
+    def get_local_schema_with_overrides(cls, request_method):
+        # Allow Exception to be thrown. Handled gracefully in request handler
+        schema_to_apply = {}
+        if (getattr(cls, 'SCHEMA', False)):
+            schema_to_apply = deepcopy(cls.SCHEMA)
+        if (getattr(cls, 'SCHEMA_OVERRIDES', False)):
+            schema_to_apply.update(
+                cls.SCHEMA_OVERRIDES.get(request_method, {}))
+        return schema_to_apply
 
     def get_current_user(self):
         """
