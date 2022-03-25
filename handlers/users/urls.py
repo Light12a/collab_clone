@@ -1,6 +1,8 @@
-from .handlers import LoginHandler, LogoutHandler
+from .handlers import LoginHandler, LogoutHandler, RefreshTokenHandler, ReleaseLockHandlers
 
 urlpatterns = [
     ('/login', LoginHandler),
-    ('/logout', LogoutHandler)
+    ('/logout', LogoutHandler),
+    ('/refreshtoken', RefreshTokenHandler),
+    ('/release', ReleaseLockHandlers)
 ]
