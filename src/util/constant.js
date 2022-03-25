@@ -18,3 +18,8 @@ export const networkConstant = {
     DISCONNECTED: 'DISCONNECTED'
 }
 
+export const agentListTypeConstant = {
+    TRANSFER: 'TRANSFER',
+    CALL: 'CALL'
+}
+

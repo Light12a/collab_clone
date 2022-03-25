@@ -13,7 +13,7 @@ const callStates = [
 
 const currentCallSlice = createSlice({
     name: 'currentCall',
-    initialState: { hasCurrentCall: false, activeCall: { sessionId: null, state: null, displayName: null, ext: null }, holdCall: { sessionId: null, state: null } },
+    initialState: { hasCurrentCall: false, activeCall: { sessionId: null, state: null, displayName: null, ext: null }, holdCall: { sessionId: null, state: null }, transferTo: null},
     reducers: {
         setCurrentCall(state, action) {
 
@@ -42,10 +42,13 @@ const currentCallSlice = createSlice({
         },
         setActiveCallExtNumber(state, action) {
             state.activeCall.ext = action.payload
+        },
+        setTransferToExtNumber(state, action){
+            state.transferTo = action.payload
         }
     }
 })
 
-export const { setCurrentCall, changeCurrentCallState, removeAtiveCall, setActiveCallExtNumber } = currentCallSlice.actions
+export const { setCurrentCall, changeCurrentCallState, removeAtiveCall, setActiveCallExtNumber, setTransferToExtNumber } = currentCallSlice.actions
 
 export default currentCallSlice.reducer

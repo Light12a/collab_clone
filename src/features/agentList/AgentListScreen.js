@@ -6,7 +6,7 @@ import { callConstant } from '../../util/constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAgentListOpen } from '../../redux/reducers/agentList/agentListStatus';
 import { useTranslation } from 'react-i18next';
-import { changeCurrentCallState, setCurrentCall, setActiveCallExtNumber } from '../../redux/reducers/call/currentCall';
+import { changeCurrentCallState, setCurrentCall, setActiveCallExtNumber, setTransferToExtNumber } from '../../redux/reducers/call/currentCall';
 import { appColor } from '../../value/color';
 import Pagination from '../../components/Pagination';
 import { Select, message } from 'antd';
@@ -17,6 +17,7 @@ import { setIsKeypadOpen } from '../../redux/reducers/keypad/keypadStatus';
 import SearchBar from '../../components/SearchBar'
 import call from '../../asset/call.svg'
 import useSip from '../../hooks/useSip';
+import { agentListTypeConstant } from '../../util/constant';
 
 const AgentListScreen = (props) => {
     const { Option } = Select;
@@ -26,6 +27,7 @@ const AgentListScreen = (props) => {
     const { currentState } = useSelector(state => state.connectStatus)
     //get user infomation
     const { agentList } = useSelector(state => state.AgentList)
+    const { agentListType } = useSelector(state => state.agentListStatus)
     let ListAgent = agentList.agentList.users;
     let filterListAgent = [];
 
@@ -91,15 +93,21 @@ const AgentListScreen = (props) => {
         setCurrentPage(page)
     }
     const makeCall = (callNumber) => {
-        if (currentState !== 'connected') {
-            message.error('not connect to PBX')
-            return
+        if(agentListType === agentListTypeConstant.CALL){
+            if (currentState !== 'connected') {
+                message.error('not connect to PBX')
+                return
+            }
+            if (callNumber.trim() === '') return
+            dispatch(changeCurrentCallState(callConstant.MAKE_CALL))
+            dispatch(setActiveCallExtNumber(callNumber))
+            ua.call(callNumber, callOptions)
         }
-        if (callNumber.trim() === '') return
-        dispatch(changeCurrentCallState(callConstant.MAKE_CALL))
-        dispatch(setActiveCallExtNumber(callNumber))
+        else if(agentListType === agentListTypeConstant.TRANSFER){
+            dispatch(setTransferToExtNumber(callNumber));
+            dispatch(changeCurrentCallState(callConstant.TRANSFER))
+        }
         dispatch(setAgentListOpen(false))
-        ua.call(callNumber, callOptions)
     }
     var callOptions = {
         mediaConstraints: {

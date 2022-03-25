@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Badge, Select, message } from 'antd';
 import styled from 'styled-components';
-import { setAgentListOpen } from "../../redux/reducers/agentList/agentListStatus";
+import { setAgentListOpen, setAgentListType } from "../../redux/reducers/agentList/agentListStatus";
 import { removeAtiveCall, setCurrentCall, changeCurrentCallState } from '../../redux/reducers/call/currentCall';
-import { callConstant } from '../../util/constant';
+import { callConstant, agentListTypeConstant } from '../../util/constant';
 import useSip from '../../hooks/useSip';
 import { useTranslation } from 'react-i18next';
 import { setIsWaitingListOpen } from '../../redux/reducers/waitingList/waitingListStatus';
@@ -145,7 +145,11 @@ const HomePage = () => {
     }
 
     const forward = () => {
-        dispatch(changeCurrentCallState(callConstant.TRANSFER))
+        //dispatch(changeCurrentCallState(callConstant.TRANSFER))
+        dispatch(setAgentListOpen(true));
+        dispatch(setAgentListType(agentListTypeConstant.TRANSFER));
+        dispatch(setIsWaitingListOpen(false)); 
+        dispatch(setIsKeypadOpen(false));
     }
 
     const location = window.location.href.split('?');
@@ -284,7 +288,7 @@ const HomePage = () => {
                     {/* <button onClick={e => { hasCurrentCall ? endCall() : call() }} className='btn'>{hasCurrentCall ? t('disconnect') : t('call')}</button> */}
                     {/* <button className='btn' onClick={e => hold()}>{activeCall.state === callConstant.HOLD ? t('unHold') : t('holdOn')}</button>
                     <button className='btn' onClick={e => forward()}>{t('forward')}</button> */}
-                    <button className='btn' onClick={e => { dispatch(setAgentListOpen(true));dispatch(setIsWaitingListOpen(false)); dispatch(setIsKeypadOpen(false)) }}>{t('call')}</button>
+                    <button className='btn' onClick={e => { dispatch(setAgentListOpen(true));dispatch(setIsWaitingListOpen(false)); dispatch(setIsKeypadOpen(false));dispatch(setAgentListType(agentListTypeConstant.CALL)) }}>{t('call')}</button>
                     <button className='btn'>{t('pickUp')}</button>
                     <button className='btn'>{t('conference')}</button>
                     <button className='btn'>{t('coach')}</button>

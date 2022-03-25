@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 
 import { setConnect } from '../redux/reducers/connection/connectStatus';
-import { removeAtiveCall, setCurrentCall, changeCurrentCallState } from '../redux/reducers/call/currentCall';
+import { removeAtiveCall, setCurrentCall, changeCurrentCallState, setTransferToExtNumber } from '../redux/reducers/call/currentCall';
 import { pushACall, removeACall } from '../redux/reducers/waitingList/waitingCallList'
 import { callConstant } from '../util/constant';
 
@@ -52,7 +52,7 @@ const SipProvider = ({ children }) => {
     const { user, userConfig } = useSelector(state => state.auth)
     const { isConnected } = useSelector(state => state.networkStatus)
     const { currentState } = useSelector(state => state.connectStatus)
-    const { activeCall } = useSelector(state => state.currentCall)
+    const { activeCall, transferTo } = useSelector(state => state.currentCall)
     const waitingCallList = useSelector(state => state.waiting)
     const dispatch = useDispatch()
     const sessionRef = useRef([])
@@ -377,6 +377,7 @@ const SipProvider = ({ children }) => {
         } catch (err) {
             console.log("Blind transfer failed");
         }
+        dispatch(setTransferToExtNumber(null));
     }
 
     // notification for app
@@ -450,7 +451,7 @@ const SipProvider = ({ children }) => {
                 break
             case callConstant.TRANSFER:
                 //session.refer(keypadNumber);
-                blindTransfer(keypadNumber, session);
+                blindTransfer(transferTo, session);
                 break
             default:
                 return
