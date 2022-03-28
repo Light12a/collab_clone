@@ -45,3 +45,21 @@ class Token(Base):
     create_date = Column(DateTime, comment='Create Date : Created Date of token')
 
     user = relationship(User)
+
+class UserRecord(Base):
+    __tablename__ = 'user_records'
+
+    user_record_id = Column(BIGINT(20), primary_key=True, unique=True)
+    tenant_id = Column(String(256))
+    user_id = Column(String(256))
+    acd_status = Column(INTEGER(11))
+    sub_status = Column(INTEGER(11))
+    start_date = Column(DateTime)
+    end_date = Column(DateTime)
+    aux_detail = Column(BIGINT(20))
+    incoming_skill = Column(String(256))
+    insert_date = Column(DateTime, nullable=False)
+    update_date = Column(DateTime, nullable=False)
+    def to_json(self):
+        return {c.key: getattr(self, c.key)
+                for c in inspect(self).mapper.column_attrs}
