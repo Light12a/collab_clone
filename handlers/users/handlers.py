@@ -122,6 +122,7 @@ class ApplyStateHandler(BaseHandler):
         except: 
             log.error("Issue in _apply()")
             self.error(message="Internal Server Error")
+            
     @gen.coroutine
     def _get_user_state(self, token, flag=0):
         """
