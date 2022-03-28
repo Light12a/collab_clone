@@ -16,8 +16,26 @@ export default function PresenceState({ state }) {
         case 104:
             return <Wrap className='statusInACall'>{t('inACall')}</Wrap>
         default:
-            return <Wrap className='statusAcceptable'>{t('acceptable')}</Wrap>
+            return <Wrap className='statusOffline'>{t('offline')}</Wrap>
     }
+     {/* {status === "on Hoding" ?
+                                            <span className='statusOnHoding'>{t('onHoding')}</span>
+                                            :
+                                            status === 'Acceptable' ?
+                                                <span className='statusAcceptable'>{t('acceptable')}</span>
+                                                :
+                                                status !== 'after-Treatment' ?
+                                                    <span className='statusOnHoding'>{t('afterTreatment')}</span>
+                                                    :
+                                                    status === 'after-Treatment' ?
+                                                        <span className='statusOnHodingInTransferredCall'>{t('onHoding')} ({t('in transferred call')})</span>
+                                                        :
+                                                        status === 'after-Treatment' ?
+                                                            <span className='statusIncomingCall'>{t('incomingCall')}</span>
+                                                            :
+                                                            <span className='statusInACall'>{t('inACall')}</span>
+
+                                        } */}
 }
 
 const Wrap = styled.span`

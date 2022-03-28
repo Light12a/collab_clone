@@ -28,7 +28,6 @@ function App() {
   // const { isFullScreen } = useSelector(state => state.isFullScreen)
   const [newWaitingWindow, setNewWaitingWindow] = useState(null)
 
-
   // const zIndexKeyPad = useSelector(state => state.keypadStatus);
   // const zIndexWaitingList = useSelector(state => state.waitingListStatus);
   // const zIndexAgentList = useSelector(state => state.agentListStatus);

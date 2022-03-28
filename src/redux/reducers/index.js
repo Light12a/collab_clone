@@ -12,6 +12,7 @@ import agentListStatus from './agentList/agentListStatus'
 import AgentList from './agentList/AgentList'
 import correspondence from './talkscript/correspondence'
 import homePageSlice from './homePage/homePageSlice'
+import languageSlice from './setting/language/languageSlice'
 import { logoutAPI } from '../../api'
 
 const appReducer = combineReducers({
@@ -26,7 +27,8 @@ const appReducer = combineReducers({
     agentListStatus,
     homePageSlice,
     AgentList,
-    correspondence
+    correspondence,
+    languageSlice,
 })
 
 const rootReducer = (state, action) => {

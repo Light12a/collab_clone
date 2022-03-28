@@ -72,6 +72,7 @@
     "outputDevice": "Output Device",
     "inputVolume": "Input Volume",
     "outputVolume": "Output Volume",
+    "noDeviceFound": "No device found",
     "settingCheckboxDes": "The speaker also is sounds when there is an incoming call.",
     "waitingCallAlert": "Waiting call alerts",
     "voiceAlert": "Voice alerts",

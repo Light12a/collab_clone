@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ProgressBar from "../../components/ProgressBar";
+import { appString } from '../../value/string';
 import { useTranslation } from 'react-i18next';
 import { Input, Dropdown, Menu, Button, Select, Slider, InputNumber, Checkbox, Form, Modal } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Store from "../../redux/store";
 import styled from "styled-components";
 // import ReactAudioPlayer from 'react-audio-player'
@@ -11,41 +11,87 @@ import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import SettingJB from './SettingJB';
 import { version } from '../../../package.json'
 import { setCurentRoute } from '../../redux/reducers/route/route';
+import { setLanguage } from '../../redux/reducers/setting/language/languageSlice';
 import HomePage from '../homepage/HomePage';
 import arrowIcon from '../../asset/ic.svg'
 import { sendMail, clearLogs } from '../../service/sendMailService';
 
+
 const SettingScreen = () => {
-  const [completed, setCompleted] = useState(20);
-  const [devices, setDevices] = useState([])
   const [deviceActive, setDeviceActive] = useState([]);
   const [volume, setVolume] = useState(10);
 
   const { Option } = Select;
   const { t, i18n } = useTranslation();
-  const [valueLanguage, setValueLanguage] = useState(t('english'))
-
+  const { language } = useSelector(state => state.languageSlice)
   const dispatch = useDispatch()
-
-  const audioRef = useRef();
   const [form] = Form.useForm();
 
   var ringBackAudio = new Audio();
   ringBackAudio.crossOrigin = "anonymous";
 
+
+  // initInputDevice = inputDevice[0].label
+  // initOutputDevice = outputDevice[0].label
+
+
+  let inputDevice = []
+  let outputDevice = []
+  let initInputDevice = useRef()
+  let initOutputDevice = useRef()
+
+  navigator.mediaDevices.enumerateDevices()
+    .then((devices) => {
+      // setoutputDevice(devices)
+      devices.forEach(element => {
+
+        if (element.kind === "audiooutput") {
+          if (outputDevice[0] === null || !outputDevice[0] || outputDevice[0]) {
+            outputDevice.push(element)
+          }
+          else {
+            console.log("My element: " + JSON.stringify(outputDevice))
+            outputDevice.forEach(outElement => {
+              if (outElement.groupId !== element.groupId)
+                outputDevice.push(element)
+            });
+          }
+
+        }
+        if (element.kind == "audioinput") {
+          inputDevice.push(element)
+        }
+      });
+
+      // init output
+      if (outputDevice && outputDevice !== null) {
+
+        // initOutputDevice.current = outputDevice[0].label
+
+      }
+
+      else
+        initOutputDevice = "No device found"
+
+      //init input
+      if (inputDevice && inputDevice !== null)
+        initInputDevice.current = inputDevice
+      else
+        initInputDevice = "No device found"
+
+
+      console.log("My input: " + JSON.stringify(outputDevice))
+      console.log("My input: " + JSON.stringify(initOutputDevice))
+
+    })
+
   useEffect(() => {
-    console.log("My Store: " + JSON.stringify(Store))
-    navigator.mediaDevices.enumerateDevices()
-      .then((devices) => {
-        // setoutputDevice(devices)
-        setDevices(devices)
-      })
+
+    
   }, [])
 
   useEffect(() => {
-
     ringBackAudio.volume = volume / 10
-
     const constraint = {
       audio: { deviceId: deviceActive ? { exact: deviceActive } : undefined },
       // video: {deviceId: videoSource ? {exact: videoSource} : undefined}
@@ -56,7 +102,12 @@ const SettingScreen = () => {
 
   const handleClick = (lang) => {
     i18n.changeLanguage(lang)
-    setValueLanguage(lang)
+
+    if(lang === 'jp')
+      dispatch(setLanguage(t("japan")))
+    else if(lang === 'en')
+      dispatch(setLanguage(t("english")))
+    localStorage.setItem(appString.languageKey, lang)
   }
 
   const handleSelectDevice = (value) => {
@@ -151,7 +202,12 @@ const SettingScreen = () => {
         <div className='setting__body'>
           <div className='form-group'>
             <p>{t("language")}</p>
-            <Select style={{ width: '100%' }} value={valueLanguage} onSelect={(e) => handleClick(e)} defaultValue="en" suffixIcon={<img src={arrowIcon} />}>
+            <Select
+              style={{ width: '100%' }}
+              value={language}
+              onSelect={(e) => handleClick(e)}
+              defaultValue="en"
+              suffixIcon={<img src={arrowIcon} />}>
               <Option value="en">{t("english")}</Option>
               <Option value="jp">{t("japan")}</Option>
             </Select>
@@ -159,7 +215,6 @@ const SettingScreen = () => {
           <h1>{t("voiceSetting")}</h1>
           <div className='setting-voice'>
             {/* <div className="App">
-          <ProgressBar bgcolor={"#6a1b9a"} completed={completed} />
           <Input
             type='number'
             value={completed}
@@ -170,14 +225,13 @@ const SettingScreen = () => {
             <div>
               <div className='form-group'>
                 <p>{t("inputDevice")}</p>
-                <Select style={{ width: '100%' }} defaultValue="Choose input device" onSelect={handleSelectMic} suffixIcon={<img src={arrowIcon} />}>
+                <Select style={{ width: '100%' }} defaultValue={initInputDevice} onSelect={handleSelectMic} suffixIcon={<img src={arrowIcon} />}>
                   {
-                    devices.map((item, key) => {
-                      if (item.kind === "audioinput") {
-                        return (
-                          <Option value={item.deviceId}>{item.label}</Option>
-                        )
-                      }
+                    inputDevice.map((item, key) => {
+
+                      return (
+                        <Option value={item.deviceId}>{item.label}</Option>
+                      )
                     })
                   }
                 </Select>
@@ -191,14 +245,14 @@ const SettingScreen = () => {
             <div>
               <div className='form-group'>
                 <p>{t("outputDevice")}</p>
-                <Select style={{ width: '100%' }} onSelect={handleSelectDevice} defaultValue="Choose output device" suffixIcon={<img src={arrowIcon} />}>
+                <Select style={{ width: '100%' }} onSelect={handleSelectDevice} defaultValue={initOutputDevice} suffixIcon={<img src={arrowIcon} />}>
                   {
-                    devices.map((item, key) => {
-                      if (item.kind === "audiooutput") {
-                        return (
-                          <Option value={item.deviceId}>{item.label}</Option>
-                        )
-                      }
+                    outputDevice.map((item, key) => {
+
+                      return (
+                        <Option value={item.deviceId}>{item.label}</Option>
+                      )
+
                     })
                   }
                 </Select>

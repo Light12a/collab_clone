@@ -74,6 +74,7 @@
   "outputDevice": "デバイスを出力する",
   "inputVolume": "入力音量",
   "outputVolume": "出力音量",
+  "noDeviceFound": "デバイスが見つかりません",
   "away": "離席",
   "acceptable": "受付可",
   "phoneNumber": "電話番号",

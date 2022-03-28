@@ -6,7 +6,7 @@ import { setIsWaitingListOpen } from '../../redux/reducers/waitingList/waitingLi
 import { useTranslation } from 'react-i18next';
 import { callConstant } from '../../util/constant';
 import { changeCurrentCallState, setCurrentCall } from '../../redux/reducers/call/currentCall';
-import CustomSelect from "./CustomSelect";
+import CustomSelect from "../../components/CustomSelect";
 import styled from 'styled-components';
 import { Select, Radio } from "antd";
 import TimerClock from './TimerClock';

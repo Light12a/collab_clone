@@ -1,6 +1,5 @@
 import { React, useEffect, useState } from 'react'
 import '../features/agentList/AgentListScreen.css'
-import searchIcon from '../asset/search.svg'
 import styled from 'styled-components';
 
 const Pagination = (props) => {
@@ -9,6 +8,7 @@ const Pagination = (props) => {
     let [currentPage, setCurrentPage] = useState(1)
 
     const {total, itemsPerPage, t} = props
+
     const totalPageNumber = Math.floor(total.length/itemsPerPage) + 1
     // totalPageNumber !== 1 ? setPageNumber([1,2,3]) : setPageNumber([1])
     // console.log("My PageNumber: " + pageNumber)

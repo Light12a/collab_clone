@@ -9,9 +9,10 @@ import { useTranslation } from 'react-i18next';
 import { changeCurrentCallState, setCurrentCall, setActiveCallExtNumber, setTransferToExtNumber } from '../../redux/reducers/call/currentCall';
 import { appColor } from '../../value/color';
 import Pagination from '../../components/Pagination';
+import CustomSelect from '../../components/CustomSelect';
 import { Select, message } from 'antd';
 import arrowIcon from '../../asset/ic.svg'
-import Checkbox from 'antd/lib/checkbox/Checkbox';
+import PresenceState from '../../components/PresenceState'
 import dialpad from '../../asset/dialpad.svg'
 import { setIsKeypadOpen } from '../../redux/reducers/keypad/keypadStatus';
 import SearchBar from '../../components/SearchBar'
@@ -25,69 +26,77 @@ const AgentListScreen = (props) => {
     const dispatch = useDispatch()
     const { t, i18n } = useTranslation();
     const { currentState } = useSelector(state => state.connectStatus)
+    const { skillGroupList } = useSelector(state => state.waiting)
+
+    console.log("My Skill group: " + JSON.stringify(skillGroupList))
     //get user infomation
     const { agentList } = useSelector(state => state.AgentList)
     const { agentListType } = useSelector(state => state.agentListStatus)
     let ListAgent = agentList.agentList.users;
     let filterListAgent = [];
-
-    // pagination
-    let [totalItems, setTotalItem] = useState(0)
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10
-
     //x list
     let xListAgent = ListAgent;
     xListAgent = xListAgent.concat(xListAgent, ListAgent)
     xListAgent = xListAgent.concat(xListAgent, ListAgent)
 
+    // get group
+    const [skillGroup, setSkillGroup] = useState([]);
+
+    // pagination
+    let [totalItems, setTotalItem] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1);
+    let [listAgentForShow, setListAgentForShow] = useState([])
+    const itemsPerPage = 10
+
+
     // get state
     const status = ListAgent.state
+    const [bufferListAgent, setBufferListAgent] = useState(xListAgent)
 
-    let [listAgentForShow, setListAgentForShow] = useState([])
-   
+
+    useEffect(() => {
+
+
+    }, [])
+
+
     useEffect(() => {
         let newList = [];
+        console.log("My bufferListAgent: " + JSON.stringify(bufferListAgent))
         for (let i = 0; i < itemsPerPage; i++) {
-            newList.splice(i, 1, xListAgent[(currentPage - 1) * itemsPerPage + i])
+            newList.splice(i, 1, bufferListAgent[(currentPage - 1) * itemsPerPage + i])
         }
 
-        console.log("My agent list: " + JSON.stringify(ListAgent))
         setListAgentForShow(newList)
 
-    }, [currentPage])
+    }, [currentPage, bufferListAgent])
 
-    const onSort = (list) => {
-        // return (list.sort())
-        console.log("HI sort" + JSON.stringify(list))
-    }
-    
     const onSortStatus = (list) => {
-        list.sort((a,b)=>{
+        list.sort((a, b) => {
             return b.state - a.state
         })
-        setListAgentForShow(list)
+        setBufferListAgent(list)
     }
     const onSortSkillGroupName = (list) => {
-        list.sort((a,b)=>{
+        list.sort((a, b) => {
             return b.group_id - a.group_id
         })
-        setListAgentForShow(list)
+        setBufferListAgent(list)
     }
     const onSortName = (list) => {
-        list.sort((a,b)=>{
+        list.sort((a, b) => {
             return b.username.localeCompare(a.username)
         })
-        setListAgentForShow(list)
+        setBufferListAgent(list)
     }
     const onSortExtension = (list) => {
-        list.sort((a,b)=>{
-            if(a> b)
+        list.sort((a, b) => {
+            if (a > b)
                 return b.ext_number - a.ext_number
-            return a.ext_number-b.ext_number
+            return a.ext_number - b.ext_number
         })
-        console.log("My Lít: " + JSON.stringify(list))
-        setListAgentForShow(list)
+        console.log("My List: " + JSON.stringify(list))
+        setBufferListAgent(list)
     }
     const onPageChange = (page) => {
         setCurrentPage(page)
@@ -124,8 +133,8 @@ const AgentListScreen = (props) => {
         fromDisplayName: 'haizaaa',
         extraHeaders: ['uchihahaha:helo;']
     };
-    
-    
+
+
     const onSearch = (e) => {
         xListAgent.map((el) => {
             if (el.username.toLowerCase().includes(e.target.value) ||
@@ -136,7 +145,7 @@ const AgentListScreen = (props) => {
                 return ''
             }
         })
-        setListAgentForShow(filterListAgent)
+        setBufferListAgent(filterListAgent)
         e.target.value ?
             ListAgent = []
             : ListAgent = agentList.agentList.users
@@ -157,9 +166,7 @@ const AgentListScreen = (props) => {
                         } */}
 
                             <td>
-                                {
-                                    RenderItemStatus(item.state)
-                                }
+                                <PresenceState state={item.state} />
                             </td>
                             <td>
                                 {item.group_id}
@@ -187,9 +194,7 @@ const AgentListScreen = (props) => {
                                 </td> */}
 
                             <td>
-                                {
-                                    RenderItemStatus(item.state)
-                                }
+                                <PresenceState state={item.state} />
                             </td>
                             <td>
                                 {item.group_id}
@@ -210,43 +215,6 @@ const AgentListScreen = (props) => {
         )
     }
 
-    const RenderItemStatus = (item) => {
-
-        switch (item) {
-            case 100:
-                return <span className='statusAcceptable'>{t('acceptable')}</span>
-            case 101:
-                return <span className='statusOnHoding'>{t('afterTreatment')}</span>
-            case 102:
-                <span className='statusOnHoding'>{t('onHoding')}</span>
-            case 103:
-                return <span className='statusIncomingCall'>{t('incomingCall')}</span>
-            case 104:
-                return <span className='statusInACall'>{t('inACall')}</span>
-            default:
-                return null;
-        }
-
-        {/* {status === "on Hoding" ?
-                                            <span className='statusOnHoding'>{t('onHoding')}</span>
-                                            :
-                                            status === 'Acceptable' ?
-                                                <span className='statusAcceptable'>{t('acceptable')}</span>
-                                                :
-                                                status !== 'after-Treatment' ?
-                                                    <span className='statusOnHoding'>{t('afterTreatment')}</span>
-                                                    :
-                                                    status === 'after-Treatment' ?
-                                                        <span className='statusOnHodingInTransferredCall'>{t('onHoding')} ({t('in transferred call')})</span>
-                                                        :
-                                                        status === 'after-Treatment' ?
-                                                            <span className='statusIncomingCall'>{t('incomingCall')}</span>
-                                                            :
-                                                            <span className='statusInACall'>{t('inACall')}</span>
-
-                                        } */}
-
-    }
     return (
         <>
             <div className="agent-list__header drag-header">
@@ -274,18 +242,20 @@ const AgentListScreen = (props) => {
                     </div>
                     <div className='form-group'>
                         <span className='title'>{t('skillGroup')}</span>
-                        <Select defaultValue={t('all')} suffixIcon={<img src={arrowIcon} />}>
-                            <Option value={t('all')}>{t('all')}</Option>
-                            <Option value={t('selectSkillGroup')}>{t('selectSkillGroup')}</Option>
-                        </Select>
+                        <CustomSelect
+                            defaultText="Select skill group"
+                            optionsList={skillGroupList}
+                            // onSelectGroup={e => onSelect(e)}
+                        />
                     </div>
 
                     <div className='form-group'>
                         <span className='title'>{t('status')}</span>
-                        <Select defaultValue={t('all')} suffixIcon={<img src={arrowIcon} />}>
-                            <Option value={t('all')}>{t('all')}</Option>
-                            <Option value={t('status')}>{t('status')}</Option>
-                        </Select>
+                        <CustomSelect
+                            defaultText="Select status"
+                            optionsList={skillGroupList}
+                            // onSelectGroup={e => onSelect(e)}
+                        />
                     </div>
 
 

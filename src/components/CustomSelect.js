@@ -1,6 +1,6 @@
 import React from "react";
 import styled from 'styled-components'
-import imgArrow from '../../asset/arrow_green.png'
+import imgArrow from '../asset/arrow_green.png'
 import { withTranslation } from 'react-i18next';
 
 class CustomSelect extends React.Component {

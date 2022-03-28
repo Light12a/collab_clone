@@ -1,4 +1,6 @@
 export const appString = {
+    languageKey: "language",
+
     login : 'Login',
     cancel: 'Cancel',
     remember_me: 'Remember me',

@@ -50,22 +50,23 @@ const Topbar = ({ t }) => {
     },[userState])
     
 
-    // useEffect(() => {
-    //     const wsClient = new WebSocket('wss://18.179.96.129:8888/collabos');
-    //     wsClient.onopen = () => {
-    //         alert('ws opened');
-    //       };
-    //     wsClient.onclose = () => console.log('ws closed');
+    useEffect(() => {
+        // const wsClient = new WebSocket('wss://18.179.96.129:8888/collabos');
+        
+        // wsClient.onopen = () => {
+        //     alert('ws opened');
+        //   };
+        // wsClient.onclose = (e) => alert('ws closed' + e);
 
-    //     wsClient.onmessage  = e => {
-    //         const message = JSON.parse(e.data);
-    //         console.log('e', message);
-    //       };
+        // wsClient.onmessage  = e => {
+        //     const message = JSON.parse(e.data);
+        //     console.log('e', message);
+        //   };
        
-    //       return () => {
-    //         wsClient.close();
-    //       }
-    // }, [])
+        //   return () => {
+        //     wsClient.close();
+        //   }
+    }, [])
     
 
     const { userConfig } = useSelector(state => state.auth)
