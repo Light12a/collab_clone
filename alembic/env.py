@@ -12,6 +12,7 @@ from handlers.groups import models
 from handlers.historical_report import models
 from handlers.callflow_settings import models
 from handlers.recording_download import models
+from handlers.caller_notif_number import models
 from services.database.mysqldb import Base
 from alembic import context
 
