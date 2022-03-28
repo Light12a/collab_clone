@@ -6,7 +6,7 @@ from datetime import datetime
 
 # from pythonjsonlogger import jsonlogger
 
-LOG_PATH = "log"
+LOG_PATH = "D:\log"
 
 LOG_LEVELS = {
     "debug": logging.DEBUG,

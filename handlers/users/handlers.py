@@ -1,6 +1,7 @@
 from asyncio.proactor_events import _ProactorBaseWritePipeTransport
 import code
 from dataclasses import dataclass
+from email import message
 from email.policy import HTTP
 import imp
 import datetime
@@ -10,6 +11,8 @@ from urllib import request
 import uuid
 import json
 from zipfile import BadZipfile
+
+from services import logging
 from ..base import BaseHandler
 from .models import User, Token, Tenant, UserRecord
 from ..authority.models import Authority
@@ -24,11 +27,6 @@ from . import state_value
 log = log.get(__name__)
 
 
-# class LoginHandler(ResponseMixin, BaseHandler):
-#     def get(self):
-#         results = self.db.query(User).all()
-#         for result in results:
-#             print(result.user_name)
 
 class TestHandler(ResponseMixin, BaseHandler):
     def post(self):
@@ -45,7 +43,6 @@ class LoginHandler(ResponseMixin, BaseHandler):
     @gen.coroutine
     def post(self):
         data = self.data_received()
-        print("data", data)
         if data:
             if not (("domain" in data and "username" in data and "password" in data) or ("token" in data)):
                 inf = "Json request format is wrong"
@@ -301,91 +298,146 @@ class ApplyStateHandler(ResponseMixin, BaseHandler):
     """
     @gen.coroutine
     def post(self):
+        """
+        Post method is implemented.
+        """
         data = self.data_received()
-        if ("token" and "state" and "sub_state") in data:
-            check, token = yield self._check_token_exists(data['token'])
-            if check: 
+        if 'token' in data and 'state' in data and 'substate' in data:
+            check = yield self._check_token_exists(data['token'])
+            if check:
                 self._apply_state(data)
             else:
-                self.write_response("Success", code=HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")   
+                self.write_response("Failure", code=HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
+                info = "Token: {} is wrong"
+                log.info(info.format(data['token']))
         else:
-            err = "Bad request with json request"
-            log.error(err)
-            self.error(code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
+            err = "request format is wrong"
+            log.warning(err)
+            self.error(message="Bad request with json request", code=HTTPStatus.BAD_REQUEST.value)
 
     @gen.coroutine
     def _check_token_exists(self, token):
         """
             Meaning: Checking the token's existence
             Input: token
-            Output: False  or
-                    True and token
-        """
-        result = self.db.query(Token.token_id).filter(Token.token_id == token)
-        if result == None:
-            raise gen.Return(False)
-        else:
-            raise gen.Return(True, token)
-    
-    @gen.coroutine
-    def _get_current_state(self, token):    
-        username = self.db.query(User.user_name).join(Token, User.user_name == Token.token_id).filter(Token.token_id == token)
-        result =  yield requests.get("http://35.75.95.117:8088/ari/deviceStates/PJSIP%2F{}".\
-                    format(username), auth=("asterisk","asterisk")).json()['state']
-        return state_value.STATES[result]
-
-    @gen.coroutine
-    def _apply_state(self, data):
-        away_code_id_maximum = 15
-        current_state = yield self._get_current_state(data["token"])
-        if  (data["state"] not in [100, 101, 102]) or \
-            (data["state"] in [101, 102] and data["sub_state"] != 0) or \
-            (data["state"] == 100 and data["sub_state"] not in list(range(1, away_code_id_maximum+1))) or \
-            (current_state == 104):
-            params = yield self._get_user_state(data["token"])
-            respo = {
-                "code": 200,
-                "username": params[0], 
-                "displayname": params[1],
-                "groupId": params[2],
-                "state": -1,
-                "sub_state": -1,
-            }
-            self.write_response("Success", HTTPStatus.OK.value, response_data=respo)
-            info = "State & substate does not have update because invalid input"
-            log.info(info)
-        else:
-            self._apply_state(data['state'], data['sub_state'], data['token'])
-            params = self._get_user_state(data['token'])
-            respo = {
-                "code": 200,
-                "username": params[0], 
-                "displayname": params[1],
-                "groupId": params[2],
-                "state": 100, #temp
-                "sub_state": 100, #temp
-            }
-            self.write_response("Success", HTTPStatus.OK.value, response_data=respo)
-            info = "Update state: {}, sub_state: {} to username: {} is success"
-            log.info(info.format(params[3], params[4], params[0]))
-    
-    @gen.coroutine
-    def _get_user_state(self, token):
-        """
-        SELECT u.username, concat(u.firstname,' ', u.middlename,' ', u.lastname), u.group_id,
-        u.user_state_id, u.substate, t.token_id from backend.user as u join backend.token as t
-        on t.user_id = u.user_id where token_id = '{}';
         """
         try:
-            results = self.db.query(User.username, User.firstname + User.middlename + User.lastname, \
-                    User.group_id).join(Token, Token.user_id == User.user_id).filter(Token.token_id == token).first()
-            raise gen.Return(results)
+            result = self.db.query(Token.token_id).filter(Token.token_id == token)
+            if result[0][0] == token:
+                return True
+            else: return False
+        except:
+            return False
+    
+    @gen.coroutine
+    def _get_deviceState(self, token):    
+        """
+        Meaning: Get deviceState by token. The Function use token to find username and 
+                return state code in state_value.py
+        Input : token
+        Output : a tuple contains state and substate
+        """
+        try:
+            username = self.db.query(User.user_name).join(Token, User.user_id == Token.user_id).filter(Token.token_id == token)
+            result =  requests.get("http://35.75.95.117:8088/ari/deviceStates/PJSIP%2F{}".\
+                        format(username[0][0]), auth=("asterisk","asterisk")).json()['state']
+            return state_value.STATES[result], state_value.SUB_STATES[result]
+        except:
+            log.error("Issue in _get_deviceState")
+            self.error(message="Internal Server Error")
+
+    @gen.coroutine
+    def _get_current_state(self, token):
+        """
+        Meaning: Check user'state before apply state.
+                The method returns deviceState, if deviceState = 104 (in-call states), 
+                method returns user's state in database.
+        Input: token
+        Output: a tuple contains state and substate
+        """
+        try:
+            deviceState, sub_deviceState = yield self._get_deviceState(token)
+            if deviceState == 104:
+                return deviceState, sub_deviceState
+            else:
+                query = self.db.query(UserRecord.acd_status, UserRecord.sub_status)\
+                        .filter(Token.user_id==UserRecord.user_id, Token.token_id==token)
+                return query[0][0], query[0][1]
+        except:
+            log.error("Issue in _get_current_state")
+            self.error(message="Internal Server Error")
+            
+    @gen.coroutine
+    def _apply_state(self, data):
+        try:
+            deviceState = (yield self._get_deviceState(data['token']))[0]
+            if  (deviceState != 104) and\
+                ((data['state'] in [100, 101, 102] and data['sub_state'] == 0) or\
+                (data['state'] == 103 and data['sub_state'] in [0, 1, 2, 3])):
+                self._apply(data)
+                self._get_user_state(data["token"], 1)
+            else:
+                self._get_user_state(data['token'], 0)
+        except:
+            log.error("Issue in _apply_state")
+            self.error(message="Internal Server Error")
+
+    @gen.coroutine
+    def _apply(self, data):
+        """
+        Meaning: update SQL for acd_status and sub_status in UserRecord table
+        Input: data request
+        """
+        try:
+            query = self.db.query(UserRecord).filter(User.user_id == Token.user_id, \
+                    User.user_id == UserRecord.user_id, Token.token_id == data['token']).one()
+            query.acd_status = data['state']
+            query.sub_status = data['sub_state']
+            self.db.commit()
+            log.info("update SQL success")
+        except: 
+            log.error("Issue in _apply()")
+            self.error(message="Internal Server Error")
+    @gen.coroutine
+    def _get_user_state(self, token, flag=0):
+        """
+        Meaning: flag = 0 => appy state fail => response: state=-1; sub_state=-1
+                 flag = 1 => apply state success => response: updated state & updated substate
+        Input:  token, flag
+        Output: JSON reponses
+        """
+        try:
+            results = self.db.query(User.user_name, (User.firstname + User.middlename\
+                    + User.lastname), User.group_id, UserRecord.acd_status, UserRecord.sub_status)\
+                    .join(UserRecord, UserRecord.user_id == User.user_id)\
+                    .join(Token, Token.user_id == User.user_id)\
+                    .filter(Token.token_id == token)
+            if flag == 1:
+                respo = {
+                    "code": 200,
+                    "username": results[0][0], 
+                    "displayname": results[0][1],
+                    "groupId": results[0][2],
+                    "state": results[0][3], 
+                    "sub_state": results[0][4], 
+                }
+            else:
+                 respo = {
+                    "code": 200,
+                    "username": results[0][0], 
+                    "displayname": results[0][1],
+                    "groupId": results[0][2],
+                    "state": -1, 
+                    "sub_state": -1, 
+                }
+            self.write_response("Success", code=HTTPStatus.OK.value, response_data=respo)
+            inf = "Response success with {}"
+            log.info(inf.format(respo))
         except:
             log.error("Issue in _get_user_state")
-            raise gen.Return(False)
+            self.error(message="Internal Server Error")
 
-
-class GetUserStateHandler(ResponseMixin, BaseHandler):
+class GetUserStateHandler(ResponseMixin, BaseHandler): #pass to a Dung
     """
     ...
     """
@@ -420,7 +472,8 @@ class GetUserStateHandler(ResponseMixin, BaseHandler):
             }
             self.write_response("Success", HTTPStatus.OK.value, response_data=respo)
         else:
-            respo= {"code" : 200, 
+            respo= {
+                "code" : 200, 
                     "username": params[0], 
                     "displayname": params[1],
                     "groupId": params[2],
@@ -499,28 +552,28 @@ class GetUserConfigHandler(ResponseMixin, BaseHandler):
                 pbx_domain = "13.113.23.145"
                 port_pbx_domain = "8089"
                 respo = {   
-                        "code": 200,
-                        "userId": query[0][0],
-                        "username": query[0][1],
-                        "displayname": query[0][2],
-                        "group_id": query[0][3],
-                        "ext_number": query[0][4],
-                        "prefix":query[0][5],
-                        "allow_monitor":query[0][6],
-                        "allow_coach":query[0][6],
-                        "conf_max_paticipant":5,
-                        "role":query[0][7],
-                        "tenant":query[0][8],   
-                        "state":query[0][9],
-                        "domain":  self.request.host,
-                        "domain_wss": 'wss://' + self.request.host,
-                        "pbx_domain": pbx_domain,
-                        "pbx_ws": 'wss://' + pbx_domain + ':' + port_pbx_domain,
-                        "dial_plan": {  
-                                        "monitor": 88,
-                                        "coach" : 99
-                                     }
-                        }
+                    "code": 200,
+                    "userId": query[0][0],
+                    "username": query[0][1],
+                    "displayname": query[0][2],
+                    "group_id": query[0][3],
+                    "ext_number": query[0][4],
+                    "prefix":query[0][5],
+                    "allow_monitor":query[0][6],
+                    "allow_coach":query[0][6],
+                    "conf_max_paticipant":5,
+                    "role":query[0][7],
+                    "tenant":query[0][8],   
+                    "state":query[0][9],
+                    "domain":  self.request.host,
+                    "domain_wss": 'wss://' + self.request.host,
+                    "pbx_domain": pbx_domain,
+                    "pbx_ws": 'wss://' + pbx_domain + ':' + port_pbx_domain,
+                    "dial_plan":{  
+                                    "monitor": 88,
+                                    "coach" : 99
+                                }
+                }
                 
                 self.write_response("Success", code=HTTPStatus.OK.value, response_data=respo)
             except:

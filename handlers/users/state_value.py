@@ -1,10 +1,10 @@
 
-STATES = {
-            "NOT_INUSE" : 100,
-            "INUSE" : 104,
-            "RINGING" : 104,
-            "UNAVAILABLE" : 100
-        }
+STATES ={
+    "NOT_INUSE" : 100,
+    "INUSE" : 104,
+    "RINGING" : 104,
+    "UNAVAILABLE" : 100
+}
 
 SUB_STATES = {
     "RINGING" : 1,
@@ -12,5 +12,7 @@ SUB_STATES = {
     "ONHOLD": 0,
     "NOT_INUSE": 0,
     "UNAVAILABLE": 0,
-
 }
+
+
+

@@ -59,6 +59,7 @@ class UserRecord(Base):
     tenant_id = Column(String(256))
     user_id = Column(String(256))
     acd_status = Column(INTEGER(11))
+    sub_status = Column(INTEGER(11))
     start_date = Column(DateTime)
     end_date = Column(DateTime)
     aux_detail = Column(BIGINT(20))

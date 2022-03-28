@@ -3,6 +3,8 @@ import imp
 import datetime
 import uuid
 import json
+
+from grpc import Call
 from handlers.tenant_settings.models import CallRecord
 from handlers.users.models import UserRecord, Token
 from ..base import BaseHandler
@@ -25,7 +27,7 @@ class GetCorrespondenceMemoListHandler(ResponseMixin, BaseHandler):
     def post(self):
         data = self.data_received()
         if 'token' in data:
-            check, token = yield self._check_token_exists(data["token"])
+            check = yield self._check_token_exists(data["token"])
             if check:
                 self._get_correspondence_memo()
             else:
@@ -43,14 +45,11 @@ class GetCorrespondenceMemoListHandler(ResponseMixin, BaseHandler):
         """
         try:
             result = self.db.query(Token.token_id).filter(Token.token_id == token)
-            print('start1')
-            print("query = ", result)
             if result[0][0] == token:
-                print("hello")
-                return True, token
-            else: return False, None
+                return True
+            else: return False
         except:
-            return False, None
+            return False
     
     def _get_correspondence_memo(self):
         results = self.db.query(RespondingMemo.memo_id, RespondingMemo.memo_name).all()
@@ -76,19 +75,18 @@ class GetCorrespondenceMemoListHandler(ResponseMixin, BaseHandler):
 
 class ApplyCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
     """
-    ...
+    This class apply a correspondence memo to a call 
+    @param: token, memo_id, memo_note, call_id
     """
     @gen.coroutine
     def post(self):
         data = self.data_received()
         if 'token' and 'memo_id' and 'memo_note' and 'call_id' in data:
-            check, token = yield self._check_token_exists(data['token'])
+            check = yield self._check_token_exists(data['token'])
             if check:
                 self._apply_correspondence_memo(data)
             else:
-                print("issue start")
                 self.write_response("Failure", code = HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
-                print("issue end")
         else:
             self.write_response("Error", code=HTTPStatus.BAD_REQUEST.value, message="Bad request")
             err = "Token {}, memo id {}, memo {}, call_id {} in wrong format"
@@ -97,13 +95,13 @@ class ApplyCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
     @gen.coroutine
     def _apply_correspondence_memo(self, data):
         try:
-            query = self.db.query(CallRecord.memo_id).filter(Token.user_id == User.user_id, Token.token_id == data['token'], )
-            print("QUERY", query)
-            query.memo_id = data["memo_id"]
-            print("Here is fine")
+            query = self.db.query(CallRecord).filter(CallRecord.call_record_id == data['call_id'], Token.user_id == User.user_id, Token.token_id == data['token']).one()
+            query.memo_id = data['memo_id']
             self.db.commit()
+            respo = {"code":200}
+            self.write_response("Success", code=HTTPStatus.OK.value, response_data=respo)
         except:
-            self.write_response("Failure", HTTPStatus.NOT_FOUND.value, "memo_id not found")
+            self.error("Failure", code=HTTPStatus.NOT_FOUND.value, message="Data not found")
 
     @gen.coroutine
     def _check_token_exists(self, token):
@@ -113,11 +111,8 @@ class ApplyCorrespondenceMemoHandler(ResponseMixin, BaseHandler):
         """
         try:
             result = self.db.query(Token.token_id).filter(Token.token_id == token)
-            print('start1')
-            print("query = ", result)
             if result[0][0] == token:
-                print("hello")
-                return True, token
-            else: return False, None
+                return True
+            else: return False
         except:
-            return False, None
+            return False
