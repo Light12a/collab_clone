@@ -26,6 +26,7 @@ const Keypad = (props) => {
     const { agentList } = useSelector(state => state.AgentList)
     const ListAgent = agentList.agentList.users;
     const [filterNumberList, setFilterNumberList] = useState([])
+    const inputRef = useRef()
 
     useLayoutEffect(() => {
         if (callNumber)
@@ -66,6 +67,10 @@ const Keypad = (props) => {
     }, [callNumber]);
 
     useEffect(() => {
+        inputRef.current.focus()
+    }, [callNumber])
+
+    useEffect(() => {
         return () => setKeypadInput('')
     }, [])
 
@@ -77,7 +82,20 @@ const Keypad = (props) => {
         })
     }
 
+    const handleInputByKeyBoard = (e) => {
+        let allowKey = defaulKeypad.concat(["Backspace", "Delete", "ArrowRight", "ArrowLeft"])
+        console.log(e)
+        if (!allowKey.includes(String(e.key))) {
+            e.preventDefault()
+            return
+        }
+    }
+
     const onKeypadValueChange = (number) => {
+        if (callNumber.length >= 20) {
+            inputRef.current.focus()
+            return
+        }
         setCallNumber(number)
     }
 
@@ -92,8 +110,32 @@ const Keypad = (props) => {
     }
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(callNumber)
-        message.success('coppy success')
+        navigator.clipboard.readText().then(txt => {
+            if (txt === callNumber) {
+                return
+            }
+            navigator.clipboard.writeText(callNumber)
+            message.success('coppy success')
+        })
+    }
+
+    const handleSetCallNumber = e => {
+        if (callNumber.length >= 20) {
+            inputRef.current.focus()
+            return
+        }
+        setCallNumber(n => n + e)
+    }
+
+    const handleInputFocus = e => {
+        console.log('focus')
+        inputRef.current.dir = 'auto'
+        inputRef.current.scrollLeft = inputRef.current.scrollWidth
+    }
+
+    const handleOutFocus = e => {
+        console.log('out focus')
+        inputRef.current.scrollLeft = inputRef.current.scrollWidth
     }
 
     return (
@@ -104,7 +146,17 @@ const Keypad = (props) => {
                 </div>
                 {/* <h1 className={callNumber === '' ? 'white-blur' : 'white'} onChange={e => { onKeypadValueChange(e.target.value) }} >{callNumber === '' ? 'Phone number' : callNumber}</h1> */}
                 <div className='phone-number-main'>
-                    <input placeholder={t('phoneNumber')} onChange={e => { onKeypadValueChange(e.target.value) }} value={callNumber} onKeyDown={e => e.preventDefault()} />
+                    <input
+                        placeholder={t('phoneNumber')}
+                        onChange={e => { onKeypadValueChange(e.target.value) }}
+                        value={callNumber}
+                        ref={inputRef}
+                        onKeyDown={handleInputByKeyBoard}
+                        dir='rtl'
+                        onFocus={handleInputFocus}
+                        onBlur={handleOutFocus}
+                    // onKeyDown={e => e.preventDefault()} 
+                    />
                     {
                         callNumber && <button onClick={handleCopy}><img src={imgCopy} /></button>
                     }
@@ -149,7 +201,7 @@ const Keypad = (props) => {
 
             <div className='key__number'>
                 {defaulKeypad.map((item, index) =>
-                    <KeyNumber content={item} key={index} number={typeof item === 'number'} setCallNumber={setCallNumber} />
+                    <KeyNumber content={item} key={index} number={typeof item === 'number'} handleSetCallNumber={handleSetCallNumber} />
                 )}
                 <CallButton onClick={handleCall} />
                 <DeleteButton onClick={handleDelete} />
@@ -160,9 +212,9 @@ const Keypad = (props) => {
     );
 };
 
-const KeyNumber = ({ number, content, setCallNumber, ...rest }) => {
+const KeyNumber = ({ number, content, handleSetCallNumber, ...rest }) => {
     const handleAddCallNumber = () => {
-        setCallNumber(pre => pre.toString() + content.toString())
+        handleSetCallNumber(content)
     }
     return <KeyNumberWrapper {...rest} onClick={handleAddCallNumber}>
         {content}

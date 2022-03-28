@@ -117,15 +117,23 @@ const Topbar = ({ t }) => {
         connecting: {
             text: strConnecting,
             img: connecting,
+            color: '#FFC700',
         },
         connected: {
             text: strConnected,
-            img: connected
+            img: connected,
+            color: '#43BD77',
         },
         disconnected: {
             text: strDisconnected,
             img: disconnected,
+            color: '#DF0000',
         },
+        registrationFailed: {
+            text: 'registration failed',
+            img: connecting,
+            color: '#FFC700',
+        }
     }
     const { currentState } = useSelector(state => state.connectStatus)
     // const { userConfig: { config: { displayname } } } = useSelector(state => state.auth)
@@ -171,13 +179,13 @@ const Topbar = ({ t }) => {
     }
 
     return (
-        <Wrapper>
+        <Wrapper color={states[currentState].color}>
             <div className='topbar__group'>
                 <img src={logo} className="topbar__group__logo" />
                 <span>|</span>
                 <div className='topbar__group__state'>
                     <img src={states[currentState].img} alt='' />
-                    <span>{t('server')} {states[currentState].text}</span>
+                    <span className='connect__status' >{t('server')} {states[currentState].text}</span>
                 </div>
 
             </div>
@@ -245,6 +253,10 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .connect__status {
+        color: ${props => props.color ? props.color : null} ;
+    }
     
     .topbar__group{
         display:flex;

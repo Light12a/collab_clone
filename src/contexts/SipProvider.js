@@ -20,18 +20,12 @@ if (process.env.REACT_APP_PLATFORM === 'app') {
 export const SipContext = createContext(null)
 
 const registerExpire = 120
-const reregisterTime = 5
+const reRegisterTime = 5
 
 var callOptions = {
     mediaConstraints: {
         audio: true, // only audio calls
         video: false
-    },
-    pcConfig: {
-        iceServers: [{
-            urls: ["stun:stun.l.google.com:19302"]
-        }],
-        // iceTransportPolicy: 'relay',
     }
 };
 
@@ -125,8 +119,8 @@ const SipProvider = ({ children }) => {
                 console.log('registrationFailed')
                 registerTimeOutID = setTimeout(() => {
                     ua.register()
-                }, reregisterTime * 1000)
-                setConnectionState('disconnected')
+                }, reRegisterTime * 1000)
+                setConnectionState('registrationFailed')
             });
         }
         window.addEventListener('beforeunload', cleanup)
@@ -186,11 +180,14 @@ const SipProvider = ({ children }) => {
                     ringBackAudio.pause()
                     setIsRingBackAudioPlaying(false);
 
-                    var localStream = session.connection.getLocalStreams()[0];
-                    var dtmfSender = session.connection.createDTMFSender(localStream.getAudioTracks()[0])
-                    session.sendDTMF = function (tone) {
-                        dtmfSender.insertDTMF(tone);
-                    };
+                    // var localStream = session.connection.getLocalStreams()[0];
+                    // var dtmfSender = session.connection.createDTMFSender(localStream.getAudioTracks()[0])
+                    // session.sendDTMF = function (tone) {
+                    //     dtmfSender.insertDTMF(tone);
+                    // };
+                    session.sendDTMF(1)
+
+
 
                     let rtt = 0, pcl = 0, callQuality = 0, callQualityConstrain = { 0: 'Normal', 1: 'Warning', 2: 'Abnormal' }
                     intervalLogJBId = setInterval(() => {

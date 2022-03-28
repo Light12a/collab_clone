@@ -16,7 +16,7 @@ const Signin = () => {
 
 
     const { t, i18n } = useTranslation();
-    const [isRemember, setIsRemember] = useState(true);
+    const [isRemember, setIsRemember] = useState(!!localStorage.getItem('userRemember'));
     const [param, setparam] = useState('');
     const [loginError, setLoginError] = useState('')
     const [isLoggining, setIsLogining] = useState(false)
@@ -121,7 +121,7 @@ const Signin = () => {
 
                             rules={[
                                 { required: true, message: 'Mandatory field' },
-                                { type: 'string', min: 1 },
+                                { type: 'string', min: 1, max: 50 },
                                 { pattern: /^[a-zA-Z0-9_.-]*$/, message: 'Just allow a-zA-Z and . _' }
                             ]}
                         >
@@ -137,7 +137,7 @@ const Signin = () => {
                             label={t('user_ID')}
                             rules={[
                                 { required: true, message: 'Mandatory field' },
-                                { type: 'string', min: 6 },
+                                { type: 'string', min: 6, max: 50 },
                                 { pattern: /^[a-zA-Z0-9_.-]*$/, message: 'Just allow a-zA-Z and . _' }
                             ]}
                         >
@@ -154,7 +154,7 @@ const Signin = () => {
                             className='password'
                             rules={[
                                 { required: true, message: 'Mandatory field' },
-                                { type: 'string', min: 6 }
+                                { type: 'string', min: 6, max: 50 }
                             ]}
                         >
                             <Input.Password
@@ -170,7 +170,7 @@ const Signin = () => {
                             </span>
                         </div>
                         <Form.Item name="remember" valuePropName="checked" >
-                            <Checkbox onChange={handleCheck}>{t('remember_me')}</Checkbox>
+                            <Checkbox checked={isRemember} onChange={handleCheck}>{t('remember_me')}</Checkbox>
                         </Form.Item>
 
                         <div className='action'>
