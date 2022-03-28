@@ -1,5 +1,4 @@
 from handlers.base import BaseHandler
-from .models import Settings
 from http import HTTPStatus
 from tornado import gen
 
