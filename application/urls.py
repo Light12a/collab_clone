@@ -4,6 +4,7 @@ import handlers.authority.urls
 import handlers.global_settings.urls
 import handlers.groups.urls
 import handlers.callflow_settings.urls
+import handlers.project_settings.urls
 
 urlpatterns = []
 urlpatterns += handlers.users.urls.urlpatterns
