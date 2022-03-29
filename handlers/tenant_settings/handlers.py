@@ -2,6 +2,9 @@ import imp
 import datetime
 import uuid
 import json
+from xml.dom.minidom import Identified
+
+from numpy import where
 from ..base import BaseHandler
 from .models import Tenant
 from http import HTTPStatus
@@ -47,18 +50,15 @@ class TenantRetrievalHandler(BaseHandler):
     @gen.coroutine
     def _get_tenants(self, request):
         """
-        Find out the list of notification numbers.
-        Param: token_id
+        Search tenant(s) with conditions.
+        Param: request
         """
-        # results = self.db.query(Tenant).filter(Tenant.identifier == request['SearchWord']).all()
         SearchWord = request['SearchWord']
-        results = self.db.query(Tenant).filter(Tenant.identifier.like(SearchWord))
-
-        if results:
+        results = self.db.query(Tenant).filter(Tenant.identifier.like(f'%{SearchWord}%')).offset(request['Offset']).limit(request['Limit']).all()
+        try:
             results_ = []
             for elemant in results:
                 results_.append(elemant.to_json())
-                
             tenants = [{
                 "TenantId": element['tenant_id'],
                 "TenantName": element['tenant_name'],
@@ -66,7 +66,7 @@ class TenantRetrievalHandler(BaseHandler):
                 "ChannelCnt": element['channel_cnt'],
                 "UpdateDate": element['update_date']
             } for element in results_]
-        else:
-            err = "Not found any number"
+            raise gen.Return(tenants)      
+        except IndexError:
             raise gen.Return(False)
-        raise gen.Return(tenants)
+            
