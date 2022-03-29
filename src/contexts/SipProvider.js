@@ -26,6 +26,12 @@ var callOptions = {
     mediaConstraints: {
         audio: true, // only audio calls
         video: false
+    },
+    pcConfig: {
+        iceServers: [{
+            urls: ["stun:stun.l.google.com:19302"]
+        }],
+        // iceTransportPolicy: 'relay',
     }
 };
 
@@ -271,23 +277,23 @@ const SipProvider = ({ children }) => {
                 //     console.log('candidate:', data)
                 // })
 
-                // // ANCHOR force run ready to complete gather icecandidate after last candidate if this has stun candidate
-                // let endGatherIceId = null
-                // let hasStunCandidate = false
-                // session.on('icecandidate', ({ candidate, ready }) => {
-                //     if (endGatherIceId) {
-                //         clearTimeout(endGatherIceId)
-                //     }
-                //     if (candidate.type === 'srflx') {
-                //         hasStunCandidate = true
-                //     }
-                //     if (hasStunCandidate) {
-                //         endGatherIceId = setTimeout(() => {
+                // ANCHOR force run ready to complete gather icecandidate after last candidate if this has stun candidate
+                let endGatherIceId = null
+                let hasStunCandidate = false
+                session.on('icecandidate', ({ candidate, ready }) => {
+                    if (endGatherIceId) {
+                        clearTimeout(endGatherIceId)
+                    }
+                    if (candidate.type === 'srflx') {
+                        hasStunCandidate = true
+                    }
+                    if (hasStunCandidate) {
+                        endGatherIceId = setTimeout(() => {
 
-                //             ready()
-                //         }, 500)
-                //     }
-                // })
+                            ready()
+                        }, 500)
+                    }
+                })
 
                 session.on('peerconnection', (e) => {
                     console.log('peerconnection', e);
