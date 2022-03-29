@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Table, Text, Time, text
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, LONGTEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 from handlers.tenant_settings.models import Tenant
 from services.database.mysqldb import Base
 

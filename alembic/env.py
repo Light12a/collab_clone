@@ -15,6 +15,7 @@ from handlers.callflow_settings import models
 from handlers.recording_download import models
 from handlers.caller_notif_number import models
 from handlers.authority import models
+from handlers.speech_text import models
 from services.database.mysqldb import Base
 from alembic import context
 
