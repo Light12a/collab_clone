@@ -221,6 +221,9 @@ const AgentListScreen = (props) => {
         )
     }
 
+    const onSelect = () =>{
+        
+    }
     return (
         <>
             <div className="agent-list__header drag-header">
@@ -252,7 +255,7 @@ const AgentListScreen = (props) => {
                             defaultText="Select skill group"
                             optionsList={skillGroupList}
                             
-                            // onSelectGroup={e => onSelect(e)}
+                            onSelectGroup={e => onSelect(e)}
                         />
                     </div>
 
@@ -261,7 +264,7 @@ const AgentListScreen = (props) => {
                         <CustomSelect 
                             defaultText="Select status"
                             optionsList={skillGroupList}
-                            // onSelectGroup={e => onSelect(e)}
+                            onSelectGroup={e => onSelect(e)}
                         />
                     </div>
 

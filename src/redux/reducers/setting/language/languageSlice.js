@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { appString } from '../../../../value/string'
-const   languageSlice = createSlice({
+
+const languageSlice = createSlice({
     name: 'language',
     initialState: { language: localStorage.getItem(appString.languageKey) },
     reducers: {

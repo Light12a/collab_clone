@@ -21,7 +21,7 @@ const SettingScreen = () => {
   const [deviceActive, setDeviceActive] = useState([]);
   const [volume, setVolume] = useState(10);
   let [output, setOutput] = useState([])
-  let [input, setInput] = useState([]) 
+  let [input, setInput] = useState([])
   let [inputDevice, setInputDevice] = useState()
   let [outputDevice, setOutputDevice] = useState()
 
@@ -35,6 +35,11 @@ const SettingScreen = () => {
   ringBackAudio.crossOrigin = "anonymous";
 
   useEffect(() => {
+    //get language
+
+    if (language)
+      dispatch(setLanguage("en"))
+    //get devices
     navigator.mediaDevices.enumerateDevices()
       .then((devices) => {
         devices.forEach(element => {
@@ -55,7 +60,7 @@ const SettingScreen = () => {
 
             // output.push(element)
           }
-          
+
           if (element.kind == "audioinput") {
             if (input[0] === null || !input[0]) {
               input.push(element)
@@ -96,6 +101,7 @@ const SettingScreen = () => {
       dispatch(setLanguage(t("japan")))
     else if (lang === 'en')
       dispatch(setLanguage(t("english")))
+    console.log("My language: " + language, " My lang: " + lang)
     localStorage.setItem(appString.languageKey, lang)
   }
 
@@ -178,6 +184,12 @@ const SettingScreen = () => {
       },
     });
   }
+  const plusFive = (num) => {
+    console.log("I was called!");
+    return num + 5;
+  };
+  const [num, setNum] = useState(0);
+  const numPlusFive = ()=>{plusFive(num);} 
 
   return (
     <Wrapper>
@@ -190,9 +202,13 @@ const SettingScreen = () => {
         <div className='setting__body'>
           <div className='form-group'>
             <p>{t("language")}</p>
+
+            <div>{numPlusFive}</div>
+            <button  onClick={numPlusFive()}>touch hi</button>
+
             <Select
               style={{ width: '100%' }}
-              value={language}
+              value={language ? language : "en"}
               onSelect={(e) => handleClick(e)}
               defaultValue="en"
               suffixIcon={<img src={arrowIcon} />}>
@@ -215,7 +231,7 @@ const SettingScreen = () => {
                 <p>{t("inputDevice")}</p>
                 {inputDevice &&
                   <Select style={{ width: '100%' }}
-                    defaultValue={inputDevice != undefined && input[0] ? inputDevice[0].label :t("noDeviceFound")}
+                    defaultValue={inputDevice != undefined && input[0] ? inputDevice[0].label : t("noDeviceFound")}
                     onSelect={handleSelectMic}
                     suffixIcon={<img src={arrowIcon} />}>
                     {
@@ -240,7 +256,7 @@ const SettingScreen = () => {
                 {
                   outputDevice &&
                   <Select style={{ width: '100%' }} onSelect={handleSelectDevice}
-                    defaultValue={(outputDevice != undefined && output[0]) ?  outputDevice[0].label : t("noDeviceFound")}
+                    defaultValue={(outputDevice != undefined && output[0]) ? outputDevice[0].label : t("noDeviceFound")}
                     suffixIcon={<img src={arrowIcon} />}>
                     {
                       outputDevice.map((item, key) => {
