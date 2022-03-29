@@ -43,7 +43,7 @@ remoteAudio.crossOrigin = "anonymous";
 
 const SipProvider = ({ children }) => {
     const [ua, setUa] = useState(null)
-    const { user, userConfig } = useSelector(state => state.auth)
+    const { userConfig } = useSelector(state => state.auth)
     const { isConnected } = useSelector(state => state.networkStatus)
     const { currentState } = useSelector(state => state.connectStatus)
     const { activeCall, transferTo } = useSelector(state => state.currentCall)
@@ -71,7 +71,7 @@ const SipProvider = ({ children }) => {
         if (!ua) {
             Sip.debug.enable('JsSIP:*');
             // let socket = new Sip.WebSocketInterface(userConfig.config.pbx_domain_ws)
-            let socket = new Sip.WebSocketInterface('wss://35.75.95.117:8090/ws')
+            let socket = new Sip.WebSocketInterface(userConfig.config.pbx_domain_ws)
 
             // FIXME apply config with real user
             const config = {
@@ -85,7 +85,7 @@ const SipProvider = ({ children }) => {
             console.log(config)
             setUa(new Sip.UA(config))
         }
-    }, [ua, user, userConfig.config])
+    }, [ua, userConfig.config])
 
     // listen connect/register envent 
     useEffect(() => {
@@ -185,9 +185,9 @@ const SipProvider = ({ children }) => {
                     // session.sendDTMF = function (tone) {
                     //     dtmfSender.insertDTMF(tone);
                     // };
-                    session.sendDTMF(1)
-
-
+                    // setInterval(() => {
+                    //     session.sendDTMF(1)
+                    // }, 5000)
 
                     let rtt = 0, pcl = 0, callQuality = 0, callQualityConstrain = { 0: 'Normal', 1: 'Warning', 2: 'Abnormal' }
                     intervalLogJBId = setInterval(() => {
@@ -271,23 +271,23 @@ const SipProvider = ({ children }) => {
                 //     console.log('candidate:', data)
                 // })
 
-                // ANCHOR force run ready to complete gather icecandidate after last candidate if this has stun candidate
-                let endGatherIceId = null
-                let hasStunCandidate = false
-                session.on('icecandidate', ({ candidate, ready }) => {
-                    if (endGatherIceId) {
-                        clearTimeout(endGatherIceId)
-                    }
-                    if (candidate.type === 'srflx') {
-                        hasStunCandidate = true
-                    }
-                    if (hasStunCandidate) {
-                        endGatherIceId = setTimeout(() => {
+                // // ANCHOR force run ready to complete gather icecandidate after last candidate if this has stun candidate
+                // let endGatherIceId = null
+                // let hasStunCandidate = false
+                // session.on('icecandidate', ({ candidate, ready }) => {
+                //     if (endGatherIceId) {
+                //         clearTimeout(endGatherIceId)
+                //     }
+                //     if (candidate.type === 'srflx') {
+                //         hasStunCandidate = true
+                //     }
+                //     if (hasStunCandidate) {
+                //         endGatherIceId = setTimeout(() => {
 
-                            ready()
-                        }, 500)
-                    }
-                })
+                //             ready()
+                //         }, 500)
+                //     }
+                // })
 
                 session.on('peerconnection', (e) => {
                     console.log('peerconnection', e);

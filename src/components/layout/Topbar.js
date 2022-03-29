@@ -17,7 +17,6 @@ const Topbar = ({ t }) => {
     const toggleRef = useRef()
 
     const { token: { token } } = useSelector(state => state.auth)
-    const { user } = useSelector(state => state.auth)
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { userState } = useSelector(state => state.auth)
@@ -137,7 +136,6 @@ const Topbar = ({ t }) => {
         }
     }
     const { currentState } = useSelector(state => state.connectStatus)
-    // const { userConfig: { config: { displayname } } } = useSelector(state => state.auth)
     const dispatch = useDispatch()
     const handleLogout = () => {
         dispatch({ type: 'LOGOUT' })
@@ -145,7 +143,6 @@ const Topbar = ({ t }) => {
 
     const handleSetUser = (item) => {
         dispatch(applyState({
-            username: user.username,
             token: token,
             state: item.code,
             sub_state: 0
@@ -166,7 +163,6 @@ const Topbar = ({ t }) => {
         }
 
         dispatch(applyState({
-            username: user.username,
             token: token,
             state: 100,
             sub_state: reasonID
