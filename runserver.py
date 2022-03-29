@@ -11,7 +11,7 @@ from tornado.options import parse_command_line, define, options
 
 from utils.util import ObjAwareEncoder
 
-define('port', default=8888)
+define('port', default=443)
 define('num_chunks', default=40)
 
 async def client():
@@ -30,8 +30,8 @@ def runserver():
     parse_command_line()
     app = SettingsApplication()
     http_server = tornado.httpserver.HTTPServer(app, ssl_options={
-        "certfile": os.path.join('/etc/ssl/certs/','tornado_ssl.crt'),
-        "keyfile": os.path.join('/etc/ssl/certs/','tornado_ssl.key'),
+       "certfile": os.path.join('/etc/ssl/certs/', 'tornado_ssl.crt'),
+       "keyfile": os.path.join('/etc/ssl/certs/', 'tornado_ssl.key'),
     })
     http_server.listen(options.port)
     tornado.autoreload.start()

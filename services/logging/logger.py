@@ -33,6 +33,7 @@ def init_logging(log_path=LOG_PATH, console=False, level=DEFAULT_LEVEL, days_to_
     rlogger = logging.getLogger()
     rlogger.setLevel(DEFAULT_LEVEL)
     fp_rlogger = os.path.join(LOG_PATH, "collabos_backend.log")
+    print(fp_rlogger)
     rhandler = TimedRotatingFileHandler(
         fp_rlogger, backupCount=days_to_keep, when="MIDNIGHT"
     )

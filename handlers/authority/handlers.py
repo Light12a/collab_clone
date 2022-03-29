@@ -14,51 +14,51 @@ from io import StringIO
 CREATE_SCHEMA = {
    "type": "object",
    "properties": {
-      "auth_id": {
-         "type": "integer"
-      },
-      "tenant_id": {
+      "TenantId": {
          "type": "string"
       },
-      "auth_name": {
+      "OperationUserId": {
          "type": "string"
       },
-      "use_monitor": {
+      "AuthName": {
+         "type": "string"
+      },
+      "UseMonitor": {
          "type": "integer",
          "enum": [
             0,
             1
          ]
       },
-      "use_address": {
+      "UseAddress": {
          "type": "integer",
          "enum": [
             0,
             1
          ]
       },
-      "edit_address": {
+      "EditAddress": {
          "type": "integer",
          "enum": [
             0,
             1
          ]
       },
-      "dl_address": {
+      "DlAddress": {
          "type": "integer",
          "enum": [
             0,
             1
          ]
       },
-      "del_address": {
+      "DelAddress": {
          "type": "integer",
          "enum": [
             0,
             1
          ]
       },
-      "scope_address": {
+      "ScopeAddress": {
          "type": "integer"
       },
       "use_responding": {
@@ -453,6 +453,12 @@ CREATE_SCHEMA = {
 SEARCH_SCHEMA = {
    "type": "object",
    "properties": {
+      "TenantId": {
+         "type": "string"
+      },
+      "OperationUserId": {
+         "type": "string"
+      },
       "SearchWord": {
          "type": "string"
       },
@@ -479,12 +485,18 @@ SEARCH_SCHEMA = {
 GET_SCHEMA = {
    "type": "object",
    "properties": {
-      "auth_id": {
+      "TenantId": {
+         "type": "string"
+      },
+      "OperationUserId": {
+         "type": "string"
+      },
+      "AuthId": {
          "type": "integer"
       }
    },
    "additionalProperties": False,
-   "required": ["auth_id"]
+   "required": ["AuthId"]
 }
 
 PUT_SCHEMA = deepcopy(CREATE_SCHEMA)
