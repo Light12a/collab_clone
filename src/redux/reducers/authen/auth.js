@@ -5,11 +5,15 @@ import { getUserConfigAPI, loginAPI, reLoginAPI, getUserStateAPI, applyStateAPI,
 export const signin = createAsyncThunk('auth/login', async (info) => {
     try {
         let { data } = await loginAPI(info.body)
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('expire', data.token_expired)
+        if (data.code === 401) {
+            info.setLoginError(data.errorMessage)
+            return Promise.reject()
+        }
+        if (data.token) {
+            localStorage.setItem('token', data.token)
+            localStorage.setItem('expire', data.token_expired)
+        }
         localStorage.setItem('user', JSON.stringify({
-            ...info.body,
-            password: null,
             ha1: info.ha1
         }))
         return data
@@ -134,10 +138,10 @@ const authSlice = createSlice({
             state.userState = action.payload
         },
         [applyState.fulfilled]: (state, action) => {
-            if(action.payload.state !== -1){
+            if (action.payload.state !== -1) {
                 state.userState = action.payload
             }
-            
+
         },
         [getAwayReasons.fulfilled]: (state, action) => {
             state.awayReasons = action.payload

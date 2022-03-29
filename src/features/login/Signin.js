@@ -121,8 +121,8 @@ const Signin = () => {
 
                             rules={[
                                 { required: true, message: 'Mandatory field' },
-                                { type: 'string', min: 1, max: 50 },
-                                { pattern: /^[a-zA-Z0-9_.-]*$/, message: 'Just allow a-zA-Z and . _' }
+                                { type: 'string', min: 3, max: 50 },
+                                { pattern: /^[a-zA-Z0-9_.@\-']*$/, message: 'Just allow a-zA-Z and . _' }
                             ]}
                         >
                             <Input
@@ -138,7 +138,7 @@ const Signin = () => {
                             rules={[
                                 { required: true, message: 'Mandatory field' },
                                 { type: 'string', min: 6, max: 50 },
-                                { pattern: /^[a-zA-Z0-9_.-]*$/, message: 'Just allow a-zA-Z and . _' }
+                                { pattern: /^[a-zA-Z0-9]*$/, message: 'Just allow a-zA-Z and . _' }
                             ]}
                         >
                             <Input
