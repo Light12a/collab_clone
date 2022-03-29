@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { appString } from '../../value/string';
 import { useTranslation } from 'react-i18next';
 import { Input, Dropdown, Menu, Button, Select, Slider, InputNumber, Checkbox, Form, Modal } from 'antd';
@@ -20,6 +20,10 @@ import { sendMail, clearLogs } from '../../service/sendMailService';
 const SettingScreen = () => {
   const [deviceActive, setDeviceActive] = useState([]);
   const [volume, setVolume] = useState(10);
+  let [output, setOutput] = useState([])
+  let [input, setInput] = useState([]) 
+  let [inputDevice, setInputDevice] = useState()
+  let [outputDevice, setOutputDevice] = useState()
 
   const { Option } = Select;
   const { t, i18n } = useTranslation();
@@ -30,65 +34,50 @@ const SettingScreen = () => {
   var ringBackAudio = new Audio();
   ringBackAudio.crossOrigin = "anonymous";
 
-
-  // initInputDevice = inputDevice[0].label
-  // initOutputDevice = outputDevice[0].label
-
-
-  let inputDevice = []
-  let outputDevice = []
-  let initInputDevice = useRef()
-  let initOutputDevice = useRef()
-
-  navigator.mediaDevices.enumerateDevices()
-    .then((devices) => {
-      // setoutputDevice(devices)
-      devices.forEach(element => {
-
-        if (element.kind === "audiooutput") {
-          if (outputDevice[0] === null || !outputDevice[0] || outputDevice[0]) {
-            outputDevice.push(element)
-          }
-          else {
-            console.log("My element: " + JSON.stringify(outputDevice))
-            outputDevice.forEach(outElement => {
-              if (outElement.groupId !== element.groupId)
-                outputDevice.push(element)
-            });
-          }
-
-        }
-        if (element.kind == "audioinput") {
-          inputDevice.push(element)
-        }
-      });
-
-      // init output
-      if (outputDevice && outputDevice !== null) {
-
-        // initOutputDevice.current = outputDevice[0].label
-
-      }
-
-      else
-        initOutputDevice = "No device found"
-
-      //init input
-      if (inputDevice && inputDevice !== null)
-        initInputDevice.current = inputDevice
-      else
-        initInputDevice = "No device found"
-
-
-      console.log("My input: " + JSON.stringify(outputDevice))
-      console.log("My input: " + JSON.stringify(initOutputDevice))
-
-    })
-
   useEffect(() => {
+    navigator.mediaDevices.enumerateDevices()
+      .then((devices) => {
+        devices.forEach(element => {
 
-    
+          if (element.kind === "audiooutput") {
+
+            if (output[0] === null || !output[0]) {
+              output.push(element)
+            }
+            else {
+
+              output.forEach(outElement => {
+                if (outElement.groupId != element.groupId)
+                  output.push(element)
+
+              })
+            }
+
+            // output.push(element)
+          }
+          
+          if (element.kind == "audioinput") {
+            if (input[0] === null || !input[0]) {
+              input.push(element)
+            }
+            else {
+
+              input.forEach(outElement => {
+                if (outElement.groupId != element.groupId)
+                  input.push(element)
+
+              })
+            }
+          }
+          setOutputDevice(output)
+          setInputDevice(input)
+
+        });
+      })
+
   }, [])
+
+
 
   useEffect(() => {
     ringBackAudio.volume = volume / 10
@@ -103,9 +92,9 @@ const SettingScreen = () => {
   const handleClick = (lang) => {
     i18n.changeLanguage(lang)
 
-    if(lang === 'jp')
+    if (lang === 'jp')
       dispatch(setLanguage(t("japan")))
-    else if(lang === 'en')
+    else if (lang === 'en')
       dispatch(setLanguage(t("english")))
     localStorage.setItem(appString.languageKey, lang)
   }
@@ -168,7 +157,6 @@ const SettingScreen = () => {
       content: 'Send logs failed!',
     });
   }
-
   const clearLogFiles = () => {
     Modal.confirm({
       title: 'Clear logs',
@@ -225,16 +213,20 @@ const SettingScreen = () => {
             <div>
               <div className='form-group'>
                 <p>{t("inputDevice")}</p>
-                <Select style={{ width: '100%' }} defaultValue={initInputDevice} onSelect={handleSelectMic} suffixIcon={<img src={arrowIcon} />}>
-                  {
-                    inputDevice.map((item, key) => {
-
-                      return (
-                        <Option value={item.deviceId}>{item.label}</Option>
-                      )
-                    })
-                  }
-                </Select>
+                {inputDevice &&
+                  <Select style={{ width: '100%' }}
+                    defaultValue={inputDevice != undefined && input[0] ? inputDevice[0].label :t("noDeviceFound")}
+                    onSelect={handleSelectMic}
+                    suffixIcon={<img src={arrowIcon} />}>
+                    {
+                      inputDevice.map((item, key) => {
+                        return (
+                          <Option value={item.deviceId}>{item.label}</Option>
+                        )
+                      })
+                    }
+                  </Select>
+                }
               </div>
               <div className='form-group'>
                 <p>{t("inputVolume")}</p>
@@ -245,17 +237,21 @@ const SettingScreen = () => {
             <div>
               <div className='form-group'>
                 <p>{t("outputDevice")}</p>
-                <Select style={{ width: '100%' }} onSelect={handleSelectDevice} defaultValue={initOutputDevice} suffixIcon={<img src={arrowIcon} />}>
-                  {
-                    outputDevice.map((item, key) => {
+                {
+                  outputDevice &&
+                  <Select style={{ width: '100%' }} onSelect={handleSelectDevice}
+                    defaultValue={(outputDevice != undefined && output[0]) ?  outputDevice[0].label : t("noDeviceFound")}
+                    suffixIcon={<img src={arrowIcon} />}>
+                    {
+                      outputDevice.map((item, key) => {
+                        return (
+                          <Option value={item.deviceId}>{item.label}</Option>
+                        )
+                      })
+                    }
+                  </Select>
+                }
 
-                      return (
-                        <Option value={item.deviceId}>{item.label}</Option>
-                      )
-
-                    })
-                  }
-                </Select>
               </div>
               <div className='form-group'>
                 <p>{t("outputVolume")}</p>
