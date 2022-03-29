@@ -299,6 +299,7 @@ const WaitingList = React.forwardRef((props, ref) => {
                 <CustomSelect
                     defaultText="Select skill group"
                     optionsList={skillGroupList}
+                    selectWidth ="300px"
                     onSelectGroup={e => onSelect(e)}
                 />
                 <table className='drag-table'>
