@@ -28,10 +28,11 @@ const AgentListScreen = (props) => {
     const { currentState } = useSelector(state => state.connectStatus)
     const { skillGroupList } = useSelector(state => state.waiting)
 
-    console.log("My Skill group: " + JSON.stringify(skillGroupList))
     //get user infomation
     const { agentList } = useSelector(state => state.AgentList)
     const { agentListType } = useSelector(state => state.agentListStatus)
+
+    const [listSkillGroupName, setListSkillGroupName] = useState([]);
     let ListAgent = agentList.agentList.users;
     let filterListAgent = [];
     //x list
@@ -55,14 +56,20 @@ const AgentListScreen = (props) => {
 
 
     useEffect(() => {
-
+        xListAgent.map((agent)=>{
+            // agent = 9;
+            skillGroupList.map((group)=>{
+                if(agent.group_id === group.group_id){
+                    listSkillGroupName.push(group.group_name)
+                }
+            })
+        })
 
     }, [])
 
 
     useEffect(() => {
         let newList = [];
-        console.log("My bufferListAgent: " + JSON.stringify(bufferListAgent))
         for (let i = 0; i < itemsPerPage; i++) {
             newList.splice(i, 1, bufferListAgent[(currentPage - 1) * itemsPerPage + i])
         }
@@ -95,7 +102,6 @@ const AgentListScreen = (props) => {
                 return b.ext_number - a.ext_number
             return a.ext_number - b.ext_number
         })
-        console.log("My List: " + JSON.stringify(list))
         setBufferListAgent(list)
     }
     const onPageChange = (page) => {
@@ -154,7 +160,7 @@ const AgentListScreen = (props) => {
     const RenderUserItem = () => {
         return (
             listAgentForShow && listAgentForShow !== null ?
-                listAgentForShow.map((item) => {
+                listAgentForShow.map((item, index) => {
                     return (
                         item && item !== null &&
                         <tr className='itemAgent'>
@@ -169,7 +175,7 @@ const AgentListScreen = (props) => {
                                 <PresenceState state={item.state} />
                             </td>
                             <td>
-                                {item.group_id}
+                                {listSkillGroupName[index]}
                             </td>
                             <td>
                                 {item.username}
@@ -206,7 +212,7 @@ const AgentListScreen = (props) => {
                                 {item.ext_number}
                             </td>
                             <td>
-                                <button src={call} onClick={e => console.log("hi")} />
+                            <img className='callButton' src={call} onClick={e => makeCall(item.ext_number)} />
                             </td>
                         </tr>
                     )
