@@ -26,64 +26,47 @@ class TenantRetrievalHandler(BaseHandler):
     def post(self):
         try:
             request = self.data_received()
-            if (("TenantId" and "OperatorUserId" and "SearchWord") or ()
-                ) in request:
-                check = yield self._check_token_exists(request['token'])
-                if check:
-                    numbers = yield self._get_numbers(request['token'])
-                    if numbers:
+            if ("TenantId" and "OperatorUserId" and "SearchWord") in request:
+                    tenants = yield self._get_tenants(request)
+                    if tenants:
                         self.write({
-                            "code": 200, 
-                            "skill_groups": numbers
+                            "ResultCode": 200,
+                            "Message": "Here is the result",
+                            "DataList": tenants
                         })
                         self.set_status(200)
                     else:
-                        self.write({"code":404, "errorMessage": "numbers not found"})
+                        self.write({"code":404, "errorMessage": "No matching results were found"})
                         self.set_status(404)
-                else:
-                    self.write({"code":401, "errorMessage":"token is wrong"})
-                    self.set_status(401)
             else:
                 raise ValueError
         except ValueError:
             self.set_status(400)
             self.write({"code":400, "errorMessage":"Bad request"})
 
-    # @gen.coroutine
-    # def _get_numbers(self, token_id):
-    #     """
-    #     Find out the list of notification numbers.
-    #     Param: token_id
-    #     """
-    #     results = self.db.query(CallerId).filter(
-    #         CallerId.caller_num_id == CallerIdUser.caller_num_id,
-    #         CallerIdUser.user_id == Token.user_id,
-    #         Token.token_id == token_id
-    #     ).all()
-    #     if results:
-    #         results_ = []
-    #         for elemant in results:
-    #             results_.append(elemant.to_json())
+    @gen.coroutine
+    def _get_tenants(self, request):
+        """
+        Find out the list of notification numbers.
+        Param: token_id
+        """
+        # results = self.db.query(Tenant).filter(Tenant.identifier == request['SearchWord']).all()
+        SearchWord = request['SearchWord']
+        results = self.db.query(Tenant).filter(Tenant.identifier.like(SearchWord))
+
+        if results:
+            results_ = []
+            for elemant in results:
+                results_.append(elemant.to_json())
                 
-    #         numbers = [{
-    #             "id": element['caller_num_id'],
-    #             "value": element['caller_num'],
-    #             "in_use": "false"
-    #         } for element in results_]
-    #     else:
-    #         err = "Not found any number"
-    #         raise gen.Return(False)
-    #     raise gen.Return(numbers)
-
-    # @gen.coroutine
-    # def _check_token_exists(self, token):
-    #     """
-    #     Function take in token to verify this one is the newest.
-    #     @params: Token.
-    #     """
-    #     result = self.db.query(Token.token_id).filter(Token.token_id==token).distinct().all()
-
-    #     try:
-    #         raise gen.Return(result[0][0])
-    #     except IndexError:
-    #         raise gen.Return(False)
+            tenants = [{
+                "TenantId": element['tenant_id'],
+                "TenantName": element['tenant_name'],
+                "Identifier": element['identifier'],
+                "ChannelCnt": element['channel_cnt'],
+                "UpdateDate": element['update_date']
+            } for element in results_]
+        else:
+            err = "Not found any number"
+            raise gen.Return(False)
+        raise gen.Return(tenants)

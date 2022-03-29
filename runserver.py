@@ -30,8 +30,8 @@ def runserver():
     parse_command_line()
     app = SettingsApplication()
     http_server = tornado.httpserver.HTTPServer(app, ssl_options={
-        "certfile": os.path.join('/etc/ssl/certs/','tornado_ssl.crt'),
-        "keyfile": os.path.join('/etc/ssl/certs/','tornado_ssl.key'),
+        "certfile": os.path.join('C:/Users/hminhtuan/Downloads','tornado_ssl.crt'),
+        "keyfile": os.path.join('C:/Users/hminhtuan/Downloads','tornado_ssl.key'),
     })
     http_server.listen(options.port)
     tornado.autoreload.start()

@@ -8,6 +8,7 @@ import handlers.project_settings.urls
 import handlers.recording_download.urls
 import handlers.caller_notif_number.urls
 import handlers.announcement_setting.urls
+import handlers.tenant_settings.urls
 
 urlpatterns = []
 urlpatterns += handlers.users.urls.urlpatterns
@@ -19,3 +20,4 @@ urlpatterns += handlers.project_settings.urls.urlpatterns
 urlpatterns += handlers.recording_download.urls.urlpatterns
 urlpatterns += handlers.caller_notif_number.urls.urlpatterns
 urlpatterns += handlers.announcement_setting.urls.urlpatterns
+urlpatterns += handlers.tenant_settings.urls.urlpatterns
