@@ -29,6 +29,8 @@ const WaitingList = React.forwardRef((props, ref) => {
     const isFirstLoop = useRef(true);
     const skillGroups = useRef([]);
     const [selectedGroup, setSelectedGroup] = useState(null);
+    //use to handle double click event
+    var timer;
 
 
     //redux
@@ -106,7 +108,7 @@ const WaitingList = React.forwardRef((props, ref) => {
             pageNo = Math.floor(skillGroups.current.length / pageSize) + 1;
         }
         for (let i = 1; i <= pageNo; i++) {
-            pages.splice(i -1, 1, i);
+            pages.splice(i - 1, 1, i);
         }
         pages.length = pageNo;
         log.info("WaitingList.js::calculatePagination() page list after calculated: ", pages);
@@ -270,8 +272,22 @@ const WaitingList = React.forwardRef((props, ref) => {
             renderTable();
             onPageChange(1);
         }
-        else{
+        else {
             loadCalls();
+        }
+    }
+
+    const onRowClick = (e) => {
+        clearTimeout(timer);
+        //single click
+        if (e.detail === 1) {
+            timer = setTimeout(() => {
+                //do nothing
+            }, 200)
+        } 
+        //double click
+        else if (e.detail === 2) {
+            answer();
         }
     }
 
@@ -337,7 +353,7 @@ const WaitingList = React.forwardRef((props, ref) => {
                         {(renderItems.length > 0) &&
                             renderItems.map((item, index) =>
                             (
-                                <tr>
+                                <tr onClick={e => { setSelectedGroup(item); onRowClick(e)}}>
                                     <td>
                                         <input
                                             style={{ verticalAlign: 'middle', visibility: item.group_name ? 'visible' : 'hidden' }}
@@ -373,10 +389,16 @@ const WaitingList = React.forwardRef((props, ref) => {
                             className={currentPage === 1 ? 'pagination-disable' : 'pagination-move-to'}
                             onClick={e => { onPageChange(currentPage - 1) }}
                         >{t('previous')}</span>
+                        {(currentPage > 2) &&
+                            <span style={paginationItem}>...</span>
+                        }
                         {renderPage.map((page, index) =>
                         (
                             <span style={(page) === currentPage ? Object.assign({}, paginationItem, { backgroundColor: '#99CC00', border: '1px solid #99CC00', cursor: 'pointer' }) : Object.assign({}, paginationItem, { cursor: 'pointer' })} onClick={e => { onPageChange(page) }}>{page}</span>
                         ))}
+                        {(currentPage + 1 < pages.length) &&
+                            <span style={paginationItem}>...</span>
+                        }
                         <span
                             className={currentPage >= pages.length ? 'pagination-disable' : 'pagination-move-to'}
                             onClick={e => { onPageChange(currentPage + 1) }}
@@ -393,7 +415,7 @@ const WaitingList = React.forwardRef((props, ref) => {
                     disabled={selectedGroup?.calls?.length > 0 ? false : true}
                     className={selectedGroup?.calls?.length > 0 ? 'btn-primary' : 'btn-primary disable'}
                     onClick={e => answer()}
-                >Answer</button>
+                >{t('answer')}</button>
             </div>
 
         </Wrapper>

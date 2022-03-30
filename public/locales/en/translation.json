@@ -85,5 +85,6 @@
     "away": "Away",
     "phoneNumber":"Phone number",
     "offline":"offline",
-    "toFirst" : "First"
+    "toFirst" : "First",
+    "answer": "Answer"
 }

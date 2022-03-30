@@ -88,5 +88,6 @@
   "yes": "OK",
   "no": "キャンセル",
   "sendLogs": "ログを送信する",
-  "toFirst": "先頭"
+  "toFirst": "先頭",
+  "answer": "待ち呼をピックアップ"
 }

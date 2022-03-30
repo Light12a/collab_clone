@@ -26,12 +26,6 @@ var callOptions = {
     mediaConstraints: {
         audio: true, // only audio calls
         video: false
-    },
-    pcConfig: {
-        iceServers: [{
-            urls: ["stun:stun.l.google.com:19302"]
-        }],
-        // iceTransportPolicy: 'relay',
     }
 };
 
@@ -49,7 +43,7 @@ remoteAudio.crossOrigin = "anonymous";
 
 const SipProvider = ({ children }) => {
     const [ua, setUa] = useState(null)
-    const { userConfig } = useSelector(state => state.auth)
+    const { user, userConfig } = useSelector(state => state.auth)
     const { isConnected } = useSelector(state => state.networkStatus)
     const { currentState } = useSelector(state => state.connectStatus)
     const { activeCall, transferTo } = useSelector(state => state.currentCall)
@@ -77,7 +71,7 @@ const SipProvider = ({ children }) => {
         if (!ua) {
             Sip.debug.enable('JsSIP:*');
             // let socket = new Sip.WebSocketInterface(userConfig.config.pbx_domain_ws)
-            let socket = new Sip.WebSocketInterface(userConfig.config.pbx_domain_ws)
+            let socket = new Sip.WebSocketInterface('wss://35.75.95.117:8090/ws')
 
             // FIXME apply config with real user
             const config = {
@@ -91,7 +85,7 @@ const SipProvider = ({ children }) => {
             console.log(config)
             setUa(new Sip.UA(config))
         }
-    }, [ua, userConfig.config])
+    }, [ua, user, userConfig.config])
 
     // listen connect/register envent 
     useEffect(() => {
@@ -191,9 +185,9 @@ const SipProvider = ({ children }) => {
                     // session.sendDTMF = function (tone) {
                     //     dtmfSender.insertDTMF(tone);
                     // };
-                    // setInterval(() => {
-                    //     session.sendDTMF(1)
-                    // }, 5000)
+                    //session.sendDTMF(1)
+
+
 
                     let rtt = 0, pcl = 0, callQuality = 0, callQualityConstrain = { 0: 'Normal', 1: 'Warning', 2: 'Abnormal' }
                     intervalLogJBId = setInterval(() => {
