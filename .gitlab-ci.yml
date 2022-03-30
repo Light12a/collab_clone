@@ -28,6 +28,7 @@ before_script:
     - chmod 644 ~/.ssh/known_hosts
     - git config --global user.email "pipeline@collabos"
     - git config --global user.name "Pipeline"
+    - echo "$BUILD_APP"
 
 build web:
     stage: build
