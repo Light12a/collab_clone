@@ -2,10 +2,8 @@ from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Table, Text, 
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, LONGTEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import NullType
-from sqlalchemy.ext.declarative import declarative_base
 from ..tenant_settings.models import Tenant
-Base = declarative_base()
-metadata = Base.metadata
+from services.database.mysqldb import Base
 
 class TalkScript(Base):
     __tablename__ = 'talk_scripts'
@@ -18,6 +16,3 @@ class TalkScript(Base):
     update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     tenant = relationship(Tenant)
 
-    def to_json(self):
-        return {c.key: getattr(self, c.key)
-                for c in inspect(self).mapper.column_attrs}
