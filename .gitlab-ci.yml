@@ -30,14 +30,16 @@ build web:
     stage: build
     script:
         - echo "Build web..."
-        - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
-        - cd collabos
+        - git clone -b frontend --single-branch  zeevaa@zeevaa.git.backlog.com:/NEW_CP2021/NEW_CP2021.git
+        - cd NEW_CP2021/04_Programs/frontend
+        # - npm version patch -m "Increase version to %s"
+        # - git push
         - npm install
         - npm run build
     artifacts:
         expire_in: 1 hr
         paths:
-            - collabos/build/
+            - NEW_CP2021/04_Programs/frontend/build/
 
 
 deploy web:
@@ -46,31 +48,8 @@ deploy web:
         - echo "Deploy web..."
         - echo "$SSH_PRIVATE_KEY_EC2" >> key.pem
         - chmod 700 key.pem
-        - rm -rf build/*
-        - scp -r -i key.pem collabos/build/* ubuntu@3.114.97.64:~/build
+        #- rm -rf build/*
+        - scp -r -i key.pem NEW_CP2021/04_Programs/frontend/build/* ubuntu@3.114.97.64:~/build
     dependencies:
         - build web
 
-build app:
-    stage: build
-    image: node_for_app
-    script:
-        - echo "Build app..."
-        - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
-        - cd collabos
-        - npm  cache clear --force
-        - npm install
-        - npm run build:winonlinux
-        - zip -r "softphone_$(node -pe "require('./package.json')['version']").zip" dist
-        - cp *.zip /app
-        - echo "Output file is located at /home/tma/app/softphone_$(node -pe "require('./package.json')['version']").zip"
-
-set version:
-    stage: set_version
-    script:
-        - echo "Increase package.json version..."
-        - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
-        - cd collabos
-        - npm version patch -m "Increase version to %s"
-        - git push
-    dependencies: []
