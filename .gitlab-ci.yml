@@ -8,6 +8,8 @@ workflow:
         - if: $CI_PIPELINE_SOURCE == "merge_request_event"
           when: never
         - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "backend_master"
+          when: nerver
+        - if: $CI_PIPELINE_SOURCE == "schedule"
           when: always
 
 before_script:
@@ -27,7 +29,7 @@ build backend:
         - echo "Build backend..."
         - echo "$SSH_PRIVATE_KEY_BACKEND_EC2" >> key.pem
         - chmod 700 key.pem
-        - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
+        - git clone -b frontend --single-branch  zeevaa@zeevaa.git.backlog.com:/NEW_CP2021/NEW_CP2021.git
         - chmod +x collabos/runscript.sh
         - ssh -i key.pem ubuntu@18.180.191.58 rm -rf collabos/*
         - scp -r -i key.pem collabos/* ubuntu@18.180.191.58:collabos
