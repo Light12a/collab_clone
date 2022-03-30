@@ -5,7 +5,8 @@ from copy import deepcopy
 from ..base import BaseHandler
 from handlers.authority.decorators import authorize
 import tornado.gen
-from .models import User, Authority
+from .models import Authority
+from handlers.users.models import User
 from sqlalchemy import or_
 import pandas as pd
 from io import StringIO

@@ -1,5 +1,6 @@
 from services.logging import logger
-from .models import Token, User, Authority
+from .models import Authority
+from handlers.users.models import Token, User
 from ..base import BaseHandler
 
 LOG = logger.get(__name__)
