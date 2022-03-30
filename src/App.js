@@ -27,12 +27,14 @@ function App() {
   const { isKeypadOpen } = useSelector(state => state.keypadStatus)
   // const { isFullScreen } = useSelector(state => state.isFullScreen)
   const [newWaitingWindow, setNewWaitingWindow] = useState(null)
+  const [newAgentWindow, setNewAgentWindow] = useState(null)
 
   // const zIndexKeyPad = useSelector(state => state.keypadStatus);
   // const zIndexWaitingList = useSelector(state => state.waitingListStatus);
   // const zIndexAgentList = useSelector(state => state.agentListStatus);
 
   const nwaitingRef = useCallback(node => setNewWaitingWindow(node), [])
+  const nagentRef = useCallback(node => setNewAgentWindow(node), [])
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -118,7 +120,7 @@ function App() {
               <StyleSheetManager target={newWaitingWindow}>
                 <NewWindow onClose={() => {
                   dispatch(setIsWaitingListOpen(false))
-                
+
                 }} name='waitinglist'>
                   <WaitingList ref={nwaitingRef} />
                 </NewWindow>
@@ -131,12 +133,24 @@ function App() {
               </Draggable>)
           }
           {
-            isAgentListOpen &&
-            <Draggable positionOffset={{ x: '-50%', y: '-50%' }}>
-              <div className='drag agent-list'>
-                <AgentList />
-              </div>
-            </Draggable>
+            isAgentListOpen && (
+              process.env.REACT_APP_PLATFORM ?
+                <StyleSheetManager target={newAgentWindow}>
+                  <NewWindow onClose={() => {
+                    dispatch(setNewAgentWindow(false))
+
+                  }} name='agentlist'>
+                    <AgentList ref={nagentRef} />
+                  </NewWindow>
+                </StyleSheetManager>
+                :
+                <Draggable positionOffset={{ x: '-50%', y: '-50%' }}>
+                  <div className='drag agent-list'>
+                    <AgentList />
+                  </div>
+                </Draggable>
+            )
+
           }
           {isKeypadOpen &&
             <Draggable positionOffset={{ x: '-50%', y: '-50%' }}>
