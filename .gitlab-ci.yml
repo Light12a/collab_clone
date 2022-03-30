@@ -1,6 +1,9 @@
 default:
     image: node:12.18.0 
 
+variables:
+  BUILD_APP: $BUILD_APP
+
 stages:
     - build
     - deploy
