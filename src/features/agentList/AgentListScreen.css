@@ -1,3 +1,52 @@
+.drag {
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    box-shadow: 0px 6px 60px rgba(0, 0, 0, 0.16);
+    border-radius: 4px;
+    max-height: 95vh;
+    max-width: 90vw;
+}
+.agent-list{
+    width: 840px;   
+    min-height: 750px;
+    max-height: fit-content !important;
+}
+.drag table{
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    border-radius: 4px;
+    border: 1px solid #ECECEC;
+    margin-top:16px;
+}
+.drag .table-th{
+    display: flex;
+    align-items: center;
+    gap:0.5rem;
+}
+.drag th{
+    background: #F6F6F6;
+    border-bottom: 1px solid #ECECEC;
+}
+.drag tr:not(:last-child) td{
+    border-bottom: 1px solid #ECECEC;
+}
+
+.drag .table-sort{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:1px;
+    transform: translateY(1px);
+    
+}
+
+.drag .table-sort img{
+    cursor: pointer;
+}
+
 .agent-list__header span{
     font-size: 20px;
     font-weight: 700;

@@ -31,7 +31,7 @@ if (!gotTheLock) {
     // Someone tried to run a second instance, we should focus our window.
     // Protocol handler for win32
     // argv: An array of the second instance’s (command line / deep linked) arguments
-    if (process.platform == 'win32') {
+    if (process.platform == 'win32' && process.argv) {
       // Keep only command line / deep linked arguments
       deeplinkingUrl = argv.slice(1)
     }
@@ -82,7 +82,7 @@ function createWindow() {
   // mainWindow.webContents.openDevTools()
 
   // Protocol handler for win32
-  if (process.platform == 'win32') {
+  if (process.platform == 'win32' && process.argv) {
     // Keep only command line / deep linked arguments
     deeplinkingUrl = process.argv.slice(1)
   }
@@ -153,10 +153,16 @@ const stateList = [
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 let tray = null
+
+let mess = "6007"
 app.whenReady().then(() => {
   createWindow()
   mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.webContents.send('ping', deeplinkingUrl)
+    // mainWindow.webContents.send('ping', deeplinkingUrl)   
+      setTimeout(() => {
+          mainWindow.webContents.send('param', mess)
+      }, 1000);
+
   })
 
   if (!process.argv.includes('--hidden')) {

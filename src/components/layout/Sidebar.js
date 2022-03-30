@@ -18,6 +18,7 @@ function Sidebar({ t }) {
     const dispatch = useDispatch()
     const waitingCallList = useSelector(state => state.waiting);
     const waitingListStatus = useSelector(state => state.waitingListStatus)
+    const keypadStatus = useSelector(state => state.keypadStatus)
     const currentRoute = useSelector(state => state.route.currentRoute)
 
 
@@ -66,6 +67,12 @@ function Sidebar({ t }) {
                     </div>
 
                 </li>
+                <li className={`ant-menu-item ${keypadStatus.isKeypadOpen && 'active'}`} onClick={e => { dispatch(setIsKeypadOpen(true)); dispatch(setIsWaitingListOpen(false)) }}>
+                    <div className='ant-menu-title-content'>
+                        <img src={require('../../asset/Dial pad.svg').default} />
+                        <span>{t('dialPad')}</span>
+                    </div>
+                </li>
                 <li className={`ant-menu-item ${currentRoute === "setting" ? 'active' : ''}`} onClick={() => { dispatch(setCurentRoute("setting")) }}>
                     <div className='ant-menu-title-content'>
                         <img src={require('../../asset/setting.svg').default} />
@@ -109,9 +116,10 @@ function Sidebar({ t }) {
 // `
 
 const Wrapper = styled(Menu)`
-    border-radius: 4px 0 0 4px;
-
-     
+    border-radius: 7px 0 0 7px;
+    background: #99CC00;
+    height: calc(100vh - 92px);
+    border-right:none !important;
 
     .blink_me {
         animation: blinker 1s linear infinite;
@@ -132,58 +140,61 @@ const Wrapper = styled(Menu)`
         border-radius: 8px;
         height: 116px;
         padding: 0.5rem;
+        transition: none;
         
+        img{
+            filter: brightness(0) saturate(100%) invert(37%) sepia(16%) saturate(3331%) hue-rotate(39deg) brightness(97%) contrast(101%);
+        }
     }
     .ant-menu-item{      
         line-height: 1.5;
         height: auto;
-        padding: 8px  !important;
-        margin: 0 !important;
-        border-radius: 8px;
+        padding: 0px  !important;
+        border-right: #99CC00 4px solid;
+        border-left: #99CC00 4px solid;
+        margin-top: 0 !important;
+
+        &:first-child{
+            border-radius: 7px 0 0 0 ;
+        }
     }
 
 
 
-    .ant-menu-item:not(:last-child){      
+    /* .ant-menu-item:not(:last-child){      
         padding-bottom: 4px !important;
     }
     .ant-menu-item:not(:first-child){      
         padding-top: 4px !important;
-    }
-
-    .ant-menu-item.active .ant-menu-title-content{
-        background: #F7FFE1;
+    } */
+    
+    .ant-menu-item.active{
+        background: #7BA400;
+        color: #fff;
+        border-right: #222222 4px solid;
+        border-left: #7BA400 4px solid;
 
         img{
-            filter: brightness(0) saturate(100%) invert(76%) sepia(37%) saturate(5461%) hue-rotate(34deg) brightness(104%) contrast(101%);
+            filter: brightness(0) saturate(100%) invert(98%) sepia(0%) saturate(87%) hue-rotate(167deg) brightness(117%) contrast(100%);
         }
 
-        span{
-            font-weight: 700;
-        }
-
-    }
-    .ant-menu-item:hover .ant-menu-title-content{
-        background: #F7FFE1;
+        
     }
 
-    .ant-menu-item:nth-child(2) .ant-menu-title-content{
+
+    /* .ant-menu-item:nth-child(2) .ant-menu-title-content{
         padding: 6px !important;
-    }
+    } */
 
     .ant-menu-item:hover{
-        color: #000000  !important;
+        color: #fff  !important;
+
+        img{
+            filter: brightness(0) saturate(100%) invert(98%) sepia(0%) saturate(87%) hue-rotate(167deg) brightness(117%) contrast(100%);
+            
+        }
     }
 
-    .ant-menu-item.active .ant-menu-title-content::after{
-        content: '';
-        position: absolute;
-        top: 6px;
-        background: #99CC00;
-        right: 0;
-        height: 92%;
-        width: 4px;
-    }
 
     .ant-menu-item-selected{
         background-color: #FFFFFF  !important;

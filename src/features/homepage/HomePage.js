@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Badge, Select, message } from 'antd';
 import styled from 'styled-components';
 import { setAgentListOpen, setAgentListType } from "../../redux/reducers/agentList/agentListStatus";
-import { removeAtiveCall, setCurrentCall, changeCurrentCallState } from '../../redux/reducers/call/currentCall';
+import { removeAtiveCall, setCurrentCall, changeCurrentCallState, setActiveCallExtNumber } from '../../redux/reducers/call/currentCall';
 import { callConstant, agentListTypeConstant } from '../../util/constant';
 import useSip from '../../hooks/useSip';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,7 @@ const log = require('electron-log');
 const HomePage = () => {
     const ua = useSip()
     const dispatch = useDispatch();
+    const [param, setparam] = useState('')
     const { currentState } = useSelector(state => state.connectStatus)
     const { isWaitingListOpen } = useSelector(state => state.waitingListStatus)
     const { activeCall, hasCurrentCall } = useSelector(state => state.currentCall);
@@ -40,7 +41,7 @@ const HomePage = () => {
         text: '',
         time: null
     });
-    const { token: { isHaveToken, token, isSettingToken }} = useSelector(state => state.auth)
+    const { token: { isHaveToken, token, isSettingToken } } = useSelector(state => state.auth)
 
     var callOptions = {
         mediaConstraints: {
@@ -51,7 +52,7 @@ const HomePage = () => {
     log.info("HomePage.js callStatus: " + JSON.stringify(callStatus));
 
     useEffect(() => {
-        if(isHaveToken){
+        if (isHaveToken) {
             dispatch(getSkillGroups(token))
         }
     }, []);
@@ -144,9 +145,18 @@ const HomePage = () => {
         //dispatch(changeCurrentCallState(callConstant.TRANSFER))
         dispatch(setAgentListOpen(true));
         dispatch(setAgentListType(agentListTypeConstant.TRANSFER));
-        dispatch(setIsWaitingListOpen(false)); 
+        dispatch(setIsWaitingListOpen(false));
         dispatch(setIsKeypadOpen(false));
     }
+
+    useEffect(() => {
+        if (process.env.REACT_APP_PLATFORM === 'app') {
+            require('electron').ipcRenderer.on('param', (event, mess) => {
+                setparam(mess)
+            })
+        }
+    }, [])
+    
 
     const location = window.location.href.split('?');
     useEffect(() => {
@@ -162,12 +172,28 @@ const HomePage = () => {
 
                 // console.log('Timeout clear!');
                 dispatch(changeCurrentCallState(callConstant.MAKE_CALL))
-                // ua.call(location[1].split("=")[1], callOptions)
+                dispatch(setActiveCallExtNumber(location[1].split("=")[1]))
+                ua.call(location[1].split("=")[1], callOptions)
                 clearTimeout(timer)
                 return () => clearTimeout(timer);
             }
             return () => clearTimeout(timer);
             // console.log(currentState + ";;;;hien thi")
+        }else if(param !==''){
+            const timer = setTimeout(() => {
+                message.error("Can't make call because lost register!");
+            }, 5000);
+
+            if (currentState === 'connected') {
+
+                // console.log('Timeout clear!');
+                dispatch(changeCurrentCallState(callConstant.MAKE_CALL))
+                dispatch(setActiveCallExtNumber(param))
+                ua.call(param, callOptions)
+                clearTimeout(timer)
+                return () => clearTimeout(timer);
+            }
+            return () => clearTimeout(timer);
         }
     }, [currentState])
 
@@ -187,7 +213,7 @@ const HomePage = () => {
                             <Option value="123-444-444">123-444-444</Option>
                             <Option value="123-555-555">123-555-555</Option>
                         </Select>
-                        <button onClick={e => { dispatch(setIsKeypadOpen(true)); dispatch(setIsWaitingListOpen(false)) }}><img src={dialpad} alt="" />{t("dialPad")}</button>
+                        {/* <button onClick={e => { dispatch(setIsKeypadOpen(true)); dispatch(setIsWaitingListOpen(false)) }}><img src={dialpad} alt="" />{t("dialPad")}</button> */}
                     </div>
 
                 </div>
@@ -284,7 +310,7 @@ const HomePage = () => {
                     {/* <button onClick={e => { hasCurrentCall ? endCall() : call() }} className='btn'>{hasCurrentCall ? t('disconnect') : t('call')}</button> */}
                     {/* <button className='btn' onClick={e => hold()}>{activeCall.state === callConstant.HOLD ? t('unHold') : t('holdOn')}</button>
                     <button className='btn' onClick={e => forward()}>{t('forward')}</button> */}
-                    <button className='btn' onClick={e => { dispatch(setAgentListOpen(true));dispatch(setIsWaitingListOpen(false)); dispatch(setIsKeypadOpen(false));dispatch(setAgentListType(agentListTypeConstant.CALL)) }}>{t('call')}</button>
+                    <button className='btn' onClick={e => { dispatch(setAgentListOpen(true)); dispatch(setIsWaitingListOpen(false)); dispatch(setIsKeypadOpen(false)); dispatch(setAgentListType(agentListTypeConstant.CALL)) }}>{t('call')}</button>
                     <button className='btn'>{t('pickUp')}</button>
                     <button className='btn'>{t('conference')}</button>
                     <button className='btn'>{t('coach')}</button>

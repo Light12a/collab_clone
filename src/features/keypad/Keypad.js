@@ -46,6 +46,7 @@ const Keypad = (props) => {
         dispatch(setActiveCallExtNumber(callNumber))
         ua.call(callNumber, callOptions)
     }
+    
     var callOptions = {
         mediaConstraints: {
             audio: true, // only audio calls

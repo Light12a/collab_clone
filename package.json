@@ -38,7 +38,7 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "//start-react-dev-app": "start react in mod dev and app",
-    "start-react-dev-app": "set \"BROWSER=none\" && set \"REACT_APP_PLATFORM=app\" && yarn start",
+    "start-react-dev-app": "set \"BROWSER=none\" && set \"REACT_APP_PLATFORM=app\" && npm run start",
     "//start-electron-dev": "start electron in dev mod",
     "start-electron-dev": "set \"NODE_ENV=development\"  && electron .",
     "//start-app": "run to start app in dev mode",
