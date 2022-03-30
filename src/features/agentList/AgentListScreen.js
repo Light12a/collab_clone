@@ -47,13 +47,12 @@ const AgentListScreen = (props) => {
     let [totalItems, setTotalItem] = useState(0)
     const [currentPage, setCurrentPage] = useState(1);
     let [listAgentForShow, setListAgentForShow] = useState([])
+    const [isSearch, setIsSearch] = useState(false)
     const itemsPerPage = 10
-
 
     // get state
     const status = ListAgent.state
     const [bufferListAgent, setBufferListAgent] = useState(xListAgent)
-
 
     useEffect(() => {
         xListAgent.map((agent)=>{
@@ -142,9 +141,13 @@ const AgentListScreen = (props) => {
 
 
     const onSearch = (e) => {
+        const text = e.target.value
+        text ? setIsSearch(true) : setIsSearch(false)
+        console.log(e)
+
         xListAgent.map((el) => {
-            if (el.username.toLowerCase().includes(e.target.value) ||
-                el.ext_number.toLowerCase().includes(e.target.value)) {
+            if (el.username.toLowerCase().includes(text) ||
+                el.ext_number.toLowerCase().includes(text)) {
                 filterListAgent.push(el)
                 return el;
             } else {
@@ -152,11 +155,12 @@ const AgentListScreen = (props) => {
             }
         })
         setBufferListAgent(filterListAgent)
-        e.target.value ?
+        text ?
             ListAgent = []
             : ListAgent = agentList.agentList.users
 
     }
+
     const RenderUserItem = () => {
         return (
             listAgentForShow && listAgentForShow !== null ?
@@ -246,7 +250,11 @@ const AgentListScreen = (props) => {
                 <div className='container-bar'>
                     <div className='form-group'>
                         <span className='title'>{t('search')}</span>
-                        <SearchBar data={listAgentForShow} t={t} onSearch={e => onSearch} />
+                        <SearchBar 
+                        data={listAgentForShow} 
+                        t={t} 
+                        onSearch={e => onSearch}
+                        isSearching={isSearch} />
 
                     </div>
                     <div className='form-group'>
