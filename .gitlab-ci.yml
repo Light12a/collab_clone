@@ -54,6 +54,8 @@ deploy web:
 build app:
     stage: build
     image: node_for_app
+    rules:
+        - if: '"$BUILD_APP" == "true"'
     script:
         - echo "Build app..."
         - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
