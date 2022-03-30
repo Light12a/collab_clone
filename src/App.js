@@ -43,10 +43,12 @@ function App() {
       // your code here
       if (process.env.REACT_APP_PLATFORM === 'app') {
         require('electron').ipcRenderer.send("load-done", 'hello')
+
+        require('electron').ipcRenderer.on('param',()=> {
+          alert('sign in')
+        })
       }
-      require('electron').ipcRenderer.on('param',()=> {
-        alert('sign in')
-      })
+      
     // },3000)
   }, [])
 
