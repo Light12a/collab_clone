@@ -4,6 +4,7 @@ from sqlalchemy import pool
 from handlers.tenant_settings import models
 from handlers.users import models
 from handlers.announcement_setting import models
+from handlers.leave_seat_settings import models
 from handlers.trigger_settings import models
 from handlers.talk_script_settings import models
 from handlers.realtime_reports import models
