@@ -76,11 +76,11 @@ class CustomSelect extends React.Component {
   };
 
   render() {
-    const { optionsList } = this.props;
+    const { optionsList, selectWidth } = this.props;
     const { showOptionList, defaultSelectText } = this.state;
     const { t } = this.props;
     return (
-      <CustomSelectWrapper>
+      <CustomSelectWrapper selectWidth={selectWidth}>
         <div
           className={showOptionList ? "selected-text active" : "selected-text"}
           onClick={this.handleListDisplay}
@@ -115,7 +115,7 @@ class CustomSelect extends React.Component {
 
 const CustomSelectWrapper = styled.div`
   display: inline-block;
-  width: 300px;
+  width: ${props => props.selectWidth};
   position: relative;
   cursor: pointer;
 

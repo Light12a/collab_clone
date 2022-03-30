@@ -245,13 +245,14 @@ const AgentListScreen = (props) => {
                         <CustomSelect
                             defaultText="Select skill group"
                             optionsList={skillGroupList}
+                            
                             // onSelectGroup={e => onSelect(e)}
                         />
                     </div>
 
                     <div className='form-group'>
                         <span className='title'>{t('status')}</span>
-                        <CustomSelect
+                        <CustomSelect 
                             defaultText="Select status"
                             optionsList={skillGroupList}
                             // onSelectGroup={e => onSelect(e)}
@@ -323,5 +324,4 @@ const AgentListScreen = (props) => {
         </>
     )
 }
-
 export default React.memo(AgentListScreen);

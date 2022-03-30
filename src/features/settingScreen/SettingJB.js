@@ -5,17 +5,17 @@ import axios from 'axios'
 
 const SettingJB = () => {
     const hasJBRef = useRef(false)
-    const { user: { userName } } = useSelector(state => state.auth)
+    const { userConfig: { config: { username } } } = useSelector(state => state.auth)
     useEffect(() => {
-        axios.get(` http://13.113.23.145:8000/api/jitterbuffer?username=${userName}`)
+        axios.get(` http://13.113.23.145:8000/api/jitterbuffer?username=${username}`)
             .then(({ data }) => data.status ? hasJBRef.current = true : hasJBRef.current = false)
-    }, [userName])
+    }, [username])
     const onFinish = async (values) => {
         let data
         if (hasJBRef.current) {
-            const data = await axios.put(`http://13.113.23.145:8000/api/jitterbuffer?username=${userName}`, { jitterbuffer: values.size })
+            const data = await axios.put(`http://13.113.23.145:8000/api/jitterbuffer?username=${username}`, { jitterbuffer: values.size })
         } else {
-            const data = await axios.post('http://13.113.23.145:8000/api/jitterbuffers', { username: userName, jitterbuffer: values.size })
+            const data = await axios.post('http://13.113.23.145:8000/api/jitterbuffers', { username: username, jitterbuffer: values.size })
             hasJBRef.current = true
         }
     };
