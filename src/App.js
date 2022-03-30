@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import './App.less';
 import './App.css'
@@ -36,6 +36,21 @@ function App() {
   const nwaitingRef = useCallback(node => setNewWaitingWindow(node), [])
   const nagentRef = useCallback(node => setNewAgentWindow(node), [])
   const dispatch = useDispatch()
+
+  useLayoutEffect(() => {
+    // setTimeout(function () {
+      console.log('loadend')
+      // your code here
+      if (process.env.REACT_APP_PLATFORM === 'app') {
+        require('electron').ipcRenderer.send("load-done", 'hello')
+
+        require('electron').ipcRenderer.on('param',()=> {
+          alert('sign in')
+        })
+      }
+      
+    // },3000)
+  }, [])
 
   useEffect(() => {
     if (navigator.mediaDevices.getUserMedia !== null) {

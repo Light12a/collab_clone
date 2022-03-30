@@ -157,13 +157,17 @@ let tray = null
 let mess = "6007"
 app.whenReady().then(() => {
   createWindow()
-  mainWindow.webContents.on('did-finish-load', () => {
+  // mainWindow.webContents.on('did-finish-load', () => {
     // mainWindow.webContents.send('ping', deeplinkingUrl)   
-      setTimeout(() => {
-          mainWindow.webContents.send('param', mess)
-      }, 1000);
+    ipcMain.on('load-done', (event, message) => {
+      console.log('load')
+      mainWindow.webContents.send('param', mess)  
+    })
+      // setTimeout(() => {
+      //     mainWindow.webContents.send('param', mess)
+      // }, 1000);
 
-  })
+  // })
 
   if (!process.argv.includes('--hidden')) {
     mainWindow.show();
