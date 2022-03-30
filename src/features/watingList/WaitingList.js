@@ -442,6 +442,10 @@ const Wrapper = styled.div`
         gap:0.5rem;
     }
 
+    .tr-selected td{
+        background-color: #F7FBEB;
+    }
+
     th{
         background: #F6F6F6;
         border-bottom: 1px solid #ECECEC;

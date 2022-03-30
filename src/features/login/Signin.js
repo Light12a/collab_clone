@@ -17,21 +17,29 @@ const Signin = () => {
 
     const { t, i18n } = useTranslation();
     const [isRemember, setIsRemember] = useState(!!localStorage.getItem('userRemember'));
-    const [param, setparam] = useState('');
+    const [param, setparam] = useState("");
     const [loginError, setLoginError] = useState('')
     const [isLoggining, setIsLogining] = useState(false)
 
+    
 
     const location = window.location.href.split('?');
 
-    // useEffect(() => {
-    //     if (process.env.REACT_APP_PLATFORM === 'app') {
-    //         require('electron').ipcRenderer.on('ping', (event, message) => {
-    //             setparam(message)
-    //         })
-    //     }
-    //     console.log('electron' + param)
-    // }, [])
+    //cross launch app
+    useEffect(() => {
+        if (process.env.REACT_APP_PLATFORM === 'app') {
+            require('electron').ipcRenderer.on('param', (event, mess) => {
+                setparam(mess)
+            })
+        }
+    }, [])
+    useEffect(() => {
+        if(param !== ""){
+            if (!localStorage.getItem('user')) {
+                message.error('Please sign in!');
+            }
+        }
+    }, [param])
 
     useEffect(() => {
         if (!isRemember) {
@@ -39,6 +47,8 @@ const Signin = () => {
         }
     }, [isRemember])
 
+
+    //cross web 
     useEffect(() => {
         if (location[1]) {
             if (!localStorage.getItem('user')) {

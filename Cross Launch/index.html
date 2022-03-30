@@ -24,7 +24,7 @@
             if (document.getElementById("txtPhone").value != '') {
                 //sip:<user>[:<password>]@<host>[:<port>][;<uri-parameters>][?<headers>]
                 // window.location = "sip:+1-212-555-1212:1234@gateway.com;user=phone";
-                launchUri('collabos://1234', function () {
+                launchUri('collabos://' + document.getElementById("txtPhone").value, function () {
                     // SUCCESS - the protocol is registered and the user was asked to open
                     // the URI in the appropriate application
                     //alert('Have fun with my app');

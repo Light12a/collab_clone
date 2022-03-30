@@ -216,7 +216,7 @@ const AgentListScreen = (props) => {
     }
 
     return (
-        <>
+        <div className='drag'>
             <div className="agent-list__header drag-header">
                 <span>{t('agentList')}</span>
                 <img src={require('../../asset/Close.svg').default} alt="" onClick={e => { dispatch(setAgentListOpen(false)) }} />
@@ -321,7 +321,7 @@ const AgentListScreen = (props) => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 export default React.memo(AgentListScreen);
