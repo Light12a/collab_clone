@@ -47,25 +47,28 @@ const SipProvider = ({ children }) => {
     const { isConnected } = useSelector(state => state.networkStatus)
     const { currentState } = useSelector(state => state.connectStatus)
     const { activeCall, transferTo } = useSelector(state => state.currentCall)
-    const waitingCallList = useSelector(state => state.waiting)
+    const { waitingList } = useSelector(state => state.waiting)
     const dispatch = useDispatch()
     const sessionRef = useRef([])
     const previousLengthRef = useRef()
-    const [isIncomingAudioPlaying, setIsIncomingAudioPlaying] = useState(false);
-    const [isRingBackAudioPlaying, setIsRingBackAudioPlaying] = useState(false);
+    const isIncomingAudioPlaying = useRef(false);
+    const isRingBackAudioPlaying = useRef(false);
     const { keypadNumber } = useSelector(state => state.keypadStatus)
+    const log = require('electron-log');
 
     useEffect(() => {
-        if (waitingCallList.length > 0 && !isIncomingAudioPlaying &&
-            activeCall.state !== (callConstant.ANSWER && callConstant.MAKE_CALL && callConstant.HOLD && callConstant.UN_HOLD && callConstant.INCALL)) {
+        if (waitingList.length > 0 && !isIncomingAudioPlaying.current &&
+            activeCall.state === null) {
+            log.info('SipProvider.js Play incomming call audio');
             incomingCallAudio.play();
-            setIsIncomingAudioPlaying(true);
+            isIncomingAudioPlaying.current = true;
         }
         else {
+            log.info('SipProvider.js Pause incomming call audio');
             incomingCallAudio.pause();
-            setIsIncomingAudioPlaying(false);
+            isIncomingAudioPlaying.current = false;
         }
-    }, [waitingCallList])
+    }, [waitingList.length])
 
     useEffect(() => {
         if (!ua) {
@@ -158,19 +161,17 @@ const SipProvider = ({ children }) => {
                 session.on('sending', () => {
                     console.log('sending', session);
                     dispatch(setCurrentCall({ sessionId: session.id, state: callConstant.MAKE_CALL }))
-                    if (!isRingBackAudioPlaying) {
+                    if (!isRingBackAudioPlaying.current) {
                         ringBackAudio.play().catch(error => {
                             console.log(error)
                             //  when an exception is played, the exception flow is followed 
                         })
-                        setIsRingBackAudioPlaying(true);
+                        isRingBackAudioPlaying.current = true;
                     }
                 })
                 // incoming call here
                 session.on("accepted", function () {
                     dispatch(changeCurrentCallState(callConstant.INCALL))
-                    incomingCallAudio.pause();
-                    setIsIncomingAudioPlaying(false);
                     // the call has answered
                 });
                 session.on("confirmed", function () {
@@ -178,7 +179,7 @@ const SipProvider = ({ children }) => {
                     console.log('call confirmed');
 
                     ringBackAudio.pause()
-                    setIsRingBackAudioPlaying(false);
+                    isRingBackAudioPlaying.current = false;
 
                     // var localStream = session.connection.getLocalStreams()[0];
                     // var dtmfSender = session.connection.createDTMFSender(localStream.getAudioTracks()[0])
@@ -257,15 +258,7 @@ const SipProvider = ({ children }) => {
                     completeSession()
 
                     ringBackAudio.pause()
-                    setIsRingBackAudioPlaying(false);
-                    if (waitingCallList.length === 0) {
-                        incomingCallAudio.pause()
-                        setIsIncomingAudioPlaying(false);
-                    }
-                    else if (!isIncomingAudioPlaying) {
-                        incomingCallAudio.play();
-                        setIsIncomingAudioPlaying(true);
-                    }
+                    isRingBackAudioPlaying.current = false;
                 });
                 // session.on('icecandidate', (data) => {
                 //     console.log('candidate:', data)
@@ -379,17 +372,17 @@ const SipProvider = ({ children }) => {
 
     // notification for app
     useEffect(() => {
-        if (process.env.REACT_APP_PLATFORM === 'app' && previousLengthRef.current < waitingCallList.length) {
-            if (waitingCallList.length === 1) {
+        if (process.env.REACT_APP_PLATFORM === 'app' && previousLengthRef.current < waitingList.length) {
+            if (waitingList.length === 1) {
                 const NOTIFICATION_TITLE = 'INCOMMING CALL'
-                const NOTIFICATION_BODY = ` Have a call from ${waitingCallList[0].skillName}. Click to answer call`
+                const NOTIFICATION_BODY = ` Have a call from ${waitingList[0].skillName}. Click to answer call`
                 new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY })
                     .onclick = () => {
-                        dispatch(setCurrentCall({ sessionId: waitingCallList[0].ssId, state: callConstant.ANSWER, displayName: waitingCallList[0].skillName }))
+                        dispatch(setCurrentCall({ sessionId: waitingList[0].ssId, state: callConstant.ANSWER, displayName: waitingList[0].skillName }))
                         electron.ipcRenderer.send('open-app')
                     }
             }
-            else if (waitingCallList.length > 1) {
+            else if (waitingList.length > 1) {
                 const NOTIFICATION_TITLE = 'INCOMMING CALL'
                 const NOTIFICATION_BODY = `Have many calls, click to open waiting call list`
                 new Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY })
@@ -399,13 +392,13 @@ const SipProvider = ({ children }) => {
                     }
             }
         }
-    }, [waitingCallList.length, dispatch])
+    }, [waitingList.length, dispatch])
 
 
-    // get previoust waitingCallList length to use above
+    // get previoust waitingList length to use above
     useEffect(() => {
-        previousLengthRef.current = waitingCallList.length
-    }, [waitingCallList.length])
+        previousLengthRef.current = waitingList.length
+    }, [waitingList.length])
 
     // handle session
     useEffect(() => {
