@@ -30,7 +30,7 @@ build backend:
         - echo "$SSH_PRIVATE_KEY_BACKEND_EC2" >> key.pem
         - chmod 700 key.pem
         - git clone -b frontend --single-branch  zeevaa@zeevaa.git.backlog.com:/NEW_CP2021/NEW_CP2021.git
-        - chmod +x collabos/runscript.sh
+        - chmod +x NEW_CP2021/04_Programs/backend/runscript.sh
         - ssh -i key.pem ubuntu@18.180.191.58 rm -rf collabos/*
-        - scp -r -i key.pem collabos/* ubuntu@18.180.191.58:collabos
+        - scp -r -i key.pem NEW_CP2021/04_Programs/backend/* ubuntu@18.180.191.58:collabos
         - ssh -i key.pem ubuntu@18.180.191.58 "./collabos/runscript.sh"
