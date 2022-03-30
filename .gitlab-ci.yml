@@ -60,7 +60,7 @@ build app:
     image: node_for_app
     only:
         variables: 
-            - $BUILD_APP
+            - $BUILD_APP == "true"
     script:
         - echo "Build app..."
         - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
