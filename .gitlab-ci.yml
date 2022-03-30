@@ -48,7 +48,7 @@ deploy web:
         - echo "Deploy web..."
         - echo "$SSH_PRIVATE_KEY_EC2" >> key.pem
         - chmod 700 key.pem
-        - ssh -i key.pem rm ubuntu@3.114.97.64 rm -rf build/*
+        - ssh -i key.pem ubuntu@3.114.97.64 rm -rf build/*
         - scp -r -i key.pem NEW_CP2021/04_Programs/frontend/build/* ubuntu@3.114.97.64:~/build
     dependencies:
         - build web
