@@ -33,7 +33,6 @@ build app:
         - echo "Build app..."
         - git clone -b frontend --single-branch  zeevaa@zeevaa.git.backlog.com:/NEW_CP2021/NEW_CP2021.git
         - cd NEW_CP2021/04_Programs/frontend
-        - npm config set registry http://registry.npmjs.org/
         - npm  cache clear --force
         - npm install
         - npm run build:winonlinux
