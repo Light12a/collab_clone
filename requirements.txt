@@ -4,3 +4,4 @@ python-decouple
 pytz
 jsonschema
 pandas
+pyjwt
