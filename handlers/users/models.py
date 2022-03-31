@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.ext.declarative import declarative_base
 from ..tenant_settings.models import Tenant
+from ..groups.models import Group
 from services.database.mysqldb import Base
 
 
@@ -17,7 +18,7 @@ class User(Base):
     user_name = Column(VARCHAR(256), comment='Username : Username is used to login collabos by user')
     password = Column(VARCHAR(1024), comment='Password')
     mail = Column(VARCHAR(256), comment='Email : Email address of user')
-    group_id = Column(VARCHAR(256), comment='Group Id : Id of group which user is belong to')
+    group_id = Column(ForeignKey(Group.group_id), comment='Group Id : Id of group which user is belong to')
     device = Column(INTEGER(11), comment='Device : Device that user is using')
     autoin_time = Column(INTEGER(11), comment='Auto In Time : Time that after ending call, user can receive new call')
     auth_id = Column(BIGINT(20), comment='Authority Id : privilege that user is permitted what features to use')
@@ -26,13 +27,14 @@ class User(Base):
     locked_date = Column(DateTime, comment='Locked date : Last date that state of user is locked')
     login_ng_cnt = Column(INTEGER(11), comment='Login fail consecutive : Number of time that user logged in collabos fail in row')
     user_classifier = Column(INTEGER(11), comment='User Classification : 0 is normal user, 1 is tenant user, 2 is collabos adminitrator')
-    insert_date = Column(DateTime, comment='Insert Date : Time that user is created')
-    update_date = Column(DateTime, comment='Update Date : Last time that user info is changed')
+    insert_date = Column(DateTime,nullable=False, server_default=text("current_timestamp()"), comment='Insert Date : Time that user is created')
+    update_date = Column(DateTime,nullable=False, server_default=text("current_timestamp()"), comment='Update Date : Last time that user info is changed')
     firstname = Column(VARCHAR(1024), comment='First Name')
     lastname = Column(VARCHAR(1024), comment='Last Name')
     middlename = Column(VARCHAR(1024), comment='Middle Name')
 
     tenant = relationship(Tenant)
+    group = relationship(Group)
 
 
 class Token(Base):
