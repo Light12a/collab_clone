@@ -37,7 +37,7 @@ const SettingScreen = () => {
   useEffect(() => {
     //get language
 
-    if (language)
+    if (!language)
       dispatch(setLanguage("en"))
     //get devices
     navigator.mediaDevices.enumerateDevices()
@@ -104,6 +104,8 @@ const SettingScreen = () => {
       dispatch(setLanguage(t("english")))
     console.log("My language: " + language, " My lang: " + lang)
     localStorage.setItem(appString.languageKey, lang)
+    
+    console.log("My language: " + language, " My lang: " + lang)
   }
 
   const handleSelectDevice = (value) => {
@@ -185,12 +187,6 @@ const SettingScreen = () => {
       },
     });
   }
-  const plusFive = (num) => {
-    console.log("I was called!");
-    return num + 5;
-  };
-  const [num, setNum] = useState(0);
-  const numPlusFive = ()=>{plusFive(num);} 
 
   return (
     <Wrapper>
@@ -207,7 +203,7 @@ const SettingScreen = () => {
               style={{ width: '100%' }}
               value={language ? language : "en"}
               onSelect={(e) => handleClick(e)}
-              defaultValue="en"
+              defaultValue="jp"
               suffixIcon={<img src={arrowIcon} />}>
               <Option value="en">{t("english")}</Option>
               <Option value="jp">{t("japan")}</Option>
