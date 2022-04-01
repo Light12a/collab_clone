@@ -1,5 +1,7 @@
 import { React, useEffect, useState } from 'react'
-import '../features/agentList/AgentListScreen.css'
+
+// import '../features/agentList/AgentListScreen.css'
+
 import styled from 'styled-components';
 
 const Pagination = (props) => {

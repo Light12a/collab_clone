@@ -109,11 +109,20 @@ function createWindow() {
       // multiple windows and each have their options
       // if (frameName === 'NewWindowComponent ') {
       event.preventDefault();
+      if(frameName == 'waitinglist') 
       Object.assign(options, {
         // This will prevent interactions with the mainWindow
         // parent: mainWindow,
         width: 500,
         height: 600,
+        // You can also set `left` and `top` positions
+      });
+      if(frameName == 'agentlist') 
+      Object.assign(options, {
+        // This will prevent interactions with the mainWindow
+        // parent: mainWindow,
+        width: 1200,
+        height: 900,
         // You can also set `left` and `top` positions
       });
       event.newGuest = new BrowserWindow(options);

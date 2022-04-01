@@ -45,17 +45,19 @@
     "start-app": "run-p start-react-dev-app start-electron-dev",
     "/build-react-prod-app": "build react in app mod",
     "build-react-prod-app": "set \"REACT_APP_PLATFORM=app\" && yarn build",
+    "build-react-prod-app:linux": "REACT_APP_PLATFORM=app yarn build",
     "//copy-electron-to-build": "copy electron folder to build folder",
     "copy-electron-to-build": "(robocopy electron build\\electron )^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0",
     "//dist": "build app when finish setup",
     "dist": "set \"NODE_ENV=production\" && electron-builder build -w -c.extraMetadata.main=build/electron/index.js",
+    "dist:linux": "NODE_ENV=production electron-builder build -w -c.extraMetadata.main=build/electron/index.js",
     "//build:win": "run to build window app",
     "build:win": "run-s build-react-prod-app copy-electron-to-build dist",
     "pack": "electron-builder --dir",
     "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
     "postinstall": "patch-package",
     "copy-electron-to-build-on-linux": "cp -R electron build",
-    "build:winonlinux": "run-s build-react-prod-app copy-electron-to-build-on-linux dist"
+    "build:winonlinux": "run-s build-react-prod-app:linux copy-electron-to-build-on-linux dist:linux"
   },
   "eslintConfig": {
     "extends": "react-app"
