@@ -42,7 +42,7 @@ const SettingScreen = () => {
     //get devices
     navigator.mediaDevices.enumerateDevices()
       .then((devices) => {
-        console.log("My device: " +JSON.stringify(devices) )
+        console.log("My device: " +JSON.stringify(devices))
         devices.forEach(element => {
 
           if (element.kind === "audiooutput") {
@@ -102,10 +102,8 @@ const SettingScreen = () => {
       dispatch(setLanguage(t("japan")))
     else if (lang === 'en')
       dispatch(setLanguage(t("english")))
-    console.log("My language: " + language, " My lang: " + lang)
     localStorage.setItem(appString.languageKey, lang)
     
-    console.log("My language: " + language, " My lang: " + lang)
   }
 
   const handleSelectDevice = (value) => {

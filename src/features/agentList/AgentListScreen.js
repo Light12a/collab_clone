@@ -144,7 +144,6 @@ const AgentListScreen = React.forwardRef((props, ref) => {
     const onSearch = (e) => {
         const text = e.target.value
         text ? setIsSearch(true) : setIsSearch(false)
-        console.log(e)
 
         xListAgent.map((el) => {
             if (el.username.toLowerCase().includes(text) ||
