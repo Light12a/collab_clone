@@ -3,8 +3,8 @@ import datetime
 import uuid
 import json
 from xml.dom.minidom import Identified
-
 from numpy import where
+from handlers.sms_authenticators.models import SmsAuthenticator
 from ..base import BaseHandler
 from .models import SmsSetting
 from http import HTTPStatus
@@ -52,23 +52,25 @@ class SmsSettingRetrievalHandler(BaseHandler):
         """
         Search SMS setting with conditions.
         Param: request
-        """
+        """  
         SearchWord = request['SearchWord']
-        results = self.db.query(SmsSetting).filter(SmsSetting.setting_name.like(f'%{SearchWord}%'))\
-                                           .offset(request['Offset'])\
-                                           .limit(request['Limit'])\
-                                           .all()
+        query_sms = self.db.query(SmsSetting.setting_id, 
+                                  SmsSetting.setting_name, 
+                                  SmsAuthenticator.sms_auth_name,
+                                  SmsSetting.update_date)\
+                           .filter(SmsSetting.sms_auth_id == SmsAuthenticator.sms_auth_id,
+                                   SmsSetting.setting_name.like(f'%{SearchWord}%'))\
+                           .offset(request['Offset'])\
+                           .limit(request['Limit'])\
+                           .all()
         try:
-            results_ = []
-            for elemant in results:
-                results_.append(elemant.to_json())
             sms = [{
-                "SmsSettingId": element['setting_id'],
-                "SmsSettingName": element['setting_name'],
-                "SmsAuthName": element['sms_auth_id'],
-                "UpdateDate": element['update_date']
-            } for element in results_]
+                "SmsSettingId": result[0],
+                "SmsSettingName": result[1],
+                "SmsAuthName": result[2],
+                "UpdateDate": result[3]
+            } for result in query_sms] 
             raise gen.Return(sms)      
         except IndexError:
             raise gen.Return(False)
-            
+
