@@ -25,7 +25,6 @@ FORMATTER = logging.Formatter('%(asctime)s | %(name)s | %(levelname)s | %(messag
 
 def init_logging(log_path=LOG_PATH, console=False, level=DEFAULT_LEVEL, days_to_keep=3):
     """ init logging in db_service """
-
     if not os.path.exists(log_path):
         os.makedirs(log_path)
 

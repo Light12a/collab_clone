@@ -38,7 +38,9 @@ def authorize(action):
             value = query_db(request_handler, getattr(Authority, action),
                              getattr(Authority, 'auth_id'), auth_id)
             if(not bool(value)):
+               LOG.info({"user": user_id, "permission": action, "message": "User does not have permission"})
                return request_handler.forbidden()
+            LOG.info({"user": user_id, "permission": action, "message": "User have permission"})
             return function(*args, **kwargs)
          else:
             raise request_handler.error('Cannot Process Request')
