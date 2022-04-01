@@ -42,6 +42,7 @@ const SettingScreen = () => {
     //get devices
     navigator.mediaDevices.enumerateDevices()
       .then((devices) => {
+        console.log("My device: " +JSON.stringify(devices) )
         devices.forEach(element => {
 
           if (element.kind === "audiooutput") {
@@ -202,10 +203,6 @@ const SettingScreen = () => {
         <div className='setting__body'>
           <div className='form-group'>
             <p>{t("language")}</p>
-
-            <div>{numPlusFive}</div>
-            <button  onClick={numPlusFive()}>touch hi</button>
-
             <Select
               style={{ width: '100%' }}
               value={language ? language : "en"}

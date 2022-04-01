@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 
 import './App.less';
 import './App.css'
+import styled from 'styled-components';
 import Signin from './features/login/Signin';
 import { useDispatch, useSelector } from 'react-redux';
 import MainApp from './features/MainApp';
@@ -126,6 +127,7 @@ function App() {
   if ((isHaveToken && isLoading) || isSettingToken) return 'loading..'
   return (
 
+    // <Wrapper>
     <div className="App">
       {isAuth && !userConfigLoading ?
         <SipProvider>
@@ -177,9 +179,85 @@ function App() {
 
         </SipProvider>
         : null}
-
-    </div>
+        </div>
+    // </Wrapper>
   );
 }
+const Wrapper = styled.div`
+.drag {
+    background-color: white;
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    box-shadow: 0px 6px 60px rgba(0, 0, 0, 0.16);
+    border-radius: 4px;
+    max-height: 95vh;
+    max-width: 90vw;
+}
 
+.waiting-list{
+    width: 569px;
+}
+
+.agent-list{
+  top: 0% !important;
+    left: 10% !important;
+    width: fit-content !important;   
+    height: fit-content !important;
+    max-height: fit-content !important;
+}
+.keypad{
+    width: 840px;
+}
+
+.drag table{
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    border-radius: 4px;
+    border: 1px solid #ECECEC;
+    margin-top:16px;
+}
+.drag .table-th{
+    display: flex;
+    align-items: center;
+    gap:0.5rem;
+}
+.drag  th,td{
+    /* padding: 3px; */
+}
+.drag th{
+    background: #F6F6F6;
+    border-bottom: 1px solid #ECECEC;
+}
+.drag tr:not(:last-child) td{
+    border-bottom: 1px solid #ECECEC;
+}
+
+.drag .table-sort{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:1px;
+    transform: translateY(1px);
+    
+}
+
+.drag .table-sort img{
+    cursor: pointer;
+}
+
+
+.formWaitingList {
+    background-color: white;
+    width: 45vw;
+    min-width: 470px;
+    position: absolute;
+    top: 8.8vh;
+    right: 8vw;
+    box-shadow: 0px 6px 60px rgba(0, 0, 0, 0.24);
+    border-radius: 4px;
+}
+
+`
 export default React.memo(App);
