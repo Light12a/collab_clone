@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import searchIcon from '../asset/search.png'
 
-import  React from 'react'
+import React from 'react'
 // import searchIcon from '../asset/search.svg'
 class SearchBar extends React.Component {
     constructor(props) {
         super(props);
     }
-// import searchIcon from '../asset/search.svg'
+    // import searchIcon from '../asset/search.svg'
 
     render() {
         return (
@@ -22,10 +22,11 @@ class SearchBar extends React.Component {
                     this.props.isSearching ?
                         <div className='iconSearchDelete'>X</div>
                         :
-                        <div
+                        <img
                             // onClick={() => alert('hi')}
+                            src={searchIcon}
                             className='iconSearch'
-                        ></div>
+                        ></img>
                 }
             </Wrapper>
         )
@@ -38,13 +39,19 @@ height: 40px;
     border: 1px solid #CDCDCD;
     border-radius: 4px;
     display: flex;
+    align-items: center;
 .iconSearch {
     width: 20px;
     height: 20px;
-    /* filter: brightness(0) saturate(100%) invert(81%) sepia(45%) saturate(2330%) hue-rotate(24deg) brightness(90%) contrast(101%); */
+    filter: brightness(0) saturate(100%) invert(81%) sepia(45%) saturate(2330%) hue-rotate(24deg) brightness(90%) contrast(101%);
     margin: 10px;
-    background: url(${searchIcon}) no-repeat center;
+    /* background: url(${searchIcon}) no-repeat center; */
     cursor: pointer;
+}
+.iconSearchDelete{
+    font-weight: bold;
+    margin-right: 1vw;
+    font-size: 3.2vh;
 }
     
  .input{
@@ -52,7 +59,7 @@ height: 40px;
     width: 100%;
     border: none;
     border-radius: 4px;
-    padding: 11px 16px;
+    /* padding: 11px 16px; */
 }
 `
 export default SearchBar;

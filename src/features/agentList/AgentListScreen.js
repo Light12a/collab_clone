@@ -358,7 +358,7 @@ const AgentListWrapper = styled.div`
 
 .agent-list{
     width: 840px;   
-    min-height: 750px;
+    /* min-height: 750px; */
     max-height: fit-content !important;
 }
  table{
