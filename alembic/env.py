@@ -16,7 +16,7 @@ from handlers.recording_download import models
 from handlers.caller_notif_number import models
 from handlers.authority import models
 from handlers.sms_settings import models
-# from handlers.sms_authenticators import models
+from handlers.sms_authenticators import models
 from services.database.mysqldb import Base
 from alembic import context
 
