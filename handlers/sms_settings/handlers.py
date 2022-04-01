@@ -54,18 +54,24 @@ class SmsSettingRetrievalHandler(BaseHandler):
         Param: request
         """
         SearchWord = request['SearchWord']
-        results = self.db.query(SmsSetting).filter(SmsSetting.setting_name.like(f'%{SearchWord}%')).offset(request['Offset']).limit(request['Limit']).all()
+        query_sms = self.db.query(SmsSetting).filter(SmsSetting.setting_name.like(f'%{SearchWord}%'))\
+                                           .offset(request['Offset'])\
+                                           .limit(request['Limit'])\
+                                           .all()
+                                           
+        query_sms_auth =  self.db.query(SmsSetting).filter
         try:
-            results_ = []
-            for elemant in results:
-                results_.append(elemant.to_json())
+            results = []
+            for elemant in query_sms:
+                results.append(elemant.to_json())
+                
             sms = [{
                 "SmsSettingId": element['setting_id'],
                 "SmsSettingName": element['setting_name'],
                 "SmsAuthName": element['sms_auth_id'],
                 "UpdateDate": element['update_date']
-            } for element in results_]
+            } for element in results]
             raise gen.Return(sms)      
         except IndexError:
             raise gen.Return(False)
-            
+
