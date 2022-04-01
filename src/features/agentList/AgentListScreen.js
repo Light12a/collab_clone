@@ -350,7 +350,8 @@ const AgentListScreen = React.forwardRef((props, ref) => {
     )
 })
 const AgentListWrapper = styled.div`
-
+    top: -0% !important;
+    left: 20% !important;
     background-color: white;
     position: absolute;
     box-shadow: 0px 6px 60px rgba(0, 0, 0, 0.16);

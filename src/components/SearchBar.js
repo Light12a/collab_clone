@@ -49,7 +49,7 @@ height: 40px;
     cursor: pointer;
 }
 .iconSearchDelete{
-    font-weight: bold;
+    /* font-weight: bold; */
     margin-right: 1vw;
     font-size: 3.2vh;
 }
