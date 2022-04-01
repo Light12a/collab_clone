@@ -32,7 +32,7 @@ build web:
         - echo "Build web..."
         - git clone -b "$CI_COMMIT_BRANCH" --single-branch  git@gitlab.tma.com.vn:vthienvu/collabos.git
         - cd collabos
-        - npm install
+        - npm install --unsafe-perm
         - npm run build
     artifacts:
         expire_in: 1 hr
