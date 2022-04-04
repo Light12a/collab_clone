@@ -4,6 +4,7 @@ import re
 import uuid
 import json
 import MySQLdb
+from pandas import concat
 from sqlalchemy import func
 
 from ..base import BaseHandler
@@ -444,7 +445,8 @@ class GetUserHandler(BaseHandler):
             raise gen.Return(False)
     
 class GetUserByUsernameHandler(BaseHandler):
-    
+    """
+    """
     @property
     def db(self):
         return self.application.session
@@ -462,17 +464,7 @@ class GetUserByUsernameHandler(BaseHandler):
                 if check:
                     user = yield self._get_user_by_username(request['username'])
                     if user:                        
-                        if user['lastname']==None:
-                            if user['middlename']==None:
-                                displayname = user['firstname']
-                            else:
-                                displayname = user['middlename'] + ' ' + user['firstname']                            
-                        else:
-                            if user['middlename'] == None:
-                                displayname = user['lastname'] + ' ' + user['firstname']
-                            else:
-                                displayname = user['lastname'] + ' ' + user['middlename'] + ' ' + user['firstname']
-                        
+                        displayname = ' '.join(filter(None, (user['lastname'], user['middlename'], user['firstname'])))
                         self.write({
                             "code": 200, 
                             "userId": user['user_id'],
@@ -481,12 +473,15 @@ class GetUserByUsernameHandler(BaseHandler):
                             "groupId": user['group_id'],
                             "ext_number": user['extension'],
                             "state": 1,
-                            # "start call time": 1
+                            "start call time": 0
                         })
                         self.set_status(200)
+                    else:
+                        self.write({"code":404, "errorMessage": "Username not found."})
+                        self.set_status(404)
                 else:
-                    self.write({"code":404, "errorMessage": "username not found"})
-                    self.set_status(404)
+                    self.write({"code":401, "errorMessage":"Token is wrong."})
+                    self.set_status(401)
             else:
                 raise ValueError
         except ValueError:
@@ -496,7 +491,11 @@ class GetUserByUsernameHandler(BaseHandler):
     @gen.coroutine
     def _get_user_by_username(self, username):
         result = self.db.query(User).filter(User.user_name == username)
-        raise gen.Return(result[0].to_json())
+        
+        try: 
+            raise gen.Return(result[0].to_json())
+        except IndexError:
+            raise gen.Return(False)
 
     @gen.coroutine        
     def _check_token_exists(self, token):
@@ -509,6 +508,71 @@ class GetUserByUsernameHandler(BaseHandler):
         try:
             raise gen.Return(result[0][0])
         except IndexError:
-            self.write({"code":401, "errorMessage":"token is wrong"})
-            self.set_status(401)
+            raise gen.Return(False)
+        
+
+class GetUserByPhoneNumberHandler(BaseHandler):
+    """
+    """
+    @property
+    def db(self):
+        return self.application.session
+    
+    def data_received(self, chunk=None):
+        if self.request.body:
+            return json.loads(bytes.decode(self.request.body))
+        
+    @gen.coroutine
+    def post(self):
+        try:
+            request = self.data_received()
+            if "token" in request and "phoneNumber" in request:
+                check = yield self._check_token_exists(request['token'])
+                if check:
+                    user = yield self._get_user_by_phone_number(request['phoneNumber'])
+                    if user:                        
+                        displayname = ' '.join(filter(None, (user['lastname'], user['middlename'], user['firstname'])))
+                        self.write({
+                            "code": 200, 
+                            "userId": user['user_id'],
+                            "username": user['user_name'],
+                            "displayname": displayname,
+                            "groupId": user['group_id'],
+                            "ext_number": user['extension'],
+                            "state": 1,
+                            "start call time": 0
+                        })
+                        self.set_status(200)
+                    else:
+                        self.write({"code":404, "errorMessage": "Phone number not found."})
+                        self.set_status(404)
+                else:
+                    self.write({"code":401, "errorMessage":"Token is wrong."})
+                    self.set_status(401)
+            else:
+                raise ValueError
+        except ValueError:
+            self.set_status(400)
+            self.write({"code":400, "errorMessage":"Bad request"})
+
+    @gen.coroutine
+    def _get_user_by_phone_number(self, number):
+        result = self.db.query(User).filter(User.extension == number)
+        
+        try: 
+            raise gen.Return(result[0].to_json())
+        except IndexError:
+            raise gen.Return(False)
+
+    @gen.coroutine        
+    def _check_token_exists(self, token):
+        """
+        Function take in token to verify this one is the newest.
+        @params: Token.
+        """
+        result = self.db.query(Token.token_id).filter(Token.token_id==token).distinct().all()
+
+        try:
+            raise gen.Return(result[0][0])
+        except IndexError:
             raise gen.Return(False)
