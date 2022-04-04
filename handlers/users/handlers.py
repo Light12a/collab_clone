@@ -1,11 +1,27 @@
 import datetime
+<<<<<<< HEAD
 from ..base import BaseHandler
+=======
+import re
+import uuid
+import json
+import MySQLdb
+from sqlalchemy import func
+
+from ..base import BaseHandler
+
+>>>>>>> 3ac182e... convert APIs
 from .models import User, Token, Tenant
 from http import HTTPStatus
 from utils.config import config
 from tornado import gen
 from services.logging import logger as log
+<<<<<<< HEAD
 from .token import JwtTokenTransfrom
+=======
+
+log = log.get(__name__)
+>>>>>>> 3ac182e... convert APIs
 
 log = log.get(__name__)
 class LoginHandler(BaseHandler):
@@ -20,6 +36,7 @@ class LoginHandler(BaseHandler):
     def post(self):
         data = self.validated_data
 
+<<<<<<< HEAD
         if data:
             if not (("company_id" in data and "username" in data and "password" in data) or ("token" in data)):
                 log.error("Json request format is wrong")
@@ -350,3 +367,167 @@ class ReleaseLockHandlers(BaseHandler):
 
         self.db.query(User).filter(User.user_name == data['username']).update({User.locked : 0}, synchronize_session = False)
         self.db.commit()
+=======
+        # self.set_secure_cookie("user", "092HK3399p@3")
+        # self.write("092HK3399p@3")
+       
+class LogoutHandler(BaseHandler):
+    
+    @gen.coroutine
+    def get(self):
+        self.clear_cookie("user")
+        self.write("Logout")
+
+
+class GetUserHandler(BaseHandler):
+    
+    @property
+    def db(self):
+        return self.application.session
+    
+    def data_received(self, chunk=None):
+        if self.request.body:
+            return json.loads(bytes.decode(self.request.body))
+    
+    @gen.coroutine
+    def post(self):
+        try:
+            request = self.data_received()
+            if not ('token' in request and 'search' in request and 'from' in request and 'to' in request):
+                raise ValueError
+            if (request['from'] < 0) or ((request['from'] > request['to']) and (request['to']!=-1)):
+                raise ValueError
+            
+            check = yield self._check_token_exists(request['token'])
+            if check:
+                user = yield self._get_user(request)
+                if user:
+                    self.write({
+                            "code": 200,
+                            "users": user
+                        })
+                    self.set_status(200)
+                else:
+                    self.write({"code":404, "errorMessage":"username not found"})
+                    self.set_status(404)
+            
+        except ValueError:
+            self.write({"code":400, "errorMessage":"Bad request"})
+            self.set_status(400)
+            
+    @gen.coroutine
+    def _get_user(self, request):
+        if request['to'] == -1:
+            try:
+                results = self.db.query(User).all()
+            except (MySQLdb._exceptions.OperationalError):
+                self.write({"code":400, "errorMessage": "Bad request"})
+        else:
+            try:
+                results = self.db.query(User).filter(User.username == request['search'], request['from'], request['to']-request['from']+1)
+            except (MySQLdb._exceptions.OperationalError):
+                self.write({"code":400, "errorMessage": "Bad request"})
+        if results:   
+            results_ = []
+            for element in results:       
+                results_.append(element.to_json())
+
+            user = [{
+                "user_id": element['user_id'],
+                "username": element['user_name'],
+                "displayname": element['firstname'],
+                "group_id": element['group_id'],
+                # "state": [key for key, list_of_values in constant_value.STATES.items()
+                # if requests.get("http://35.75.95.117:8088/ari/deviceStates/PJSIP%2F{}".format(result[1]), auth=("asterisk","asterisk")).json()['state'] in list_of_values][0],
+                "ext_number": element['extension']
+                } for element in results_]
+        else:
+            err = "Not found search keyword: {}"
+            raise gen.Return(False)
+        raise gen.Return(user)     
+            
+    @gen.coroutine
+    def _check_token_exists(self, token):
+        """
+        Function take in token to verify this one is the newest.
+        @params: Token.
+        """
+        result = self.db.query(Token.token_id).filter(Token.token_id==token).distinct().all()
+
+        try:
+            raise gen.Return(result[0][0])
+        except IndexError:
+            self.write({"code":401, "errorMessage":"token is wrong"})
+            self.set_status(401)
+            raise gen.Return(False)
+    
+class GetUserByUsernameHandler(BaseHandler):
+    
+    @property
+    def db(self):
+        return self.application.session
+    
+    def data_received(self, chunk=None):
+        if self.request.body:
+            return json.loads(bytes.decode(self.request.body))
+        
+    @gen.coroutine
+    def post(self):
+        try:
+            request = self.data_received()
+            if "token" in request and "username" in request:
+                check = yield self._check_token_exists(request['token'])
+                if check:
+                    user = yield self._get_user_by_username(request['username'])
+                    if user:                        
+                        if user['lastname']==None:
+                            if user['middlename']==None:
+                                displayname = user['firstname']
+                            else:
+                                displayname = user['middlename'] + ' ' + user['firstname']                            
+                        else:
+                            if user['middlename'] == None:
+                                displayname = user['lastname'] + ' ' + user['firstname']
+                            else:
+                                displayname = user['lastname'] + ' ' + user['middlename'] + ' ' + user['firstname']
+                        
+                        self.write({
+                            "code": 200, 
+                            "userId": user['user_id'],
+                            "username": user['user_name'],
+                            "displayname": displayname,
+                            "groupId": user['group_id'],
+                            "ext_number": user['extension'],
+                            "state": 1,
+                            # "start call time": 1
+                        })
+                        self.set_status(200)
+                else:
+                    self.write({"code":404, "errorMessage": "username not found"})
+                    self.set_status(404)
+            else:
+                raise ValueError
+        except ValueError:
+            self.set_status(400)
+            self.write({"code":400, "errorMessage":"Bad request"})
+
+    @gen.coroutine
+    def _get_user_by_username(self, username):
+        result = self.db.query(User).filter(User.user_name == username).all()
+        raise gen.Return(result[0].to_json())
+
+    @gen.coroutine        
+    def _check_token_exists(self, token):
+        """
+        Function take in token to verify this one is the newest.
+        @params: Token.
+        """
+        result = self.db.query(Token.token_id).filter(Token.token_id==token).distinct().all()
+
+        try:
+            raise gen.Return(result[0][0])
+        except IndexError:
+            self.write({"code":401, "errorMessage":"token is wrong"})
+            self.set_status(401)
+            raise gen.Return(False)
+>>>>>>> 3ac182e... convert APIs

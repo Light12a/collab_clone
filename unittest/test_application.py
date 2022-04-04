@@ -1,13 +1,13 @@
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
-from application import base_application
+from application import base
 from Hrp import Hrp
 import test_handlers
 from tornado.web import URLSpec
 
 
-class TestApplication(base_application.CollabosBaseApplication):
+class TestApplication(base.CollabosBaseApplication):
     COOKIE_SECRET_PATH = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), 'secure_cookie')
 
