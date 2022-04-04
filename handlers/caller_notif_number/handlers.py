@@ -9,7 +9,7 @@ import MySQLdb
 from sqlalchemy import func
 from ..base import BaseHandler
 from ..users.models import User, Token, Tenant
-from .models import CallerId, CallerIdUser, CallerIdGroup
+from .models import CallerId, CallerIdUser
 from http import HTTPStatus
 from utils.config import config
 from utils.response import ResponseMixin
@@ -17,53 +17,6 @@ from tornado import gen
 from services.logging import logger as log
 
 log = log.get(__name__)
-
-# Create API for caller notification number
-
-class CallerIdSearchHandler(BaseHandler):
-
-    @gen.coroutine
-    def post(self, *args, **kwargs):
-        """
-        API is used to search caller notification number by conditions.
-        :param TenantId
-        :param UserId
-        :param SearchWord
-        :param Sort1
-        :param Sort2
-        :param Sort3
-        :param Offset
-        :param Limit
-        """
-        self.write_response()
-
-class CallerIdGetHandler(BaseHandler):
-
-    @gen.coroutine
-    def post(self, *args, **kwargs):
-        """
-        API is used to get a specified caller notification number detailed allocation is acquired. 
-        :param TenantId
-        :param UserId
-        :param CallerNumId
-        """
-        self.write_response()
-
-
-class CallerIdUpdateHandler(BaseHandler):
-
-    @gen.coroutine
-    def post(self, *args, **kwargs):
-        """
-        API is used to update the caller notification number
-        :param TenantId
-        :param UserId
-        :param UserList
-            :subparam UserId
-        :param GroupList
-            :subparam GroupId
-        """
-        self.write_response()
     
 class GetNotificationNumbersHandler(BaseHandler):
     """
@@ -89,7 +42,7 @@ class GetNotificationNumbersHandler(BaseHandler):
                     if numbers:
                         self.write({
                             "code": 200, 
-                            "skill_groups": numbers
+                            "numbers": numbers
                         })
                         self.set_status(200)
                     else:
@@ -110,26 +63,22 @@ class GetNotificationNumbersHandler(BaseHandler):
         Find out the list of notification numbers.
         Param: token_id
         """
-        results = self.db.query(CallerId).filter(
-            CallerId.caller_num_id == CallerIdUser.caller_num_id,
-            CallerIdUser.user_id == Token.user_id,
-            Token.token_id == token_id
-        ).all()
-        if results:
+        results = self.db.query(CallerId).filter(CallerId.caller_num_id == CallerIdUser.caller_num_id,
+                                                 CallerIdUser.user_id == Token.user_id,
+                                                 Token.token_id == token_id).all()
+        try:
             results_ = []
             for elemant in results:
                 results_.append(elemant.to_json())
-                
             numbers = [{
                 "id": element['caller_num_id'],
                 "value": element['caller_num'],
-                "in_use": "false"
+                "in_use": "true"
             } for element in results_]
-        else:
-            err = "Not found any number"
+            raise gen.Return(numbers)
+        except IndexError:
             raise gen.Return(False)
-        raise gen.Return(numbers)
-
+        
     @gen.coroutine
     def _check_token_exists(self, token):
         """
@@ -142,8 +91,6 @@ class GetNotificationNumbersHandler(BaseHandler):
             raise gen.Return(result[0][0])
         except IndexError:
             raise gen.Return(False)
-<<<<<<< HEAD
-=======
                              
 class ApplyNotificationNumberHandler(BaseHandler):
     """
@@ -192,11 +139,9 @@ class ApplyNotificationNumberHandler(BaseHandler):
         Params: request['token'] and request['number_id]
         """    
         try:
-            query = self.db.query(CallerId).filter(
-                Token.user_id == User.user_id,
-                CallerId.tenant_id == User.tenant_id,
-                Token.token_id == request['token']
-            ).one()
+            query = self.db.query(CallerIdUser).filter(Token.user_id == User.user_id,
+                                                       CallerIdUser.tenant_id == User.tenant_id,
+                                                       Token.token_id == request['token']).one()
             query.caller_num_id = request['number_id']
             self.db.commit()
             return True
@@ -216,4 +161,3 @@ class ApplyNotificationNumberHandler(BaseHandler):
             raise gen.Return(result[0][0])
         except IndexError:
             raise gen.Return(False)                         
->>>>>>> 18152fe... write API apply_notification_number

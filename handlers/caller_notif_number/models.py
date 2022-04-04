@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Table, Text, Time, text
+from sqlalchemy import Column, Date, DateTime, ForeignKey, String, Table, Text, Time, text, inspect
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, LONGTEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import NullType
@@ -22,6 +22,11 @@ class CallerId(Base):
     update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
     tenant = relationship(Tenant, backref='caller_id')
     project = relationship(Project, backref='caller_id')
+    
+    def to_json(self):
+        return {c.key: getattr(self, c.key)
+                for c in inspect(self).mapper.column_attrs}
+
 
 class CallerIdGroup(Base):
     __tablename__ = 'caller_id_groups'
@@ -50,18 +55,3 @@ class CallerIdUser(Base):
     tenant = relationship(Tenant, backref='caller_id_user')
     caller_id = relationship(CallerId, backref='caller_id_user')
     user = relationship(User, backref='caller_id_user')
-    tenant_id = Column(String(256), nullable=False)
-    caller_num_id = Column(BIGINT(20), nullable=False)
-    user_id = Column(String(256), nullable=False)
-    insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
-    update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
-
-class CallerIdGroup(Base):
-    __tablename__ = 'caller_id_groups'
-
-    id = Column(BIGINT(20), primary_key=True, unique=True)
-    tenant_id = Column(String(256), nullable=False)
-    caller_num_id = Column(BIGINT(20), nullable=False)
-    group_id = Column(String(256), nullable=False)
-    insert_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
-    update_date = Column(DateTime, nullable=False, server_default=text("current_timestamp()"))
