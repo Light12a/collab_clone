@@ -18,6 +18,9 @@ from handlers.caller_notif_number import models
 from handlers.authority import models
 from services.database.mysqldb import Base
 from handlers.away_reason import models
+from handlers.sound_settings import models
+from handlers.caller_notif_number import models
+
 from alembic import context
 
 # from alembic import context
@@ -25,6 +28,7 @@ from alembic import context
 # from handlers.users.models import Base as BaseS
 # from handlers.groups.models import Base as BaseG
 # from handlers.away_reason.models import Base as BaseA
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -41,6 +45,12 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 # target_metadata = [BaseT.metadata, BaseS.metadata, BaseG.metadata, BaseA.metadata]
+# target_metadata = [BaseT.metadata, 
+#                    BaseS.metadata, 
+#                    BaseG.metadata, 
+#                    BaseA.metadata, 
+#                    BaseSound.metadata, 
+#                    BaseCaller_notif.metadata]
 
 
 # other values from the config, defined by the needs of env.py,

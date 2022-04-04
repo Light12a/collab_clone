@@ -1,7 +1,5 @@
 import datetime
-<<<<<<< HEAD
 from ..base import BaseHandler
-=======
 import re
 import uuid
 import json
@@ -10,18 +8,12 @@ from sqlalchemy import func
 
 from ..base import BaseHandler
 
->>>>>>> 3ac182e... convert APIs
 from .models import User, Token, Tenant
 from http import HTTPStatus
 from utils.config import config
 from tornado import gen
 from services.logging import logger as log
-<<<<<<< HEAD
 from .token import JwtTokenTransfrom
-=======
-
-log = log.get(__name__)
->>>>>>> 3ac182e... convert APIs
 
 log = log.get(__name__)
 class LoginHandler(BaseHandler):
@@ -36,7 +28,6 @@ class LoginHandler(BaseHandler):
     def post(self):
         data = self.validated_data
 
-<<<<<<< HEAD
         if data:
             if not (("company_id" in data and "username" in data and "password" in data) or ("token" in data)):
                 log.error("Json request format is wrong")
@@ -367,18 +358,9 @@ class ReleaseLockHandlers(BaseHandler):
 
         self.db.query(User).filter(User.user_name == data['username']).update({User.locked : 0}, synchronize_session = False)
         self.db.commit()
-=======
         # self.set_secure_cookie("user", "092HK3399p@3")
         # self.write("092HK3399p@3")
        
-class LogoutHandler(BaseHandler):
-    
-    @gen.coroutine
-    def get(self):
-        self.clear_cookie("user")
-        self.write("Logout")
-
-
 class GetUserHandler(BaseHandler):
     
     @property
@@ -530,4 +512,3 @@ class GetUserByUsernameHandler(BaseHandler):
             self.write({"code":401, "errorMessage":"token is wrong"})
             self.set_status(401)
             raise gen.Return(False)
->>>>>>> 3ac182e... convert APIs
