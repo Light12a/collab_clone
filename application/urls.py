@@ -21,7 +21,3 @@ urlpatterns += handlers.recording_download.urls.urlpatterns
 urlpatterns += handlers.caller_notif_number.urls.urlpatterns
 urlpatterns += handlers.announcement_setting.urls.urlpatterns
 urlpatterns += handlers.away_reason.urls.urlpatterns
-urlpatterns += handlers.groups.urls.urlpatterns
-urlpatterns += handlers.caller_notif_number.urls.urlpatterns
-urlpatterns += handlers.caller_notif_number.urls.urlpatterns
-urlpatterns += handlers.caller_notif_number.urls.urlpatterns

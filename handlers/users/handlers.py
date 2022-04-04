@@ -1,5 +1,5 @@
+import imp
 import datetime
-from ..base import BaseHandler
 import re
 import uuid
 import json
@@ -12,11 +12,13 @@ from ..base import BaseHandler
 from .models import User, Token, Tenant
 from http import HTTPStatus
 from utils.config import config
+from utils.response import ResponseMixin
 from tornado import gen
 from services.logging import logger as log
 from .token import JwtTokenTransfrom
 
 log = log.get(__name__)
+
 class LoginHandler(BaseHandler):
     """
         This class is created to build Login API.
@@ -354,8 +356,9 @@ class RefreshTokenHandler(BaseHandler):
 class ReleaseLockHandlers(BaseHandler):
 
     @gen.coroutine
-    def post(self):
-        data = self.validated_data
+    def get(self):
+        self.set_secure_cookie("user", "85a55880-a85b-4515-a89f-a263fd1c07ce")
+        self.write("85a55880-a85b-4515-a89f-a263fd1c07ce")
 
         self.db.query(User).filter(User.user_name == data['username']).update({User.locked : 0}, synchronize_session = False)
         self.db.commit()

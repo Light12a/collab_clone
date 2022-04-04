@@ -34,14 +34,12 @@ class User(Base):
     middlename = Column(VARCHAR(1024), comment='Middle Name')
 
     tenant = relationship(Tenant)
-<<<<<<< HEAD
     group = relationship(Group)
-=======
     
     def to_json(self):
         return {c.key: getattr(self, c.key)
-            for c in inspect(self).mapper.column_attrs}
->>>>>>> 37f514e... fix some minor bugs
+                for c in inspect(self).mapper.column_attrs}
+
 
 
 class Token(Base):
