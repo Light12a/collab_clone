@@ -145,7 +145,7 @@ class GetNotificationNumbersHandler(BaseHandler):
 <<<<<<< HEAD
 =======
                              
-class ApplyNotificationNumberHandler(ResponseMixin, BaseHandler):
+class ApplyNotificationNumberHandler(BaseHandler):
     """
     This class is created to build apply_notification_number API.
     Params of request are token_id and number_id.
@@ -178,7 +178,6 @@ class ApplyNotificationNumberHandler(ResponseMixin, BaseHandler):
                 else:
                     self.write({"code":401, "errorMessage":"token is wrong"})
                     self.set_status(401)
-                    # self.write_response("Failure", code = HTTPStatus.UNAUTHORIZED.value, message="Token is wrong")
             else:
                 raise ValueError
             
@@ -202,7 +201,6 @@ class ApplyNotificationNumberHandler(ResponseMixin, BaseHandler):
             self.db.commit()
             return True
         except:
-            # self.write_response("Failure", HTTPStatus.NOT_FOUND.value, "number_id not found")
             err = "Not found any number"
             return False
                                        

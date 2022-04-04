@@ -23,7 +23,7 @@ ssl_context.verify_mode = ssl.CERT_NONE
 
 log = log.get(__name__)
 
-class GetSelectedRingtoneHandler(ResponseMixin, WebSocketHandler, BaseHandler):
+class GetSelectedRingtoneHandler(WebSocketHandler, BaseHandler):
     """
     This class is created to build API for get selected ringtone.
     Params of request is token.
@@ -108,7 +108,7 @@ class GetSelectedRingtoneHandler(ResponseMixin, WebSocketHandler, BaseHandler):
             return False
 
 
-class GetAllRingTonesHandler(ResponseMixin, BaseHandler):
+class GetAllRingTonesHandler(BaseHandler):
     """
     This class is created to build API for get all ringtone.
     Params of request is token.
