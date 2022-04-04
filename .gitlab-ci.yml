@@ -23,8 +23,6 @@ before_script:
     - chmod 700 ~/.ssh
     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - git config --global user.email "pipeline@collabos"
-    - git config --global user.name "Pipeline"
 
 build web:
     stage: build
@@ -32,7 +30,11 @@ build web:
         - echo "Build web..."
         - git clone -b frontend --single-branch  zeevaa@zeevaa.git.backlog.com:/NEW_CP2021/NEW_CP2021.git
         - cd NEW_CP2021/04_Programs/frontend
-        - npm version patch -m "Increase version to %s"
+        - npm version patch
+        - git config --global user.email "pipeline@collabos"
+        - git config --global user.name "Pipeline"
+        - git add .
+        - git commit -m "Increase version"
         - git push
         - npm install --unsafe-perm
         - npm run build
