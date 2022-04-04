@@ -9,7 +9,7 @@ import MySQLdb
 from sqlalchemy import func
 from ..base import BaseHandler
 from ..users.models import User, Token, Tenant
-from .models import CallerId, CallerIdUser
+from .models import CallerId, CallerIdUser, CallerIdGroup
 from http import HTTPStatus
 from utils.config import config
 from utils.response import ResponseMixin
