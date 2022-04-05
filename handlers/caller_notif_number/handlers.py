@@ -46,10 +46,10 @@ class GetNotificationNumbersHandler(BaseHandler):
                         })
                         self.set_status(200)
                     else:
-                        self.write({"code":404, "errorMessage": "numbers not found"})
+                        self.write({"code":404, "errorMessage": "Numbers not found."})
                         self.set_status(404)
                 else:
-                    self.write({"code":401, "errorMessage":"token is wrong"})
+                    self.write({"code":401, "errorMessage":"Token is wrong."})
                     self.set_status(401)
             else:
                 raise ValueError
@@ -120,10 +120,10 @@ class ApplyNotificationNumberHandler(BaseHandler):
                         })
                         self.set_status(200)
                     else:
-                        self.write({"code":401, "errorMessage":"number_id not found"})
+                        self.write({"code":401, "errorMessage":"number_id not found."})
                         self.set_status(401)
                 else:
-                    self.write({"code":401, "errorMessage":"token is wrong"})
+                    self.write({"code":401, "errorMessage":"Token is wrong."})
                     self.set_status(401)
             else:
                 raise ValueError
@@ -139,14 +139,13 @@ class ApplyNotificationNumberHandler(BaseHandler):
         Params: request['token'] and request['number_id]
         """    
         try:
-            query = self.db.query(CallerIdUser).filter(Token.user_id == User.user_id,
-                                                       CallerIdUser.tenant_id == User.tenant_id,
-                                                       Token.token_id == request['token']).one()
+            query = self.db.query(CallerIdUser).filter(Token.token_id == request['token'],
+                                                       Token.user_id == CallerIdUser.user_id).one()
             query.caller_num_id = request['number_id']
             self.db.commit()
             return True
         except:
-            err = "Not found any number"
+            err = "Not found any number."
             return False
                                        
     @gen.coroutine
