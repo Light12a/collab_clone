@@ -55,3 +55,7 @@ class CallerIdUser(Base):
     tenant = relationship(Tenant, backref='caller_id_user')
     caller_id = relationship(CallerId, backref='caller_id_user')
     user = relationship(User, backref='caller_id_user')
+    
+    def to_json(self):
+        return {c.key: getattr(self, c.key)
+                for c in inspect(self).mapper.column_attrs}

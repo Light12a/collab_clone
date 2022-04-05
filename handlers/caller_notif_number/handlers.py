@@ -7,8 +7,12 @@ import uuid
 import json
 import MySQLdb
 from sqlalchemy import func
+
+from handlers.project_settings.models import Project
 from ..base import BaseHandler
 from ..users.models import User, Token, Tenant
+from ..authority.models import Authority
+from ..auth_projects.models import AuthProject
 from .models import CallerId, CallerIdUser
 from http import HTTPStatus
 from utils.config import config
@@ -63,18 +67,29 @@ class GetNotificationNumbersHandler(BaseHandler):
         Find out the list of notification numbers.
         Param: token_id
         """
-        results = self.db.query(CallerId).filter(CallerId.caller_num_id == CallerIdUser.caller_num_id,
-                                                 CallerIdUser.user_id == Token.user_id,
-                                                 Token.token_id == token_id).all()
+        user_numbers = self.db.query(CallerId).filter(Token.token_id == token_id,
+                                                      Token.user_id == User.user_id,
+                                                      User.auth_id == Authority.auth_id,
+                                                      Authority.auth_id == AuthProject.auth_id,
+                                                      AuthProject.project_id == Project.project_id,
+                                                      Project.project_id == CallerId.project_id).all()
+        caller_id_user_in_use = self.db.query(CallerIdUser).filter(CallerIdUser.caller_num_id == CallerId.caller_num_id).all()
+        
         try:
-            results_ = []
-            for elemant in results:
-                results_.append(elemant.to_json())
+            caller_num_id_in_use = []
+            for elemant in caller_id_user_in_use:
+                e = elemant.to_json()
+                caller_num_id_in_use.append(e['caller_num_id'])
+            
+            results = []
+            for elemant in user_numbers:
+                results.append(elemant.to_json())
+                
             numbers = [{
                 "id": element['caller_num_id'],
                 "value": element['caller_num'],
-                "in_use": "true"
-            } for element in results_]
+                "in_use": "true" if element['caller_num_id'] in caller_num_id_in_use else "false"
+            } for element in results]
             raise gen.Return(numbers)
         except IndexError:
             raise gen.Return(False)

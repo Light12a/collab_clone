@@ -15,6 +15,7 @@ from handlers.historical_report import models
 from handlers.callflow_settings import models
 from handlers.recording_download import models
 from handlers.authority import models
+from handlers.auth_projects import models
 from handlers.away_reason import models
 from handlers.sound_settings import models
 from handlers.caller_notif_number import models
