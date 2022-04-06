@@ -95,3 +95,18 @@ PROFILE_SCHEMA = {
     "additionalProperties": False,
     "required": ["TenantId", "UserId"]
 }
+
+LOGOUT_CPM_SCHEMA = {
+   "type": "object",
+   "properties": {
+        "TenantId": {
+            "type": "string",
+            "minLength": 1
+        },
+        "UserId": {
+            "type": "string",
+            "minLength": 1
+        }},
+   "additionalProperties": False,
+   "required": ["TenantId", "UserId"]
+}
