@@ -20,6 +20,3 @@ class Group(Base):
     tenant = relationship(Tenant)
     authority = relationship(Authority)
     
-    def to_json(self):
-        return {c.key: getattr(self, c.key)
-                for c in inspect(self).mapper.column_attrs}
