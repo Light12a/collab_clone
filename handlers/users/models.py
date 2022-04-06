@@ -58,9 +58,9 @@ class Token(Base):
    __table_args__ = {
        'comment': 'Token : Manage token of each user for authentication'}
 
-   user_id = Column(ForeignKey(User.user_id), primary_key=True,
+   user_id = Column(ForeignKey(User.id), primary_key=True,
                     nullable=False, index=True, comment='User Id')
-   token_id = Column(VARCHAR(512), unique=True,
+   token_id = Column(VARCHAR(512), primary_key=True, unique=True,
                      comment='Token Id : Each user has an unique token_id')
    expired_date = Column(
        BIGINT(20), comment='Expired Time : Expired time of token')
