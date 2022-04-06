@@ -3,7 +3,6 @@ from datetime import datetime
 from unittest import result
 
 from ..base import BaseHandler
-from handlers.authority.decorators import authorize
 import tornado.gen
 from .models import Tenant
 from sqlalchemy import or_
