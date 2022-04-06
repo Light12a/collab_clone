@@ -49,7 +49,7 @@ class TenantSearchHandler(BaseHandler):
       raise tornado.gen.Return(self.created(2001, result))
 
 
-class TenantAcquisitionHandler(BaseHandler):
+class TenantGetHandler(BaseHandler):
    """
    This class handles tenant acquisition.
    Details of specified tenant information are acquired.

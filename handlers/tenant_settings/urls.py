@@ -1,6 +1,6 @@
-from .handlers import TenantSearchHandler, TenantAcquisitionHandler
+from .handlers import TenantSearchHandler, TenantGetHandler
 
 urlpatterns = [
     ('/tenant/search', TenantSearchHandler),
-    ('/tenant/get', TenantAcquisitionHandler),
+    ('/tenant/get', TenantGetHandler),
 ]
