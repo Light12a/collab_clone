@@ -27,9 +27,9 @@ class TenantSearchHandler(BaseHandler):
       offset = self.validated_data.get("Offset", 0)
       limit = self.validated_data.get("Limit")
       limit = limit + offset if limit is not None else None
-      sort1 = self.validated_data.get("Sort1", "").lower()
-      sort2 = self.validated_data.get("Sort2", "").lower()
-      sort3 = self.validated_data.get("Sort3", "").lower()
+      sort1 = self.validated_data.get("Sort1", "")
+      sort2 = self.validated_data.get("Sort2", "")
+      sort3 = self.validated_data.get("Sort3", "")
 
       query = self.db.query(Tenant).filter(or_(
          Tenant.tenant_name.like("%" + search_word + "%"),
