@@ -78,5 +78,17 @@ GET_SCHEMA = {
    "required": ["GroupId"]
 }
 
+GET_SKILL_SCHEMA = {
+   "type": "object",
+   "properties": {
+      "token": {
+         "type": "string",
+         "minLength": 1
+      }
+   },
+   "additionalProperties": False,
+   "required": ["token"]
+}
+
 PUT_SCHEMA = deepcopy(CREATE_SCHEMA)
 PUT_SCHEMA["required"] = ["GroupId"]

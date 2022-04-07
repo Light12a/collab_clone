@@ -8,11 +8,15 @@ from handlers.base import BaseHandler
 from handlers.authority.decorators import authorize
 from handlers.tenant_settings.models import Tenant
 from handlers.authority.models import Authority
-from handlers.users.models import User
+from handlers.users.models import User, Token
 from http import HTTPStatus
 from sqlalchemy.exc import PendingRollbackError
 from sqlalchemy import or_, func
 from datetime import datetime
+from handlers.operation_logs.models import OperationLog
+from services.logging import logger as log
+
+log = log.get(__name__)
 
 
 class Common:
@@ -296,3 +300,64 @@ class GroupBulkHandler(BaseHandler):
 
       self.created("0000", response_data=None, message=None)
 
+
+class GetSkillGroupsHandler(BaseHandler):
+   SCHEMA = GET_SKILL_SCHEMA
+
+   @gen.coroutine
+   def post(self):
+      token = self.validated_data.get("token")
+      user_id = yield self._check_user_by_token(token)
+      if user_id:
+         groups = yield self._get_groups(token)
+         self.write_response(
+            "0000",
+            code=HTTPStatus.OK,
+            response_data={
+               "code": 200,
+               "skill_groups": groups
+            }
+         )
+         log.info("Groups were found: {}".format(user_id))
+      else:
+         raise gen.Return(self.write_response(
+            "4000",
+            code=HTTPStatus.OK,
+            message={
+               "Groups not found."
+            }
+         ))
+
+   @gen.coroutine
+   def _check_user_by_token(self, token):
+      """
+         Find out user id of token before providing new token.
+         @params: Token.
+      """
+      result = self.db.query(Token.user_id).filter(
+         Token.token_id == token).all()
+
+      try:
+         raise gen.Return(result[0])
+      except IndexError as e:
+         log.error({'error_type': type(e).__name__,
+                    'error': e,
+                    "message": "Invalid Token"})
+         raise gen.Return(False)
+
+   @gen.coroutine
+   def _get_groups(self, token):
+      results = self.db.query(Group).filter(Group.tenant_id == User.tenant_id,
+                                            User.user_id == Token.user_id,
+                                            Token.token_id == token).all()
+      if results:
+         results_ = []
+         for elemant in results:
+            results_.append(self.to_json(elemant))
+         groups = [{
+            "group_id": element['group_id'],
+            "name": element['group_name']
+         } for element in results_]
+      else:
+         raise gen.Return(False)
+      raise gen.Return(groups)

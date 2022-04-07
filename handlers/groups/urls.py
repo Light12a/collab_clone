@@ -1,4 +1,5 @@
 from .handlers import (
+    GetSkillGroupsHandler,
     GroupSearchHandler,
     GroupDetailHandler,
     GroupCreateHandler,
@@ -13,5 +14,6 @@ urlpatterns = [
     ('/group/create', GroupCreateHandler),
     ('/group/update', GroupUpdateHandler),
     ('/group/delete', GroupDeleteHandler),
-    ('/group/bulk', GroupBulkHandler)
+    ('/group/bulk', GroupBulkHandler),
+    ('/get_skill_groups', GetSkillGroupsHandler),
 ]
