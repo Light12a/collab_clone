@@ -2,6 +2,8 @@ import json
 from datetime import datetime
 from unittest import result
 
+from handlers.authority.schema import CONVERT_CREATE, CREATE_SCHEMA
+
 from ..base import BaseHandler
 import tornado.gen
 from .models import Tenant
@@ -12,6 +14,18 @@ from .schema import SEARCH_SCHEMA, GET_SCHEMA
 from services.logging import logger
 
 LOG = logger.get(__name__)
+
+
+class Common:
+   def __init__(self, db):
+      self.db = db
+
+   def check_tenant_exist(self, tenant_id):
+      query = self.db.query(Tenant).filter(
+         Tenant.tenant_id == tenant_id).first()
+      if query:
+         return True
+      return False
 
 
 class TenantSearchHandler(BaseHandler):
@@ -68,3 +82,67 @@ class TenantGetHandler(BaseHandler):
       else:
          return self.not_found(
             40004, "Tenant with tenant_id=%s not found" % tenant_id)
+
+
+class TenantDeleteHandler(BaseHandler):
+   """
+   This API is used to delete a tenant.
+   Params: {
+      TenantId
+   }
+   """
+   SCHEMA = GET_SCHEMA
+
+   @tornado.gen.coroutine
+   def post(self):
+      tenant_id = self.validated_data.get('TenantId')
+      try:
+         tenant_id = str(tenant_id)
+      except ValueError:
+         tornado.gen.Return(self.not_found(
+            4009, "Tenant with TenantId=%s not found" % tenant_id))
+      query = self.db.query(Tenant).filter(
+          Tenant.tenant_id == tenant_id)
+      if (query.count() == 1):
+         try:
+            self.db.delete(query[0])
+            self.db.commit()
+            tornado.gen.Return(self.deleted(2000))
+         except Exception:
+            self.error(
+               message="Tenant with TenantId=%s can not delete" % tenant_id)
+      else:
+         tornado.gen.Return(self.not_found(
+            4009, "Tenant with TenantId=%s not found" % tenant_id))
+
+
+class TenantCreateHandler(BaseHandler):
+   """
+   This API is used to register a new tenant.
+   Params: {
+      TenantId,
+      TenantName,
+      Identifier,
+      ChannelCnt,
+      UseSpeechToText,
+      StEngine
+   }
+   """
+   SCHEMA = CREATE_SCHEMA
+
+   def post(self):
+      com = Common(self.db)
+      tenant_id = self.validated_data.get('TenantId')
+      check_tenant = com.check_tenant_exist(tenant_id)
+
+      if check_tenant:
+         return self.conflict(
+            4009, 'Record with GroupId=%s already exist.' % tenant_id)
+      data = Tenant()
+      for k, v in self.validated_data.items():
+         setattr(data, CONVERT_CREATE[k], v)
+      data.insert_date = datetime.now()
+      data.update_date = datetime.now()
+      self.db.add(data)
+      self.db.commit()
+      return self.created(2001, self.to_json(data))
