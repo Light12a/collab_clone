@@ -13,7 +13,9 @@ from tornado import gen
 from tornado.websocket import WebSocketHandler
 from services.logging import logger as log
 from .token import JwtTokenTransfrom
-from .schema import LOGIN_SCHEMA, LOGOUT_SCHEMA, REFRESH_SCHEMA, PROFILE_SCHEMA
+from .schema import *
+import MySQLdb
+from sqlalchemy import or_
 
 log = log.get(__name__)
 
@@ -400,7 +402,7 @@ class LoginCPMHandler(BaseHandler):
       else:
          log.error("User Invalid")
          raise gen.Return(self.not_found(
-             result_code=HTTPStatus.NOT_FOUND, message="User not found"))
+            result_code=HTTPStatus.NOT_FOUND, message="User not found"))
 
    @gen.coroutine
    def _check_lock(self, UserId):
@@ -476,6 +478,7 @@ class LoginCPMHandler(BaseHandler):
       self.db.query(Token).filter(Token.user_id == user_id).delete()
       self.db.commit()
 
+
 class ProfileHandler(BaseHandler):
    SCHEMA = PROFILE_SCHEMA
 
@@ -513,3 +516,110 @@ class BroadcastHangdler(WebSocketHandler, BaseHandler):
 
    def on_close(self):
       print("Close Websocket")
+
+
+class GetUserHandler(BaseHandler):
+   """
+   This API is used to get the list of users.
+   @params: token, search, from, to (to: -1 => get all users)
+   """
+   SCHEMA = GET_USERS_SCHEMA
+
+   @gen.coroutine
+   def post(self):
+      token = self.validated_data.get("token")
+      search = self.validated_data.get("search")
+      from_ = self.validated_data.get("from")
+      to = self.validated_data.get("to")
+      if (from_ < 0) or ((from_ > to) and (to != -1)):
+         raise gen.Return(self.write_response(
+            "4000",
+            code=HTTPStatus.OK,
+            message={
+               "Invalid request."
+            }
+         ))
+      user_id = yield self._check_user_by_token(token)
+      if user_id:
+         users = yield self._get_users(search, from_, to)
+         if users:
+            self.write_response(
+               "0000",
+               code=HTTPStatus.OK,
+               response_data={
+                  "code": 200,
+                  "users": users
+               }
+            )
+            log.info("Users were found.")
+         else:
+            log.info("User(s) not found.")
+            raise gen.Return(self.not_found(
+               result_code=HTTPStatus.NOT_FOUND, message="User(s) not found."))
+      else:
+         raise gen.Return(self.write_response(
+            "0000", code=HTTPStatus.UNAUTHORIZED, message="Invalid Token"))
+
+
+   @gen.coroutine
+   def _check_user_by_token(self, token):
+      """
+         Find out user id of token before providing new token.
+         @params: Token.
+      """
+      result = self.db.query(Token.user_id).filter(
+         Token.token_id == token).all()
+
+      try:
+         raise gen.Return(result[0])
+      except IndexError as e:
+         log.error({'error_type': type(e).__name__,
+                    'error': e,
+                    "message": "Invalid Token"})
+         raise gen.Return(False)
+
+   @gen.coroutine
+   def _get_users(self, search, from_, to):
+      if to == -1:
+         try:
+            query = self.db.query(User).all()
+         except (MySQLdb._exceptions.OperationalError):
+            log.error("Bad request.")
+            raise gen.Return(self.not_found(
+               result_code=HTTPStatus.NOT_FOUND,
+               message="Users not found."
+            ))
+      else:
+         try:
+            query = self.db.query(User).filter(or_(
+               User.user_name.like("%" + search + "%"),
+               User.extension.like("%" + search + "%")))[from_:to-from_+1]
+
+         except (MySQLdb._exceptions.OperationalError):
+            log.error("Bad request.")
+            raise gen.Return(self.not_found(
+               result_code=HTTPStatus.NOT_FOUND,
+               message="Users not found."
+            ))
+
+      if query:
+         results = []
+         for element in query:
+            results.append(self.to_json(element))
+
+         users = [{
+            "user_id": element['user_id'],
+            "username": element['user_name'],
+            "displayname": ' '.join(filter(None, (
+               element['lastname'],
+               element['middlename'],
+               element['firstname']
+            ))),
+            "group_id": element['group_id'],
+            "ext_number": element['extension'],
+            # "state": [key for key, list_of_values in constant_value.STATES.items()
+            # if requests.get("http://35.75.95.117:8088/ari/deviceStates/PJSIP%2F{}".format(result[1]), auth=("asterisk","asterisk")).json()['state'] in list_of_values][0],
+         } for element in results]
+      else:
+         raise gen.Return(False)
+      raise gen.Return(users)

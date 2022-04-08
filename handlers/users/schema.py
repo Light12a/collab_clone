@@ -1,97 +1,118 @@
 LOGIN_SCHEMA = {
-    "oneOf": [
-        {
+   "oneOf": [
+      {
             "type": "object",
             "properties": {
-                "company_id": {
-                    "type": "string",
-                    "minLength": 1
-                },
-                "username": {
-                    "type": "string",
-                    "minLength": 1
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 1
-                },
+               "company_id": {
+                  "type": "string",
+                  "minLength": 1
+               },
+               "username": {
+                  "type": "string",
+                  "minLength": 1
+               },
+               "password": {
+                  "type": "string",
+                  "minLength": 1
+               },
             },
             "additionalProperties": False,
             "required": ["company_id", "username", "password"]
-        },
-        {
+      },
+      {
             "type": "object",
             "properties": {
-                "token": {
-                    "type": "string",
-                    "minLength": 1
-                }
+               "token": {
+                  "type": "string",
+                  "minLength": 1
+               }
             },
             "additionalProperties": False,
             "required": ["token"]
-        }
-    ]
+      }
+   ]
 }
 
 LOGOUT_SCHEMA = {
-    "type": "object",
-    "properties": {
+   "type": "object",
+   "properties": {
             "token": {
-                "type": "string",
-                "minLength": 1
+               "type": "string",
+               "minLength": 1
             }
-    },
-    "additionalProperties": False,
-    "required": ["token"]
+   },
+   "additionalProperties": False,
+   "required": ["token"]
 }
 
 REFRESH_SCHEMA = {
-    "type": "object",
-    "properties": {
+   "type": "object",
+   "properties": {
             "token": {
-                "type": "string",
-                "minLength": 1
+               "type": "string",
+               "minLength": 1
             }
-    },
-    "additionalProperties": False,
-    "required": ["token"]
+   },
+   "additionalProperties": False,
+   "required": ["token"]
 }
 
 LOGIN_CPM_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "TenantId": {
+   "type": "object",
+   "properties": {
+      "TenantId": {
             "type": "string",
             "minLength": 1
-        },
-        "UserId": {
+      },
+      "UserId": {
             "type": "string",
             "minLength": 1
-        },
-        "Password": {
+      },
+      "Password": {
             "type": "string",
             "minLength": 1
-        },
-        "Lang": {
+      },
+      "Lang": {
             "type": "integer",
             "minLength": 1
-        },
-    },
-    "additionalProperties": False,
-    "required": ["TenantId", "UserId", "Password", "Lang"]
+      },
+   },
+   "additionalProperties": False,
+   "required": ["TenantId", "UserId", "Password", "Lang"]
 }
 
 PROFILE_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "TenantId": {
+   "type": "object",
+   "properties": {
+      "TenantId": {
             "type": "string",
             "minLength": 1
-        },
-        "UserId": {
+      },
+      "UserId": {
             "type": "string",
             "minLength": 1
-        }},
-    "additionalProperties": False,
-    "required": ["TenantId", "UserId"]
+      }},
+   "additionalProperties": False,
+   "required": ["TenantId", "UserId"]
+}
+
+GET_USERS_SCHEMA = {
+   "type": "object",
+   "properties": {
+      "token": {
+         "type": "string",
+         "minLength": 1
+      },
+      "search": {
+         "type": "string"
+      },
+      "from": {
+         "type": "integer"
+      },
+      "to": {
+         "type": "integer"
+      }
+   },
+   "additionalProperties": False,
+   "required": ["token"]
 }
