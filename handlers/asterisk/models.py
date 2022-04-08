@@ -45,7 +45,7 @@ class Musiconhold(Base):
 class PsAuth(Base):
    __tablename__ = 'ps_auths'
 
-   id = Column(String(40), nullable=False, unique=True)
+   id = Column(String(40), primary_key=True, nullable=False, unique=True)
    auth_type = Column(Enum(u'md5', u'userpass', u'google_oauth'))
    nonce_lifetime = Column(INTEGER(11))
    md5_cred = Column(String(40))
@@ -60,7 +60,7 @@ class PsAuth(Base):
 class PsEndpoint(Base):
    __tablename__ = 'ps_endpoints'
 
-   abcde = Column(String(40), primary_key=True)
+   id = Column(String(40), primary_key=True, nullable=False, unique=True)
    transport = Column(String(40))
    aors = Column(String(200))
    auth = Column(String(40))
