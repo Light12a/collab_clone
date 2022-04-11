@@ -1,7 +1,7 @@
 import imp
 from tornado.web import Application
 from sqlalchemy.orm import scoped_session, sessionmaker
-from services.database.mysqldb import RoutingSession
+from services.database.mysqldb import sql
 from utils.config import config
 
 
@@ -11,8 +11,11 @@ class CollabosBaseApplication(Application):
       self._cookie_secret = ''
       settings.update(self._generate_required_settings())
       handlers += self._generate_required_handlers()
-      self.session = scoped_session(sessionmaker(
-         class_=RoutingSession, autocommit=False,
+      self.be = scoped_session(sessionmaker(
+         bind=sql.engine['backend'], autocommit=False,
+         autoflush=True, expire_on_commit=False))
+      self.ast = scoped_session(sessionmaker(
+         bind=sql.engine['asterisk'], autocommit=False,
          autoflush=True, expire_on_commit=False))
       Application.__init__(self, handlers=handlers, **settings)
 
