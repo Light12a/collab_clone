@@ -95,3 +95,31 @@ PROFILE_SCHEMA = {
     "additionalProperties": False,
     "required": ["TenantId", "UserId"]
 }
+
+PASSWORD_CHANGE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "TenantId": {
+            "type": "string",
+            "minLength": 1
+        },
+        "UserId": {
+            "type": "string",
+            "minLength": 1
+        },
+        "OldPassword": {
+            "type": "string",
+            "minLength": 1,
+        },
+        "NewPassword": {
+            "type": "string",
+            "minLength": 1
+        },
+        "ConfirmPassword": {
+            "type": "string",
+            "minLength": 1
+        }
+        },
+    "additionalProperties": False,
+    "required": ["TenantId", "UserId", "OldPassword", "NewPassword", "ConfirmPassword"]
+}

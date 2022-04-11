@@ -2,6 +2,7 @@ import datetime
 import jwt
 import json
 import ssl
+import re
 import websockets
 from ..base import BaseHandler
 from .models import User, Token, Tenant
@@ -10,10 +11,13 @@ from handlers.operation_logs.models import OperationLog
 from http import HTTPStatus
 from utils.config import config
 from tornado import gen
+from hashlib import md5
 from tornado.websocket import WebSocketHandler
 from services.logging import logger as log
 from .token import JwtTokenTransfrom
-from .schema import LOGIN_SCHEMA, LOGOUT_SCHEMA, REFRESH_SCHEMA, PROFILE_SCHEMA
+from .decorators import token_required
+from .schema import LOGIN_SCHEMA, LOGOUT_SCHEMA, \
+    REFRESH_SCHEMA, PROFILE_SCHEMA, PASSWORD_CHANGE_SCHEMA
 
 log = log.get(__name__)
 
@@ -224,7 +228,7 @@ class LogoutHandler(BaseHandler):
              "0000", code=HTTPStatus.OK))
       else:
          raise gen.Return(self.write_response("0000",
-             code=HTTPStatus.UNAUTHORIZED, message="Invalid Token"))
+                                              code=HTTPStatus.UNAUTHORIZED, message="Invalid Token"))
 
    @gen.coroutine
    def _check_token_exists(self, token):
@@ -395,7 +399,7 @@ class LoginCPMHandler(BaseHandler):
             yield self._check_ng_to_lock(UserId)
             log.error("Invalid Password of User: {}".format(UserId))
             raise gen.Return(self.write_response(
-               "0000", code=HTTPStatus.UNAUTHORIZED, message="Invalid Password"
+                "0000", code=HTTPStatus.UNAUTHORIZED, message="Invalid Password"
             ))
       else:
          log.error("User Invalid")
@@ -476,6 +480,7 @@ class LoginCPMHandler(BaseHandler):
       self.db.query(Token).filter(Token.user_id == user_id).delete()
       self.db.commit()
 
+
 class ProfileHandler(BaseHandler):
    SCHEMA = PROFILE_SCHEMA
 
@@ -513,3 +518,67 @@ class BroadcastHangdler(WebSocketHandler, BaseHandler):
 
    def on_close(self):
       print("Close Websocket")
+
+
+class PasswordChangeHandler(BaseHandler):
+   SCHEMA = PASSWORD_CHANGE_SCHEMA
+
+   @gen.coroutine
+   @token_required
+   def post(self):
+      TenantId = self.validated_data.get('TenantId')
+      UserId = self.validated_data.get('UserId')
+      OldPassword = self.validated_data.get('OldPassword')
+      NewPassword = self.validated_data.get("NewPassword")
+      ConfirmPassword = self.validated_data.get("ConfirmPassword")
+
+      query = self.db.query(Security).filter(Security.TenantId == TenantId)
+      security = self.to_json(query[0][0])
+
+      query = self.db.query(User).filter(
+          User.user_id == UserId, User.tenant_id == TenantId)
+      user = self.to_json(query[0][0])
+
+      if md5(OldPassword) == user['password']:
+         if NewPassword == ConfirmPassword:
+            if security['use_password_policy'] == 0:
+               self.db.query(User).update({User.password: md5(ConfirmPassword)})
+               self.db.commit()
+               raise gen.Return(self.write_response(
+                   "0000", code=HTTPStatus.OK, message="Password Change Successfully"))
+            else:
+               pattern = self._generate_rule(security)
+               mat = re.search(re.compile(pattern), ConfirmPassword)
+               if mat:
+                  self.db.query(User).update({User.password: md5(ConfirmPassword)})
+                  self.db.commit()
+                  raise gen.Return(self.write_response(
+                   "0000", code=HTTPStatus.OK, message="Password Change Successfully"))
+               else:
+                  raise gen.Return(self.write_response(
+                   "0008", code=HTTPStatus.OK, message="Policy Illegal"))
+         else:
+            raise gen.Return(self.write_response(
+                "0006", code=HTTPStatus.UNAUTHORIZED, message="Invalid ConfirmPassword"))
+      else:
+         raise gen.Return(self.write_response(
+             "0007", code=HTTPStatus.UNAUTHORIZED, message="Invalid OldPassword"))
+
+   @gen.coroutine
+   def _generate_rule(self, security):
+      RULE = dict(
+            use_lower=[security['use_lower'], "(?=.*[a-z])", "a-z"],
+            use_digit=[security['use_digit'], "(?=.*[0-9])", "\d"],
+            use_upper=[security['use_upper'], "(?=.*[A-Z])", "A-Z"],
+            use_sympol=[security['use_upper'],
+                        "(?=.*[@$!%*#?&])", "@$!#%*?&"],
+      )
+      pattern = "^"
+      patterns = "["
+      for j in RULE.values():
+         if j[0] == 1:
+            pattern = pattern + j[1]
+            patterns = patterns + j[2]
+      pattern = pattern + patterns + "]" + \
+         "{%s,}$" % security['password_lenght']
+      return pattern

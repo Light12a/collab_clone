@@ -3,7 +3,8 @@ from .handlers import LoginHandler,\
          RefreshTokenHandler, \
          ReleaseLockHandlers,\
          LoginCPMHandler, \
-         BroadcastHangdler
+         BroadcastHangdler, \
+         PasswordChangeHandler
          
 urlpatterns = [
    ('/login', LoginHandler),
@@ -11,5 +12,6 @@ urlpatterns = [
    ('/refreshtoken', RefreshTokenHandler),
    ('/release', ReleaseLockHandlers),
    ('/user/login', LoginCPMHandler),
-   ('/collabos', BroadcastHangdler)
+   ('/collabos', BroadcastHangdler),
+   ('/user/password/update', PasswordChangeHandler)
 ]
