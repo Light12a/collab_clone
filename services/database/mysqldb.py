@@ -28,21 +28,4 @@ class SQLChemyConnection(object):
       }
 
 
-class RoutingSession(Session):
-   _name = None
-
-   def get_bind(self, mapper=None, clause=None):
-      if self._name:
-         return SQLChemyConnection().engine[self._name]
-      elif self._flushing:
-         return SQLChemyConnection().engine['asterisk']
-      else:
-         return SQLChemyConnection().engine['backend']
-
-   def using_bind(self, name):
-      s = RoutingSession()
-      vars(s).update(vars(self))
-      s._name = name
-      return s
-
-
+sql = SQLChemyConnection()

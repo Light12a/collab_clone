@@ -128,7 +128,11 @@ class BaseHandler(RequestHandler, ResponseMixin):
 
     @property
     def db(self):
-        return self.application.session
+        return self.application.be
+
+    @property
+    def ast(self):
+        return self.application.ast
 
     def to_json(self, data):
         return {c.key: getattr(data, c.key)
