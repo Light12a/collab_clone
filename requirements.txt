@@ -5,3 +5,4 @@ pytz
 jsonschema
 pandas
 pyjwt
+jsonschema[format]
