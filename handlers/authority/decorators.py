@@ -33,7 +33,7 @@ def authorize(action):
                                request_handler.get_current_user())
 
             auth_id = query_db(request_handler, getattr(User, 'auth_id'),
-                               getattr(User, 'user_id'), user_id)
+                               getattr(User, 'id'), user_id)
 
             value = query_db(request_handler, getattr(Authority, action),
                              getattr(Authority, 'auth_id'), auth_id)
